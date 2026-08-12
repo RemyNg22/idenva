@@ -1,0 +1,10 @@
+data/
+*.db
+*.sqlite*
+.env
+__pycache__/
+venv/
+node_modules/
+dist/
+.vscode/
+README_beta.md
