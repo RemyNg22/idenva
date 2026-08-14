@@ -1,7 +1,20 @@
-from fastapi import FastAPI
-from app.config import settings
+from collections.abc import AsyncGenerator
+from contextlib import asynccontextmanager
 
-app = FastAPI(title="settings.app_name")
+from fastapi import FastAPI
+
+from app.config import settings
+from app.database import init_db
+from app.models import Identity
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
+    init_db()
+    yield
+
+
+app = FastAPI(title=settings.app_name, lifespan=lifespan)
 
 
 @app.get("/health")
