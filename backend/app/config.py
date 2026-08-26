@@ -15,6 +15,7 @@ class Settings(BaseSettings):
     port: int = 8000
 
     data_dir: Path = Path(__file__).resolve().parent.parent.parent / "data"
+    vault_session_timeout_minutes: int = 15
 
 settings = Settings()
 

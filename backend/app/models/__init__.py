@@ -8,6 +8,7 @@ from app.models.note import Note
 from app.models.phone import Phone
 from app.models.tag import Tag
 from app.models.task import Task
+from app.models.vault_meta import VaultMeta
 
 __all__ = [
     "Identity",
@@ -21,4 +22,5 @@ __all__ = [
     "Node",
     "Edge",
     "Tag",
+    "VaultMeta",
 ]
