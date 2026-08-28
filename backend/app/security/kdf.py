@@ -5,7 +5,7 @@ from argon2.low_level import Type, hash_secret_raw
 
 ARGON2_TIME_COST = 3
 ARGON2_MEMORY_COST = 65536  # 64 Mo de ram par tentative de dévérouillage
-ARGON2_PARALLELISM = 4
+ARGON2_PARALLELISM = 4 # utilise 4 coeurs du processeur en parallèle
 KEY_LENGTH = 32  # 256 bits requis pour AES-256
 SALT_LENGTH = 16
 
