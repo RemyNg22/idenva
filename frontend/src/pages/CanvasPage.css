@@ -1,0 +1,50 @@
+.canvas-page {
+  width: 100vw;
+  height: 100vh;
+  background: #0c1222;
+  position: relative;
+}
+
+.canvas-page__lock-button {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 10;
+  padding: 8px 14px;
+  background: #1c1f28;
+  border: 1px solid #2a2e3a;
+  border-radius: 6px;
+  color: #e8e9ed;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.canvas-page__lock-button:hover {
+  border-color: #5b8def;
+}
+
+.canvas-page .react-flow__controls {
+  background: #1c1f28;
+  border: 1px solid #2a2e3a;
+  border-radius: 6px;
+  overflow: hidden;
+  box-shadow: none;
+}
+
+.canvas-page .react-flow__controls-button {
+  background: #1c1f28;
+  border-bottom: 1px solid #2a2e3a;
+  color: #e8e9ed;
+}
+
+.canvas-page .react-flow__controls-button:hover {
+  background: #2a2e3a;
+}
+
+.canvas-page .react-flow__controls-button svg {
+  fill: #e8e9ed;
+}
+
+.canvas-page .react-flow__attribution {
+  display: none;
+}

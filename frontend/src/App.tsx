@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { UnlockPage } from "./pages/UnlockPage";
+import { CanvasPage } from "./pages/CanvasPage";
 
 export default function App() {
   const [unlocked, setUnlocked] = useState(false);
@@ -8,9 +9,5 @@ export default function App() {
     return <UnlockPage onUnlocked={() => setUnlocked(true)} />;
   }
 
-  return (
-    <div style={{ color: "#e8e9ed", padding: 24 }}>
-      Vault déverrouillé - le reste arrive un peu plus tard.
-    </div>
-  );
+  return <CanvasPage onLock={() => setUnlocked(false)} />;
 }

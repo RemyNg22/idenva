@@ -12,7 +12,7 @@ export class ApiError extends Error {
 async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
   const response = await fetch(`${API_BASE}${path}`, {
     ...options,
-    credentials: "include", // envoie/reçoit le cookie de session httpOnly
+    credentials: "include",
     headers: { "Content-Type": "application/json", ...options.headers },
   });
 
