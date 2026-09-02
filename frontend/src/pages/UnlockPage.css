@@ -1,0 +1,110 @@
+.unlock-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  background: #0c1222;
+}
+
+.unlock-page__grid {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(#284394 1px, transparent 1px);
+  background-size: 28px 28px;
+  opacity: 0.6;
+}
+
+.unlock-card {
+  position: relative;
+  width: 340px;
+  padding: 40px 32px;
+  background: #272c3a;
+  border: 1px solid #000000;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.unlock-card__mark {
+  color: #5b8def;
+  font-size: 20px;
+  margin-bottom: 12px;
+}
+
+.unlock-card__title {
+  font-size: 22px;
+  font-weight: 600;
+  color: #e8e9ed;
+  margin: 0 0 4px;
+}
+
+.unlock-card__subtitle {
+  font-size: 14px;
+  color: #8b8fa3;
+  margin: 0 0 28px;
+}
+
+.unlock-form {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  text-align: left;
+}
+
+.unlock-form__label {
+  font-size: 12px;
+  color: #8b8fa3;
+  margin-top: 12px;
+}
+
+.unlock-form__label:first-of-type {
+  margin-top: 0;
+}
+
+.unlock-form__input {
+  background: #14161c;
+  border: 1px solid #2a2e3a;
+  border-radius: 6px;
+  padding: 10px 12px;
+  color: #e8e9ed;
+  font-family: "SFMono-Regular", "Consolas", "Menlo", monospace;
+  font-size: 14px;
+  outline: none;
+}
+
+.unlock-form__input:focus {
+  border-color: #5b8def;
+}
+
+.unlock-form__error {
+  color: #e5484d;
+  font-size: 13px;
+  margin: 8px 0 0;
+}
+
+.unlock-form__submit {
+  margin-top: 20px;
+  padding: 10px;
+  border: none;
+  border-radius: 6px;
+  background: #5b8def;
+  color: #14161c;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.unlock-form__submit:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.unlock-form__submit:not(:disabled):hover {
+  filter: brightness(1.1);
+}
+
+.unlock-card__footnote {
+  font-size: 12px;
+  color: #8b8fa3;
+  margin: 20px 0 0;
+}
