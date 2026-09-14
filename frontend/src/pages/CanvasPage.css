@@ -23,6 +23,20 @@
   border-color: #5b8def;
 }
 
+.canvas-page__error {
+  position: absolute;
+  top: 60px;
+  right: 16px;
+  z-index: 10;
+  padding: 8px 14px;
+  background: #2a1618;
+  border: 1px solid #e5484d;
+  border-radius: 6px;
+  color: #e5484d;
+  font-size: 13px;
+  max-width: 280px;
+}
+
 .canvas-page .react-flow__controls {
   background: #1c1f28;
   border: 1px solid #2a2e3a;

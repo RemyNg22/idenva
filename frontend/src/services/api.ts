@@ -30,6 +30,30 @@ export interface VaultStatus {
   unlocked: boolean;
 }
 
+export interface GraphNode {
+  id: string;
+  entity_type: string;
+  entity_id: string;
+  pos_x: number;
+  pos_y: number;
+  width: number | null;
+  height: number | null;
+  visual_state: Record<string, unknown> | null;
+}
+
+export interface GraphEdge {
+  id: string;
+  source_node_id: string;
+  target_node_id: string;
+  relation_type: string;
+  label: string | null;
+}
+
+export interface Graph {
+  nodes: GraphNode[];
+  edges: GraphEdge[];
+}
+
 export const api = {
   getStatus: () => request<VaultStatus>("/api/auth/status"),
 
@@ -46,4 +70,12 @@ export const api = {
     }),
 
   lockVault: () => request<{ status: string }>("/api/auth/lock", { method: "POST" }),
+
+  getGraph: () => request<Graph>("/api/graph"),
+
+  updateNodePosition: (nodeId: string, posX: number, posY: number) =>
+    request<GraphNode>(`/api/graph/nodes/${nodeId}`, {
+      method: "PATCH",
+      body: JSON.stringify({ pos_x: posX, pos_y: posY }),
+    }),
 };
