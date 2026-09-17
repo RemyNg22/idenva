@@ -23,6 +23,46 @@
   border-color: #5b8def;
 }
 
+.canvas-page__toolbar {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  z-index: 10;
+  display: flex;
+  gap: 8px;
+}
+
+.canvas-page__toolbar-input {
+  background: #1c1f28;
+  border: 1px solid #2a2e3a;
+  border-radius: 6px;
+  padding: 8px 12px;
+  color: #e8e9ed;
+  font-size: 13px;
+  width: 200px;
+}
+
+.canvas-page__toolbar-input:focus {
+  outline: none;
+  border-color: #5b8def;
+}
+
+.canvas-page__toolbar-btn {
+  background: #5b8def;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 14px;
+  color: #14161c;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.canvas-page__toolbar-btn:hover {
+  filter: brightness(1.1);
+}
+
 .canvas-page__error {
   position: absolute;
   top: 60px;

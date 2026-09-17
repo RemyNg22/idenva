@@ -1,0 +1,166 @@
+.panel {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 340px;
+  height: 100vh;
+  background: #1c1f28;
+  border-left: 1px solid #2a2e3a;
+  padding: 20px;
+  overflow-y: auto;
+  z-index: 20;
+  color: #e8e9ed;
+  box-sizing: border-box;
+}
+
+.panel__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.panel__type {
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: #5b8def;
+  font-weight: 600;
+}
+
+.panel__close {
+  background: none;
+  border: none;
+  color: #8b8fa3;
+  font-size: 20px;
+  cursor: pointer;
+  line-height: 1;
+}
+
+.panel__close:hover {
+  color: #e8e9ed;
+}
+
+.panel__label {
+  display: block;
+  font-size: 12px;
+  color: #8b8fa3;
+  margin: 12px 0 4px;
+}
+
+.panel__label--spaced {
+  margin-top: 20px;
+}
+
+.panel__input,
+.panel__textarea {
+  width: 100%;
+  background: #14161c;
+  border: 1px solid #2a2e3a;
+  border-radius: 6px;
+  padding: 8px 10px;
+  color: #e8e9ed;
+  font-size: 13px;
+  box-sizing: border-box;
+  font-family: inherit;
+}
+
+.panel__input:focus,
+.panel__textarea:focus {
+  outline: none;
+  border-color: #5b8def;
+}
+
+.panel__textarea {
+  resize: vertical;
+}
+
+.panel__section-title {
+  margin-top: 24px;
+  font-size: 12px;
+  color: #8b8fa3;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.panel__account-list {
+  list-style: none;
+  margin: 8px 0;
+  padding: 0;
+}
+
+.panel__account-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.panel__account-item:hover {
+  background: #2a2e3a;
+}
+
+.panel__account-badge {
+  font-size: 12px;
+}
+
+.panel__add-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.panel__btn {
+  background: #2a2e3a;
+  border: 1px solid #3a3f4d;
+  border-radius: 6px;
+  padding: 8px 12px;
+  color: #e8e9ed;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.panel__btn:hover {
+  border-color: #5b8def;
+}
+
+.panel__btn--danger {
+  background: transparent;
+  border-color: #e5484d;
+  color: #e5484d;
+}
+
+.panel__btn--danger:hover {
+  background: rgba(229, 72, 77, 0.1);
+}
+
+.panel__danger-zone {
+  margin-top: 32px;
+  padding-top: 16px;
+  border-top: 1px solid #2a2e3a;
+}
+
+.panel__confirm p {
+  font-size: 13px;
+  color: #e5484d;
+  margin: 0 0 10px;
+}
+
+.panel__confirm-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.panel__error {
+  color: #e5484d;
+  font-size: 12px;
+  margin: 8px 0 0;
+}
+
+.panel__meta {
+  font-size: 12px;
+  color: #8b8fa3;
+  margin-top: 12px;
+}
