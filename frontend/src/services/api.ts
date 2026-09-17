@@ -30,6 +30,35 @@ export interface VaultStatus {
   unlocked: boolean;
 }
 
+export interface Identity {
+  id: string;
+  name: string;
+  description: string | null;
+  icon: string | null;
+  color: string | null;
+  tags: string[] | null;
+  importance: number;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface Account {
+  id: string;
+  identity_id: string;
+  service_name: string;
+  url: string | null;
+  username: string | null;
+  email_id: string | null;
+  has_2fa: boolean;
+  has_password: boolean;
+  has_totp: boolean;
+  account_type: string | null;
+  importance: number;
+  created_at: string;
+  updated_at: string;
+  last_password_change: string | null;
+}
+
 export interface GraphNode {
   id: string;
   entity_type: string;
@@ -52,6 +81,14 @@ export interface GraphEdge {
 export interface Graph {
   nodes: GraphNode[];
   edges: GraphEdge[];
+}
+
+export interface PasswordGeneratorOptions {
+  length?: number;
+  uppercase?: boolean;
+  lowercase?: boolean;
+  numbers?: boolean;
+  symbols?: boolean;
 }
 
 export const api = {
@@ -78,4 +115,71 @@ export const api = {
       method: "PATCH",
       body: JSON.stringify({ pos_x: posX, pos_y: posY }),
     }),
+
+  createGraphNode: (entityType: string, entityId: string, posX: number, posY: number) =>
+    request<GraphNode>("/api/graph/nodes", {
+      method: "POST",
+      body: JSON.stringify({ entity_type: entityType, entity_id: entityId, pos_x: posX, pos_y: posY }),
+    }),
+
+  createGraphEdge: (sourceNodeId: string, targetNodeId: string, relationType: string) =>
+    request<GraphEdge>("/api/graph/edges", {
+      method: "POST",
+      body: JSON.stringify({
+        source_node_id: sourceNodeId,
+        target_node_id: targetNodeId,
+        relation_type: relationType,
+      }),
+    }),
+
+  listIdentities: () => request<Identity[]>("/api/identities"),
+
+  createIdentity: (name: string) =>
+    request<Identity>("/api/identities", { method: "POST", body: JSON.stringify({ name }) }),
+
+  updateIdentity: (id: string, patch: Partial<Pick<Identity, "name" | "description" | "importance">>) =>
+    request<Identity>(`/api/identities/${id}`, { method: "PUT", body: JSON.stringify(patch) }),
+
+  deleteIdentity: (id: string) => request<void>(`/api/identities/${id}`, { method: "DELETE" }),
+
+  listAccounts: (identityId?: string) =>
+    request<Account[]>(`/api/accounts${identityId ? `?identity_id=${identityId}` : ""}`),
+
+  createAccount: (data: {
+    identity_id: string;
+    service_name: string;
+    username?: string;
+    url?: string;
+    password?: string;
+    has_2fa?: boolean;
+  }) => request<Account>("/api/accounts", { method: "POST", body: JSON.stringify(data) }),
+
+  updateAccount: (
+    id: string,
+    patch: Partial<{
+      service_name: string;
+      username: string;
+      url: string;
+      password: string;
+      has_2fa: boolean;
+    }>,
+  ) => request<Account>(`/api/accounts/${id}`, { method: "PUT", body: JSON.stringify(patch) }),
+
+  deleteAccount: (id: string) => request<void>(`/api/accounts/${id}`, { method: "DELETE" }),
+
+  revealPassword: (accountId: string) =>
+    request<{ value: string }>(`/api/accounts/${accountId}/reveal-password`, { method: "POST" }),
+
+  revealTotp: (accountId: string) =>
+    request<{ value: string }>(`/api/accounts/${accountId}/reveal-totp`, { method: "POST" }),
+
+  generatePassword: (options: PasswordGeneratorOptions = {}) => {
+    const params = new URLSearchParams();
+    if (options.length !== undefined) params.set("length", String(options.length));
+    if (options.uppercase !== undefined) params.set("uppercase", String(options.uppercase));
+    if (options.lowercase !== undefined) params.set("lowercase", String(options.lowercase));
+    if (options.numbers !== undefined) params.set("numbers", String(options.numbers));
+    if (options.symbols !== undefined) params.set("symbols", String(options.symbols));
+    return request<{ password: string }>(`/api/utils/generate-password?${params.toString()}`);
+  },
 };

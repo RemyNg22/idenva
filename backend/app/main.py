@@ -11,6 +11,7 @@ from app.config import settings
 from app.database import init_db
 from app.models import Identity
 from fastapi.middleware.cors import CORSMiddleware
+from app.api.utils import router as utils_router
 
 
 @asynccontextmanager
@@ -32,6 +33,7 @@ app.include_router(auth_router)
 app.include_router(identities_router)
 app.include_router(accounts_router)
 app.include_router(graph_router)
+app.include_router(utils_router)
 
 
 @app.get("/health")

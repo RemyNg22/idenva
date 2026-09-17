@@ -1,0 +1,33 @@
+.account-node {
+  min-width: 140px;
+  padding: 10px 14px;
+  background: #1c1f28;
+  border: 1.5px solid #3d7a55;
+  border-left: 4px solid #4fb877;
+  border-radius: 6px;
+  color: #e8e9ed;
+}
+
+.account-node--selected {
+  border-color: #4fb877;
+  box-shadow: 0 0 0 2px rgba(79, 184, 119, 0.25);
+}
+
+.account-node__name {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.account-node__badges {
+  display: flex;
+  gap: 6px;
+  margin-top: 4px;
+  font-size: 11px;
+  color: #8b8fa3;
+}
+
+.account-node__badge {
+  background: #14161c;
+  border-radius: 4px;
+  padding: 1px 5px;
+}
