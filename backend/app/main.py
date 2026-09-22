@@ -7,6 +7,8 @@ from app.api.auth import router as auth_router
 from app.api.accounts import router as accounts_router
 from app.api.graph import router as graph_router
 from app.api.identities import router as identities_router
+from app.api.notes import router as notes_router
+from app.api.task import router as tasks_router
 from app.config import settings
 from app.database import init_db
 from app.models import Identity
@@ -34,6 +36,8 @@ app.include_router(identities_router)
 app.include_router(accounts_router)
 app.include_router(graph_router)
 app.include_router(utils_router)
+app.include_router(notes_router)
+app.include_router(tasks_router)
 
 
 @app.get("/health")

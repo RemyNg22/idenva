@@ -59,6 +59,28 @@ export interface Account {
   last_password_change: string | null;
 }
 
+export interface Note {
+  id: string;
+  owner_type: string;
+  owner_id: string;
+  content: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface Task {
+  id: string;
+  title: string;
+  description: string | null;
+  status: string; // "todo" | "in_progress" | "done"
+  priority: string; // "low" | "normal" | "high"
+  due_date: string | null;
+  related_type: string | null;
+  related_id: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface GraphNode {
   id: string;
   entity_type: string;
@@ -182,4 +204,50 @@ export const api = {
     if (options.symbols !== undefined) params.set("symbols", String(options.symbols));
     return request<{ password: string }>(`/api/utils/generate-password?${params.toString()}`);
   },
+
+  // --- NOTES ---
+  listNotes: (ownerId?: string, ownerType = "account") =>
+    request<Note[]>(`/api/notes${ownerId ? `?owner_id=${ownerId}&owner_type=${ownerType}` : ""}`),
+
+  createNote: (data: { owner_id: string; content: string; owner_type?: string }) =>
+    request<Note>("/api/notes", {
+      method: "POST",
+      body: JSON.stringify({ owner_type: "account", ...data }),
+    }),
+
+  updateNote: (id: string, content: string) =>
+    request<Note>(`/api/notes/${id}`, { method: "PUT", body: JSON.stringify({ content }) }),
+
+  deleteNote: (id: string) => request<void>(`/api/notes/${id}`, { method: "DELETE" }),
+
+  // --- TASKS ---
+  listTasks: (relatedId?: string, relatedType = "account") =>
+    request<Task[]>(`/api/tasks${relatedId ? `?related_id=${relatedId}&related_type=${relatedType}` : ""}`),
+
+  createTask: (data: {
+    title: string;
+    related_id?: string;
+    related_type?: string;
+    description?: string;
+    status?: string;
+    priority?: string;
+    due_date?: string;
+  }) =>
+    request<Task>("/api/tasks", {
+      method: "POST",
+      body: JSON.stringify({ related_type: "account", status: "todo", priority: "normal", ...data }),
+    }),
+
+  updateTask: (
+    id: string,
+    patch: Partial<{
+      title: string;
+      description: string;
+      status: string;
+      priority: string;
+      due_date: string;
+    }>,
+  ) => request<Task>(`/api/tasks/${id}`, { method: "PUT", body: JSON.stringify(patch) }),
+
+  deleteTask: (id: string) => request<void>(`/api/tasks/${id}`, { method: "DELETE" }),
 };

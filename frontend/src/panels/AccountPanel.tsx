@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { api, ApiError, type Account } from "../services/api";
 import { PasswordField } from "../components/PasswordField";
+import { NotesSection } from "../components/NotesSection";
+import { TasksSection } from "../components/TasksSection";
 import "./Panel.css";
 
 interface AccountPanelProps {
@@ -96,6 +98,9 @@ export function AccountPanel({ account, onClose, onAccountUpdated, onAccountDele
           Dernier changement : {new Date(account.last_password_change).toLocaleDateString("fr-FR")}
         </p>
       )}
+
+      <NotesSection ownerId={account.id} ownerType="account" />
+      <TasksSection relatedId={account.id} relatedType="account" />
 
       {error && <p className="panel__error">{error}</p>}
 

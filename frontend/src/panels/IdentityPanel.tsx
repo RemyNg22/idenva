@@ -1,5 +1,7 @@
 import { useState, type FormEvent } from "react";
 import { api, ApiError, type Account, type Identity } from "../services/api";
+import { NotesSection } from "../components/NotesSection";
+import { TasksSection } from "../components/TasksSection";
 import "./Panel.css";
 
 interface IdentityPanelProps {
@@ -99,6 +101,9 @@ export function IdentityPanel({
         />
         <button type="submit" className="panel__btn">+ Ajouter un compte</button>
       </form>
+
+      <NotesSection ownerId={identity.id} ownerType="identity" />
+      <TasksSection relatedId={identity.id} relatedType="identity" />
 
       <div className="panel__danger-zone">
         {!showDeleteConfirm ? (
