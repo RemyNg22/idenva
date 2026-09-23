@@ -1,0 +1,190 @@
+.security-dashboard {
+  min-height: 100vh;
+  background: #14161c;
+  color: #e8e9ed;
+  padding: 24px 40px 60px;
+  box-sizing: border-box;
+}
+
+.security-dashboard__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.security-dashboard__header h1 {
+  font-size: 20px;
+  margin: 0;
+}
+
+.security-dashboard__close {
+  background: #1c1f28;
+  border: 1px solid #2a2e3a;
+  border-radius: 6px;
+  padding: 8px 14px;
+  color: #e8e9ed;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.security-dashboard__close:hover {
+  border-color: #5b8def;
+}
+
+.security-dashboard__error {
+  color: #e5484d;
+}
+
+.security-dashboard__stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 12px;
+  margin-bottom: 32px;
+}
+
+.stat-card {
+  background: #1c1f28;
+  border: 1px solid #2a2e3a;
+  border-radius: 8px;
+  padding: 16px;
+}
+
+.stat-card--warn {
+  border-color: #e5b84d;
+}
+
+.stat-card__value {
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.stat-card__label {
+  font-size: 12px;
+  color: #8b8fa3;
+  margin-top: 4px;
+}
+
+.security-dashboard__section {
+  margin-bottom: 32px;
+}
+
+.security-dashboard__section h2 {
+  font-size: 15px;
+  margin: 0 0 12px;
+  color: #8b8fa3;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.security-dashboard__empty {
+  color: #8b8fa3;
+  font-size: 13px;
+}
+
+.security-dashboard__scores {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 12px;
+}
+
+.opsec-card {
+  background: #1c1f28;
+  border: 1px solid #2a2e3a;
+  border-radius: 8px;
+  padding: 14px 16px;
+}
+
+.opsec-card__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.opsec-card__name {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.opsec-card__score {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.opsec-card__score--good {
+  color: #4fb877;
+}
+
+.opsec-card__score--medium {
+  color: #e5b84d;
+}
+
+.opsec-card__score--bad {
+  color: #e5484d;
+}
+
+.opsec-card__factors {
+  margin: 10px 0 0;
+  padding-left: 16px;
+  font-size: 12px;
+  color: #8b8fa3;
+}
+
+.opsec-card__points {
+  color: #e5484d;
+}
+
+.security-dashboard__alerts {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.alert {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #1c1f28;
+  border: 1px solid #2a2e3a;
+  border-radius: 6px;
+  padding: 10px 14px;
+  font-size: 13px;
+}
+
+.alert--critical {
+  border-left: 3px solid #e5484d;
+}
+
+.alert--warning {
+  border-left: 3px solid #e5b84d;
+}
+
+.alert__target {
+  font-weight: 600;
+  min-width: 100px;
+}
+
+.alert__message {
+  color: #8b8fa3;
+}
+
+.security-dashboard__correlations {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.correlation {
+  background: #1c1f28;
+  border: 1px solid #2a2e3a;
+  border-left: 3px solid #e5b84d;
+  border-radius: 6px;
+  padding: 10px 14px;
+  font-size: 13px;
+}

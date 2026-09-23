@@ -27,11 +27,12 @@ const nodeTypes = { identity: IdentityNode, account: AccountNode };
 
 interface CanvasPageProps {
   onLock: () => void;
+  onOpenDashboard: () => void;
 }
 
 type EntityNodeIndex = Record<string, string>;
 
-export function CanvasPage({ onLock }: CanvasPageProps) {
+export function CanvasPage({ onLock, onOpenDashboard }: CanvasPageProps) {
   const [nodes, setNodes] = useState<Node[]>([]);
   const [edges, setEdges] = useState<Edge[]>([]);
   const [identitiesById, setIdentitiesById] = useState<Record<string, Identity>>({});
@@ -265,6 +266,14 @@ export function CanvasPage({ onLock }: CanvasPageProps) {
         🔒 Lock
       </button>
 
+      <button
+        className="canvas-page__lock-button canvas-page__dashboard-button"
+        onClick={onOpenDashboard}
+        title="Dashboard sécurité"
+      >
+        🛡️ Sécurité
+      </button>
+
       {error && <div className="canvas-page__error">{error}</div>}
 
       {!loading && (
@@ -295,6 +304,7 @@ export function CanvasPage({ onLock }: CanvasPageProps) {
 
       {selected?.type === "identity" && identitiesById[selected.entityId] && (
         <IdentityPanel
+          key={selected.entityId}
           identity={identitiesById[selected.entityId]}
           accounts={accountsOfSelectedIdentity}
           onClose={() => setSelected(null)}
@@ -307,6 +317,7 @@ export function CanvasPage({ onLock }: CanvasPageProps) {
 
       {selected?.type === "account" && accountsById[selected.entityId] && (
         <AccountPanel
+          key={selected.entityId}
           account={accountsById[selected.entityId]}
           onClose={() => setSelected(null)}
           onAccountUpdated={handleAccountUpdated}

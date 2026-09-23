@@ -14,6 +14,7 @@ from app.database import init_db
 from app.models import Identity
 from fastapi.middleware.cors import CORSMiddleware
 from app.api.utils import router as utils_router
+from app.api.dashboard import router as dashboard_router
 
 
 @asynccontextmanager
@@ -38,6 +39,7 @@ app.include_router(graph_router)
 app.include_router(utils_router)
 app.include_router(notes_router)
 app.include_router(tasks_router)
+app.include_router(dashboard_router)
 
 
 @app.get("/health")

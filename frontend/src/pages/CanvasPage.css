@@ -1,7 +1,7 @@
 .canvas-page {
   width: 100vw;
   height: 100vh;
-  background: #0c1222;
+  background: #14161c;
   position: relative;
 }
 
@@ -21,6 +21,10 @@
 
 .canvas-page__lock-button:hover {
   border-color: #5b8def;
+}
+
+.canvas-page__dashboard-button {
+  right: 96px;
 }
 
 .canvas-page__toolbar {

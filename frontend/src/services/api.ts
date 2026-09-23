@@ -113,6 +113,53 @@ export interface PasswordGeneratorOptions {
   symbols?: boolean;
 }
 
+export interface SecurityOverview {
+  identities_count: number;
+  accounts_count: number;
+  passwords_count: number;
+  two_fa_enabled_count: number;
+  two_fa_total_count: number;
+  weak_passwords_count: number;
+  reused_passwords_count: number;
+  old_passwords_count: number;
+}
+
+export interface SecurityAlert {
+  severity: "critical" | "warning" | "info";
+  identity_id: string | null;
+  identity_name: string | null;
+  account_id: string | null;
+  service_name: string | null;
+  message: string;
+}
+
+export interface OpsecFactor {
+  label: string;
+  points: number;
+}
+
+export interface IdentityOpsecScore {
+  identity_id: string;
+  identity_name: string;
+  score: number;
+  factors: OpsecFactor[];
+}
+
+export interface CorrelationAlert {
+  identity_a_id: string;
+  identity_a_name: string;
+  identity_b_id: string;
+  identity_b_name: string;
+  shared_fields: string[];
+}
+
+export interface SecurityDashboard {
+  overview: SecurityOverview;
+  alerts: SecurityAlert[];
+  scores: IdentityOpsecScore[];
+  correlations: CorrelationAlert[];
+}
+
 export const api = {
   getStatus: () => request<VaultStatus>("/api/auth/status"),
 
@@ -250,4 +297,6 @@ export const api = {
   ) => request<Task>(`/api/tasks/${id}`, { method: "PUT", body: JSON.stringify(patch) }),
 
   deleteTask: (id: string) => request<void>(`/api/tasks/${id}`, { method: "DELETE" }),
+
+  getSecurityDashboard: () => request<SecurityDashboard>("/api/dashboard/security"),
 };

@@ -146,10 +146,12 @@
   font-size: 13px;
   color: #e5484d;
   margin: 0 0 10px;
+  text-align: center;
 }
 
 .panel__confirm-actions {
   display: flex;
+  justify-content: center;
   gap: 8px;
 }
 
