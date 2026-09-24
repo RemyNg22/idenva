@@ -1,123 +1,117 @@
-# Architecture de Sécurité & Cryptographie — Idenva
+# Architecture & Modèle de Sécurité — Idenva
 
-Idenva est un coffre-fort d'identités et de secrets locaux conçu selon le principe de **Connaissance Nulle (Zero-Knowledge Architecture)**. Vos mots de passe, clés et données personnelles restent sous votre contrôle exclusif : **aucune donnée en clair et aucun secret permettant de les déchiffrer ne sont jamais enregistrés sur votre disque**.
+Ce document détaille l'architecture de sécurité d'Idenva, les mécanismes cryptographiques mis en oeuvre, la portée de la protection des données ainsi que les limites inhérentes au modèle de menace de l'application.
 
----
+## 1. Périmètre de Protection des Données
 
-## 1. Principes Fondamentaux
-
-### A. Le modèle Zero-Knowledge local
-Dans un système classique, le serveur vérifie souvent le mot de passe en le comparant à un hash (comme bcrypt ou Argon2). 
-Idenva n'utilise **aucun système de vérification directe du mot de passe (Zero-Verification)** :
-* Il n'y a **aucun hash** du mot de passe maître stocké dans la base de données.
-* La seule preuve que le mot de passe est correct réside dans la **réussite cryptographique du déchiffrement**. Si le mot de passe est faux, la clé générée sera fausse, le tag d'authentification AES-GCM rejettera le bloc, et l'accès sera immédiatement bloqué.
-
-### B. Séparation stricte entre Mémoire (RAM) et Disque (BDD)
-* **Sur le disque (BDD SQLite) :** Tout est chiffré en `AES-256-GCM` ou sous forme de métadonnées cryptographiques non exploitables sans le mot de passe maître.
-* **En mémoire vive (RAM) :** La clé principale de chiffrement n'existe que le temps de votre session utilisateur. Dès la fermeture ou l'inactivité de l'application, elle est effacée par écrasement d'octets.
-
----
-
-## 2. La Hiérarchie des Clés
-
-Plutôt que d'utiliser directement le mot de passe utilisateur pour chiffrer chaque champ de la base de données (ce qui poserait un problème majeur en cas de changement de mot de passe), Idenva utilise un système de **chiffrement d'enveloppe à 3 niveaux** :
+Idenva applique un chiffrement sélectif au niveau des champs (*Field-Level Encryption*). La clé principale ne déchiffre que les données qualifiées de "secrets".
 
 ```text
-               +----------------------------------+
-               |   Mot de Passe Maître (Humain)   |
-               +----------------------------------+
-                                |
-                                | + Sel Argon2id (16 bytes)
-                                v
-               +----------------------------------+
-               |     KEK (Key Encryption Key)     |
-               |     Dérivée à la volée en RAM    |
-               +----------------------------------+
-                                |
-                                | Chiffre / Déchiffre (AES-256-GCM)
-                                v
-               +----------------------------------+
-               |     DEK (Data Encryption Key)    |
-               | Clé binaire 256 bits (Master Key) |
-               +----------------------------------+
-                                |
-        +-----------------------+-----------------------+
-        |                       |                       |
-        v                       v                       v
-[ Mots de passe ]       [ Secrets TOTP/2FA ]     [ Notes & Données ]
++-----------------------------------------------------------------------+
+|                           BASE DE DONNÉES                             |
+|                                                                       |
+|  [ DONNÉES EN CLAIR ]                 [ DONNÉES CHIFFRÉES (AES-GCM) ] |
+|  - Identités (Noms, descriptions)     - Mots de passe                 |
+|  - Services (Noms, URLs)              - Secrets TOTP (2FA)            |
+|  - Identifiants (Usernames)           - Contenu des notes             |
+|  - Noms de domaine, tags              - Numéros de téléphone          |
+|  - Titres des tâches                  - E-mails marqués sensibles     |
++-----------------------------------------------------------------------+
 ```
 
-### 1. Master Password (Mot de passe maître)
-C'est le mot de passe saisi par l'utilisateur. Il n'est stocké nulle part, ni sur disque, ni en variable globale.
+### Synthèse du Périmètre
 
-### 2. KEK (Key Encryption Key - Clé de chiffrement de clé)
-* C'est une clé temporaire binaire de 256 bits générée uniquement en mémoire au moment du déverrouillage.
-* Elle est calculée en passant le mot de passe maître et un sel unique dans l'algorithme d'étirement de clé **Argon2id**.
-* **Son rôle :** Protéger et déchiffrer la **DEK**.
+| **Catégorie de Donnée** | **Statut Cryptographique** | **Impact en cas de Fuite du Fichier .db** |
+|---|---|---|
+| **Secrets** *(Mots de passe, TOTP, Notes, Tel, Emails sensibles)* | **Chiffré** *(AES-256-GCM)* | Illisibles sans la clé maître. |
+| **Métadonnées** *(Noms de services, usernames, tags, structures)* | **En clair** | La topologie de votre présence numérique reste analysable. |
 
-### 3. DEK (Data Encryption Key — Clé de chiffrement des données)
-* C'est une clé binaire de 256 bits générée aléatoirement lors de la toute première création du coffre-fort.
-* **Son rôle :** C'est la véritable "clé maîtresse" qui chiffre et déchiffre l'ensemble de vos données (mots de passe, notes, numéros).
-* La DEK reste stockée sur le disque sous forme **chiffrée par la KEK** (`dek_ciphertext`).
+> **Note d'Architecture :** Pour protéger l'intégralité du fichier de base de données (métadonnées incluses), un chiffrement au niveau du stockage constitue une couche complémentaire envisageable.
+
+## 2. Modèle de Chiffrement & Gestion des Clés
+
+Idenva s'appuie sur une hiérarchie de clés à deux niveaux (*Envelope Encryption*). Le mot de passe maître n'est **jamais stocké** sur le disque, ni sous forme de texte brut, ni sous forme de hash traditionnel.
+
+### Schéma du Flux de Déverrouillage
+
+```text
+Mot de Passe Maître + Sel (Salt)
+              │
+              ▼
+    [ Argon2id (KDF) ]
+              │
+              ▼
+   Clé du Coffre (Master Key)
+              │
+              ▼ (Déchiffre)
++------------------------------------+
+|  Clé des Données Chiffrée (On-Disk)|
++------------------------------------+
+              │
+              ▼
+   Clé des Données (DEK) ────────────► [ Chiffre / Déchiffre les Secrets ]
+ (Stockée uniquement en RAM)
+```
+
+### Mécanisme de Dérivation et d'Enveloppe
+
+1. **Création du coffre :** Une clé aléatoire est générée : la **Clé des Données** (*Data Encryption Key - DEK*). C'est cette clé qui chiffre effectivement vos secrets.
+2. **Dérivation du mot de passe :** Le mot de passe maître passe par la fonction de dérivation **Argon2id** pour produire la **Clé du Coffre** (*Master Key*).
+3. **Chiffrement d'enveloppe :** La Clé du Coffre chiffre la Clé des Données. Seule la version chiffrée de la Clé des Données est sauvegardée dans le fichier SQLite.
+4. **Validation de l'authentification :** L'exactitude du mot de passe maître est validée par le succès du déchiffrement de la Clé des Données. Aucun hash de contrôle dédié n'est conservé.
+
+### Changement du Mot de Passe Maître
+
+Lors du changement du mot de passe maître, seule la **Clé des Données** est rechiffrée avec la nouvelle Clé du Coffre. L'ensemble des secrets de la base de données n'a pas besoin d'être réencrypté, garantissant une opération instantanée et atomique.
+
+## 3. Cycle de Vie de la Clé en Mémoire Vive (RAM)
+
+Pendant toute la durée où le coffre est déverrouillé, la Clé des Données (*DEK*) réside exclusivement en mémoire vive (RAM).
+
+```text
+   +--------------------+
+   | Coffre Déverrouillé| ─── Clé des Données active en RAM
+   +--------------------+
+             │
+     ┌───────┴───────┐
+     │  Déclencheurs │
+     └───────┬───────┘
+             ├─────────────────► Action Utilisateur ("Verrouiller")
+             │
+             └─────────────────► Inactivité (Timeout configurable, ex: 15 min dans notre cas)
+             │
+             ▼
+   +--------------------+
+   | Écrasement RAM     | ─── Remplacement explicite par des 0x00
+   +--------------------+
+             │
+             ▼
+   +--------------------+
+   |   Coffre Verrouillé| ─── Clé supprimée de la mémoire
+   +--------------------+
+```
+
+### Verrouillage & Nettoyage Mémoire
+
+Lors d'un verrouillage (manuel ou sur expiration du délai d'inactivité) :
+
+1. La Clé des Données est supprimée de la mémoire active.
+2. Une procédure d'écrasement binaire (remplacement par des zéros `0x00`) est exécutée sur la zone mémoire ciblée.
 
 
----
+## 4. Modèle de Menace & Limites de Sécurité
 
-## 3. Fonctionnement Pas-à-Pas des Opérations
+Idenva est conçu pour contrer le vol ou l'analyse à froid (*offline attack*) du fichier de base de données. Cependant, certaines limites matérielles et logicielles s'imposent :
 
-### A. Création du Coffre (Initialisation)
-1. L'utilisateur définit son mot de passe maître.
-2. Idenva génère un **Sel Argon2id** de 16 octets et un **Nonce AES-GCM** de 12 octets via un générateur aléatoire.
-3. L'application calcule la **KEK** via Argon2id(MotDePasse, Sel).
-4. Idenva génère une **DEK** complètement aléatoire de 32 octets.
-5. La **DEK** est chiffrée avec la **KEK** en AES-256-GCM.
-6. La base de données enregistre uniquement dans `vault_meta` :
-   * Le sel Argon2id (`argon2_salt`)
-   * Le nonce de la DEK (`dek_nonce`)
-   * La DEK chiffrée (`dek_ciphertext`)
+- **Infection de la machine hôte (*Malware / Keylogger*) :** Si un logiciel malveillant est actif sur le système d'exploitation pendant la session d'utilisation, il peut intercepter les frappes clavier ou analyser la mémoire RAM pour extraire la clé.
+- **Perte du Mot de Passe Maître :** En l'absence de porte dérobée (*backdoor*) ou de mécanisme de récupération, la perte du mot de passe maître entraîne l'impossibilité définitive de déchiffrer les secrets.
+- **Protection des Sauvegardes :** Les copies de sauvegarde du fichier `idenva.db` héritent exactement du même niveau de protection et des mêmes métadonnées en clair que le fichier original.
 
-### B. Déverrouillage du Coffre
-1. L'utilisateur entre son mot de passe.
-2. Idenva lit `argon2_salt`, `dek_nonce` et `dek_ciphertext` depuis la base de données.
-3. L'application dérive la **KEK candidate** avec le mot de passe entré et le sel.
-4. L'application tente de déchiffrer `dek_ciphertext` avec la KEK candidate :
-   * **Cas 1 : Le mot de passe est BON** -> AES-GCM valide le tag d'authentification. La DEK est déchiffrée et chargée dans le gestionnaire de session RAM (`VaultSessionStore`).
-   * **Cas 2 : Le mot de passe est FAUX** -> AES-GCM échoue (erreur `InvalidTag`). Aucune donnée n'est chargée, l'accès est rejeté.
+## 5. Spécifications Cryptographiques
 
-### C. Changement de Mot de Passe Maître
-Grâce au chiffrement d'enveloppe, vous n'avez **pas besoin de re-chiffrer tous vos mots de passe** si vous changez votre mot de passe maître :
-1. Idenva déchiffre la **DEK** avec l'ancien mot de passe maître.
-2. Un nouveau sel Argon2id est généré, et une **nouvelle KEK** est calculée avec le nouveau mot de passe.
-3. La **DEK** (qui reste la même) est re-chiffrée avec la **nouvelle KEK**.
-4. La base de données met à jour la table `vault_meta`. Vos secrets en base restent inchangés et sécurisés.
+L'application s'appuie sur des primitives et standards cryptographiques modernes et éprouvés :
 
----
-
-## 4. Schéma et Chiffrement des Modèles (`models/`)
-
-Pour permettre un affichage rapide de vos listes dans l'interface sans déchiffrer des données inutilement, Idenva sépare les métadonnées de recherche des secrets stricts :
-
-| Modèle | Champs en Clair | Champs Chiffrés (AES-256-GCM) | Rôle & Justification |
-| :--- | :--- | :--- | :--- |
-| **`VaultMeta`** | `id`, `created_at` | `dek_ciphertext` *(Chiffré par KEK)* | métadonnées de l'instance unique du coffre-fort. |
-| **`Account`** | `service_name`, `username`, `url`, `has_2fa` | `password_ciphertext`, `totp_ciphertext` | Permet de rechercher un compte sans exposer son mot de passe ou son secret 2FA. |
-| **`Email`** | `address` *(si non sensible)* | `address_ciphertext` *(si marqué sensible)* | Mode hybride pour protéger la vie privée des emails personnels/alias. |
-| **`Phone`** | *Aucun* | `number_ciphertext` | Masquage systématique pour prévenir la corrélation d'identité ou le SIM Swapping. |
-| **`Note`** | `owner_type`, `owner_id` | `content_ciphertext` | Les notes confidentielles sont entièrement chiffrées par bloc. |
-
----
-
-## 5. Sécurité en Mémoire RAM (`VaultSessionStore`)
-
-Garder la clé de chiffrement (DEK) en mémoire présente un risque si la session reste ouverte indéfiniment. Idenva applique deux contre-mesures strictes :
-
-1. **Auto-Verrouillage par Inactivité (`VAULT_SESSION_TIMEOUT`)**
-   Chaque requête utilisateur réinitialise un minuteur (`touch()`). Si aucune activité n'est détectée pendant la durée configurée (ex: 15 minutes), la session expire et la DEK est purgée.
-
-2. **Effacement Actif de la Mémoire (Zeroization / Zero-fill)**
-   En Python, le Garbage Collector ne garantit pas la suppression immédiate des données de la RAM. Lors d'un verrouillage manuel ou automatique, Idenva exécute :
-   ```python
-   session.dek = b"\x00" * len(session.dek)
-   ```
-
-Cette ligne écrase physiquement les octets de la clé en mémoire avec des nuls (0x00) avant d'abandonner la référence à la session, empêchant ainsi la récupération de la clé via une analyse de la mémoire vive (RAM Dump).
+- **KDF (Key Derivation Function) :** `Argon2id`
+  - Paramétré pour résister aux attaques par matériel dédié (GPU / ASIC) et attaques par canaux auxiliaires.
+- **Chiffrement Symétrique :** `AES-256-GCM` (Galois/Counter Mode)
+  - Fournit un chiffrement authentifié (AEAD), garantissant à la fois la **confidentialité** des secrets et la **détection d'altérations** non autorisées des données.
