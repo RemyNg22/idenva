@@ -8,6 +8,7 @@ from app.database import get_db
 from app.models import Account
 from app.schemas.account import AccountCreate, AccountOut, AccountUpdate, RevealedSecret
 from app.security.crypto import decrypt, encrypt
+from app.services.cascade import delete_account_cascade
 
 router = APIRouter(prefix="/api/accounts", tags=["accounts"], dependencies=[Depends(get_current_dek)])
 
@@ -27,7 +28,8 @@ def _to_out(account: Account) -> AccountOut:
         importance=account.importance,
         created_at=account.created_at,
         updated_at=account.updated_at,
-        last_password_change=account.last_password_change)
+        last_password_change=account.last_password_change,
+    )
 
 
 @router.get("", response_model=list[AccountOut])
@@ -99,7 +101,7 @@ def delete_account(account_id: str, db: Session = Depends(get_db)):
     account = db.get(Account, account_id)
     if account is None:
         raise HTTPException(status_code=404, detail="Compte introuvable.")
-    db.delete(account)
+    delete_account_cascade(db, account)
     db.commit()
 
 
