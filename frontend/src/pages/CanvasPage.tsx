@@ -19,6 +19,7 @@ import { IdentityNode, type IdentityNodeData } from "../nodes/IdentityNode";
 import { AccountNode, type AccountNodeData } from "../nodes/AccountNode";
 import { IdentityPanel } from "../panels/IdentityPanel";
 import { AccountPanel } from "../panels/AccountPanel";
+import { ChangePasswordModal } from "../components/ChangePasswordModal";
 import "./CanvasPage.css";
 
 const POSITION_SAVE_DEBOUNCE_MS = 500;
@@ -43,6 +44,7 @@ export function CanvasPage({ onLock, onOpenDashboard }: CanvasPageProps) {
   const [newIdentityName, setNewIdentityName] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [showChangePassword, setShowChangePassword] = useState(false);
 
   const saveTimers = useRef<Record<string, ReturnType<typeof setTimeout>>>({});
 
@@ -262,8 +264,12 @@ export function CanvasPage({ onLock, onOpenDashboard }: CanvasPageProps) {
         <button type="submit" className="canvas-page__toolbar-btn">+ Identité</button>
       </form>
 
-      <button className="canvas-page__lock-button" onClick={handleLock} title="Verrouiller le coffre fort">
-        🔒 Lock
+      <button
+        className="canvas-page__lock-button canvas-page__settings-button"
+        onClick={() => setShowChangePassword(true)}
+        title="Changer le mot de passe maître"
+      >
+        🔑 Mot de passe
       </button>
 
       <button
@@ -272,6 +278,10 @@ export function CanvasPage({ onLock, onOpenDashboard }: CanvasPageProps) {
         title="Dashboard sécurité"
       >
         🛡️ Sécurité
+      </button>
+
+      <button className="canvas-page__lock-button" onClick={handleLock} title="Verrouiller le coffre fort">
+        🔒 Lock
       </button>
 
       {error && <div className="canvas-page__error">{error}</div>}
@@ -323,6 +333,10 @@ export function CanvasPage({ onLock, onOpenDashboard }: CanvasPageProps) {
           onAccountUpdated={handleAccountUpdated}
           onAccountDeleted={handleAccountDeleted}
         />
+      )}
+      
+      {showChangePassword && (
+        <ChangePasswordModal onClose={() => setShowChangePassword(false)} />
       )}
     </div>
   );

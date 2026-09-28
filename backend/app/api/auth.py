@@ -18,6 +18,11 @@ class MasterPasswordIn(BaseModel):
     master_password: str = Field(min_length=1)
 
 
+class ChangeMasterPasswordIn(BaseModel):
+    current_password: str = Field(min_length=1)
+    new_password: str = Field(min_length=MIN_PASSWORD_LENGTH)
+
+
 def get_current_dek(idenva_session: str | None = Cookie(default=None)) -> bytes:
     """Dépendance FastAPI à utiliser sur toute route qui touche à un
     secret. Lève 401 si le vault est verrouillé ou la session expirée
@@ -82,3 +87,38 @@ def lock(response: Response, idenva_session: str | None = Cookie(default=None)):
     vault_session_store.lock(idenva_session)
     response.delete_cookie(COOKIE_NAME, path="/")
     return {"status": "locked"}
+
+
+@router.post("/change-master-password")
+def change_master_password(
+    payload: ChangeMasterPasswordIn,
+    db: Session = Depends(get_db),
+    current_dek: bytes = Depends(get_current_dek),
+):
+    # Vérifier que le coffre fort existe
+    vault = db.query(VaultMeta).filter_by(id="main").first()
+    if vault is None:
+        raise HTTPException(status_code=404, detail="Aucun vault existant.")
+
+    # Vérifier l'ancien mot de passe maître
+    current_kek = derive_key(payload.current_password, vault.argon2_salt)
+    try:
+        decrypted_dek = decrypt(vault.dek_nonce, vault.dek_ciphertext, current_kek)
+        # S'assurer que la DEK déchiffrée correspond bien à la DEK en mémoire
+        if decrypted_dek != current_dek:
+            raise DecryptionError()
+    except DecryptionError:
+        raise HTTPException(status_code=401, detail="Mot de passe maître actuel incorrect.")
+
+    # Générer un nouveau sel, dériver la nouvelle KEK et rechiffrer la même DEK
+    new_salt = generate_salt()
+    new_kek = derive_key(payload.new_password, new_salt)
+    new_dek_nonce, new_dek_ciphertext = encrypt(current_dek, new_kek)
+
+    # Mettre à jour VaultMeta en base de données
+    vault.argon2_salt = new_salt
+    vault.dek_nonce = new_dek_nonce
+    vault.dek_ciphertext = new_dek_ciphertext
+    db.commit()
+
+    return {"status": "password_changed"}

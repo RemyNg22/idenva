@@ -175,6 +175,15 @@ export const api = {
       body: JSON.stringify({ master_password: masterPassword }),
     }),
 
+  changeMasterPassword: (currentPassword: string, newPassword: string) =>
+    request<{ status: string }>("/api/auth/change-master-password", {
+      method: "POST",
+      body: JSON.stringify({
+        current_password: currentPassword,
+        new_password: newPassword,
+      }),
+    }),
+
   lockVault: () => request<{ status: string }>("/api/auth/lock", { method: "POST" }),
 
   getGraph: () => request<Graph>("/api/graph"),

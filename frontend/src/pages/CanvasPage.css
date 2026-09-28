@@ -1,7 +1,7 @@
 .canvas-page {
   width: 100vw;
   height: 100vh;
-  background: #14161c;
+  background: #0c1222;
   position: relative;
 }
 
@@ -105,4 +105,12 @@
 
 .canvas-page .react-flow__attribution {
   display: none;
+}
+
+.canvas-page__dashboard-button {
+  right: 155px;
+}
+
+.canvas-page__settings-button {
+  right: 265px;
 }
