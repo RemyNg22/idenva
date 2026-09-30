@@ -20,9 +20,12 @@ import { AccountNode, type AccountNodeData } from "../nodes/AccountNode";
 import { IdentityPanel } from "../panels/IdentityPanel";
 import { AccountPanel } from "../panels/AccountPanel";
 import { ChangePasswordModal } from "../components/ChangePasswordModal";
+import { SearchModal } from "../components/SearchModal";
 import "./CanvasPage.css";
 
 const POSITION_SAVE_DEBOUNCE_MS = 500;
+const ACCOUNT_HEIGHT = 55;
+const HEADER_OFFSET = 50;
 
 const nodeTypes = { identity: IdentityNode, account: AccountNode };
 
@@ -45,8 +48,19 @@ export function CanvasPage({ onLock, onOpenDashboard }: CanvasPageProps) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [showChangePassword, setShowChangePassword] = useState(false);
-
+  const [showSearch, setShowSearch] = useState(false);
   const saveTimers = useRef<Record<string, ReturnType<typeof setTimeout>>>({});
+
+  useEffect(() => {
+    function handleKeyDown(e: KeyboardEvent) {
+      if ((e.ctrlKey || e.metaKey) && e.key === "k") {
+        e.preventDefault();
+        setShowSearch((prev) => !prev);
+      }
+    }
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
 
   useEffect(() => {
     Promise.all([api.getGraph(), api.listIdentities(), api.listAccounts()])
@@ -54,31 +68,63 @@ export function CanvasPage({ onLock, onOpenDashboard }: CanvasPageProps) {
         const identitiesMap = Object.fromEntries(identities.map((i) => [i.id, i]));
         const accountsMap = Object.fromEntries(accounts.map((a) => [a.id, a]));
         const accountCountByIdentity: Record<string, number> = {};
+        const accountsByOwner: Record<string, Account[]> = {};
+
         accounts.forEach((a) => {
           accountCountByIdentity[a.identity_id] = (accountCountByIdentity[a.identity_id] ?? 0) + 1;
+          if (!accountsByOwner[a.identity_id]) accountsByOwner[a.identity_id] = [];
+          accountsByOwner[a.identity_id].push(a);
         });
 
         const identityNodeIndex: EntityNodeIndex = {};
         const accountNodeIndex: EntityNodeIndex = {};
+        const flowNodes: Node[] = [];
 
-        const flowNodes: Node[] = graph.nodes.map((n) => {
+
+        graph.nodes.forEach((n) => {
           if (n.entity_type === "identity") {
             identityNodeIndex[n.entity_id] = n.id;
             const identity = identitiesMap[n.entity_id];
-            const data: IdentityNodeData = {
-              label: identity?.name ?? "?",
-              accountCount: accountCountByIdentity[n.entity_id] ?? 0,
-            };
-            return { id: n.id, type: "identity", position: { x: n.pos_x, y: n.pos_y }, data };
+            const childCount = accountCountByIdentity[n.entity_id] ?? 0;
+            const calculatedHeight = Math.max(80, HEADER_OFFSET + childCount * ACCOUNT_HEIGHT + 12);
+
+            flowNodes.push({
+              id: n.id,
+              type: "identity",
+              position: { x: n.pos_x, y: n.pos_y },
+              style: { width: 260, height: calculatedHeight },
+              data: {
+                label: identity?.name ?? "?",
+                accountCount: childCount,
+              } as IdentityNodeData,
+            });
           }
-          accountNodeIndex[n.entity_id] = n.id;
-          const account = accountsMap[n.entity_id];
-          const data: AccountNodeData = {
-            label: account?.service_name ?? "?",
-            hasPassword: account?.has_password ?? false,
-            has2fa: account?.has_2fa ?? false,
-          };
-          return { id: n.id, type: "account", position: { x: n.pos_x, y: n.pos_y }, data };
+        });
+
+
+        graph.nodes.forEach((n) => {
+          if (n.entity_type === "account") {
+            accountNodeIndex[n.entity_id] = n.id;
+            const account = accountsMap[n.entity_id];
+            if (!account) return;
+
+            const parentNodeId = identityNodeIndex[account.identity_id];
+            const ownerAccounts = accountsByOwner[account.identity_id] || [];
+            const indexInParent = ownerAccounts.findIndex((a) => a.id === account.id);
+
+            flowNodes.push({
+              id: n.id,
+              type: "account",
+              parentId: parentNodeId,
+              extent: "parent",
+              position: { x: 12, y: HEADER_OFFSET + Math.max(0, indexInParent) * ACCOUNT_HEIGHT },
+              data: {
+                label: account.service_name ?? "?",
+                hasPassword: account.has_password ?? false,
+                has2fa: account.has_2fa ?? false,
+              } as AccountNodeData,
+            });
+          }
         });
 
         setIdentitiesById(identitiesMap);
@@ -86,14 +132,7 @@ export function CanvasPage({ onLock, onOpenDashboard }: CanvasPageProps) {
         setIdentityNodeByEntityId(identityNodeIndex);
         setAccountNodeByEntityId(accountNodeIndex);
         setNodes(flowNodes);
-        setEdges(
-          graph.edges.map((e) => ({
-            id: e.id,
-            source: e.source_node_id,
-            target: e.target_node_id,
-            label: e.label ?? e.relation_type,
-          })),
-        );
+        setEdges([]);
       })
       .catch(() => setError("Impossible de charger le canvas."))
       .finally(() => setLoading(false));
@@ -110,10 +149,12 @@ export function CanvasPage({ onLock, onOpenDashboard }: CanvasPageProps) {
   );
 
   const onNodeDragStop: OnNodeDrag = useCallback((_event, node) => {
+    if (node.type !== "identity") return;
+
     if (saveTimers.current[node.id]) clearTimeout(saveTimers.current[node.id]);
     saveTimers.current[node.id] = setTimeout(() => {
       api.updateNodePosition(node.id, node.position.x, node.position.y).catch(() => {
-        setError("Échec de la sauvegarde de la position d'un nœud.");
+        setError("Échec de la sauvegarde de la position.");
       });
     }, POSITION_SAVE_DEBOUNCE_MS);
   }, []);
@@ -136,8 +177,8 @@ export function CanvasPage({ onLock, onOpenDashboard }: CanvasPageProps) {
     if (!newIdentityName.trim()) return;
     try {
       const identity = await api.createIdentity(newIdentityName.trim());
-      const posX = 100 + Math.random() * 400;
-      const posY = 100 + Math.random() * 300;
+      const posX = 100 + Math.random() * 300;
+      const posY = 100 + Math.random() * 200;
       const graphNode = await api.createGraphNode("identity", identity.id, posX, posY);
 
       setIdentitiesById((prev) => ({ ...prev, [identity.id]: identity }));
@@ -148,6 +189,7 @@ export function CanvasPage({ onLock, onOpenDashboard }: CanvasPageProps) {
           id: graphNode.id,
           type: "identity",
           position: { x: posX, y: posY },
+          style: { width: 260, height: 80 },
           data: { label: identity.name, accountCount: 0 } as IdentityNodeData,
         },
       ]);
@@ -158,40 +200,46 @@ export function CanvasPage({ onLock, onOpenDashboard }: CanvasPageProps) {
   }
 
   function handleAccountCreated(account: Account) {
-    const identityNodeId = identityNodeByEntityId[account.identity_id];
-    const identityFlowNode = nodes.find((n) => n.id === identityNodeId);
-    const posX = (identityFlowNode?.position.x ?? 200) + 220;
-    const posY = (identityFlowNode?.position.y ?? 200) + 40;
+    const parentNodeId = identityNodeByEntityId[account.identity_id];
 
-    api.createGraphNode("account", account.id, posX, posY).then(async (graphNode) => {
+    const existingAccounts = Object.values(accountsById).filter(
+      (a) => a.identity_id === account.identity_id
+    );
+    const index = existingAccounts.length;
+
+    api.createGraphNode("account", account.id, 0, 0).then((graphNode) => {
       setAccountsById((prev) => ({ ...prev, [account.id]: account }));
       setAccountNodeByEntityId((prev) => ({ ...prev, [account.id]: graphNode.id }));
-      setNodes((prev) => [
-        ...prev,
-        {
-          id: graphNode.id,
-          type: "account",
-          position: { x: posX, y: posY },
-          data: {
-            label: account.service_name,
-            hasPassword: account.has_password,
-            has2fa: account.has_2fa,
-          } as AccountNodeData,
-        },
-      ]);
 
-      if (identityNodeId) {
-        const edge = await api.createGraphEdge(identityNodeId, graphNode.id, "CONTIENT");
-        setEdges((prev) => [...prev, { id: edge.id, source: identityNodeId, target: graphNode.id, label: "CONTIENT" }]);
-      }
+      setNodes((prev) => {
+        const updatedNodes = prev.map((n) => {
+          if (n.id === parentNodeId) {
+            const newCount = (n.data as IdentityNodeData).accountCount + 1;
+            return {
+              ...n,
+              style: { ...n.style, height: HEADER_OFFSET + newCount * ACCOUNT_HEIGHT + 12 },
+              data: { ...(n.data as IdentityNodeData), accountCount: newCount },
+            };
+          }
+          return n;
+        });
 
-      setNodes((prev) =>
-        prev.map((n) =>
-          n.id === identityNodeId
-            ? { ...n, data: { ...(n.data as IdentityNodeData), accountCount: (n.data as IdentityNodeData).accountCount + 1 } }
-            : n,
-        ),
-      );
+        return [
+          ...updatedNodes,
+          {
+            id: graphNode.id,
+            type: "account",
+            parentId: parentNodeId,
+            extent: "parent",
+            position: { x: 12, y: HEADER_OFFSET + index * ACCOUNT_HEIGHT },
+            data: {
+              label: account.service_name,
+              hasPassword: account.has_password,
+              has2fa: account.has_2fa,
+            } as AccountNodeData,
+          },
+        ];
+      });
     });
   }
 
@@ -205,11 +253,7 @@ export function CanvasPage({ onLock, onOpenDashboard }: CanvasPageProps) {
 
   function handleIdentityDeleted(identityId: string) {
     const nodeId = identityNodeByEntityId[identityId];
-    const accountsOfIdentity = Object.values(accountsById).filter((a) => a.identity_id === identityId);
-    const accountNodeIds = new Set(accountsOfIdentity.map((a) => accountNodeByEntityId[a.id]).filter(Boolean));
-
-    setNodes((prev) => prev.filter((n) => n.id !== nodeId && !accountNodeIds.has(n.id)));
-    setEdges((prev) => prev.filter((e) => e.source !== nodeId && e.target !== nodeId));
+    setNodes((prev) => prev.filter((n) => n.id !== nodeId && n.parentId !== nodeId));
     setSelected(null);
   }
 
@@ -233,9 +277,41 @@ export function CanvasPage({ onLock, onOpenDashboard }: CanvasPageProps) {
   }
 
   function handleAccountDeleted(accountId: string) {
+    const account = accountsById[accountId];
     const nodeId = accountNodeByEntityId[accountId];
-    setNodes((prev) => prev.filter((n) => n.id !== nodeId));
-    setEdges((prev) => prev.filter((e) => e.source !== nodeId && e.target !== nodeId));
+    if (!account) return;
+
+    const parentNodeId = identityNodeByEntityId[account.identity_id];
+
+    setAccountsById((prev) => {
+      const next = { ...prev };
+      delete next[accountId];
+      return next;
+    });
+
+    setNodes((prev) => {
+      const filtered = prev.filter((n) => n.id !== nodeId);
+      const remainingInParent = filtered.filter((n) => n.parentId === parentNodeId);
+
+      let index = 0;
+      return filtered.map((n) => {
+        if (n.id === parentNodeId) {
+          const newCount = remainingInParent.length;
+          return {
+            ...n,
+            style: { ...n.style, height: Math.max(80, HEADER_OFFSET + newCount * ACCOUNT_HEIGHT + 12) },
+            data: { ...(n.data as IdentityNodeData), accountCount: newCount },
+          };
+        }
+        if (n.parentId === parentNodeId) {
+          const updated = { ...n, position: { x: 12, y: HEADER_OFFSET + index * ACCOUNT_HEIGHT } };
+          index++;
+          return updated;
+        }
+        return n;
+      });
+    });
+
     setSelected(null);
   }
 
@@ -263,6 +339,14 @@ export function CanvasPage({ onLock, onOpenDashboard }: CanvasPageProps) {
         />
         <button type="submit" className="canvas-page__toolbar-btn">+ Identité</button>
       </form>
+
+      <button
+        className="canvas-page__lock-button canvas-page__search-button"
+        onClick={() => setShowSearch(true)}
+        title="Rechercher (Ctrl+K)"
+      >
+        🔍 Rechercher
+      </button>
 
       <button
         className="canvas-page__lock-button canvas-page__settings-button"
@@ -337,6 +421,15 @@ export function CanvasPage({ onLock, onOpenDashboard }: CanvasPageProps) {
       
       {showChangePassword && (
         <ChangePasswordModal onClose={() => setShowChangePassword(false)} />
+      )}
+
+      {showSearch && (
+        <SearchModal
+          identities={Object.values(identitiesById)}
+          accounts={Object.values(accountsById)}
+          onSelectEntity={(type, entityId) => setSelected({ type, entityId })}
+          onClose={() => setShowSearch(false)}
+        />
       )}
     </div>
   );

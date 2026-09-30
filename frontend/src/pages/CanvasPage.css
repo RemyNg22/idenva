@@ -1,14 +1,14 @@
 .canvas-page {
   width: 100vw;
   height: 100vh;
-  background: #0c1222;
+  background: #14161c;
   position: relative;
 }
 
 .canvas-page__lock-button {
   position: absolute;
   top: 16px;
-  right: 16px;
+  right: 8px;
   z-index: 10;
   padding: 8px 14px;
   background: #1c1f28;
@@ -17,6 +17,7 @@
   color: #e8e9ed;
   font-size: 13px;
   cursor: pointer;
+  white-space: nowrap;
 }
 
 .canvas-page__lock-button:hover {
@@ -25,6 +26,14 @@
 
 .canvas-page__dashboard-button {
   right: 96px;
+}
+
+.canvas-page__settings-button {
+  right: 206px;
+}
+
+.canvas-page__search-button {
+  right: 346px;
 }
 
 .canvas-page__toolbar {
@@ -105,12 +114,4 @@
 
 .canvas-page .react-flow__attribution {
   display: none;
-}
-
-.canvas-page__dashboard-button {
-  right: 155px;
-}
-
-.canvas-page__settings-button {
-  right: 265px;
 }

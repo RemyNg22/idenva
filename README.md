@@ -11,7 +11,7 @@ Local application for visually managing digital identities and accounts, through
 - Interactive canvas: identities, accounts, emails, notes, tasks represented as connected nodes
 - Encrypted vault: passwords, TOTP secrets and API keys are never stored in plaintext
 - Security / OPSEC dashboard: detects weak or reused passwords, disabled 2FA, correlation between identities
-- 100% local: backend and database run on `127.0.0.1`, nothing is sent over the Internet
+- 100% local: backend and database run on `localhost`, nothing is sent over the Internet
 
 ### Project structure
 
@@ -75,7 +75,7 @@ cd ..
 - Windows: double-click `start.bat`
 - Mac/Linux: `./start.sh` in a terminal (or double-click if execution is allowed)
 
-This script starts the backend and frontend automatically, then opens `http://127.0.0.1:5173` in your browser.
+This script starts the backend and frontend automatically, then opens `http://localhost:5173/` in your browser.
 
 **Manual option (two separate terminals):**
 
@@ -93,7 +93,7 @@ cd frontend
 npm run dev
 ```
 
-Then open: `http://127.0.0.1:5173`
+Then open: `http://localhost:5173/`
 
 ### First launch
 
@@ -119,7 +119,7 @@ Application locale de gestion visuelle d'identités numériques et de comptes, s
 - Canvas interactif : identités, comptes, emails, notes, tâches représentés en nœuds reliés entre eux
 - Coffre chiffré : mots de passe, secrets TOTP et clés API jamais stockés en clair
 - Dashboard sécurité / OPSEC : détection de mots de passe faibles, réutilisés, 2FA désactivée, corrélation entre identités
-- 100% local : backend et base de données tournent sur `127.0.0.1`, rien n'est envoyé sur Internet
+- 100% local : backend et base de données tournent sur `localhost`, rien n'est envoyé sur Internet
 
 ### Arborescence du projet
 

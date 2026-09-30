@@ -1,11 +1,22 @@
 .account-node {
-  min-width: 140px;
-  padding: 10px 14px;
-  background: #1c1f28;
+  width: 236px;
+  height: 45px;
+  background: #14161c;
   border: 1.5px solid #3d7a55;
   border-left: 4px solid #4fb877;
   border-radius: 6px;
+  padding: 8px 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-sizing: border-box;
   color: #e8e9ed;
+  cursor: pointer;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.account-node:hover {
+  border-color: #4fb877;
 }
 
 .account-node--selected {
@@ -13,21 +24,39 @@
   box-shadow: 0 0 0 2px rgba(79, 184, 119, 0.25);
 }
 
+.account-node__icon {
+  font-size: 14px;
+}
+
 .account-node__name {
   font-size: 13px;
   font-weight: 600;
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .account-node__badges {
   display: flex;
-  gap: 6px;
-  margin-top: 4px;
-  font-size: 11px;
-  color: #8b8fa3;
+  gap: 4px;
 }
 
 .account-node__badge {
-  background: #14161c;
+  font-size: 9px;
+  font-weight: 700;
+  padding: 2px 5px;
   border-radius: 4px;
-  padding: 1px 5px;
+}
+
+.badge-2fa {
+  background: rgba(91, 141, 239, 0.2);
+  color: #5b8def;
+  border: 1px solid #5b8def;
+}
+
+.badge-pwd {
+  background: rgba(79, 184, 119, 0.2);
+  color: #4fb877;
+  border: 1px solid #4fb877;
 }

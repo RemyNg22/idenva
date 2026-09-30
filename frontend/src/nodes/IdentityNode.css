@@ -1,25 +1,48 @@
-.identity-node {
-  min-width: 150px;
-  padding: 12px 16px;
-  background: #1c1f28;
+.identity-node-group {
+  width: 100%;
+  height: 100%;
+  background: rgba(28, 31, 40, 0.85);
   border: 1.5px solid #3d5a99;
-  border-left: 4px solid #5b8def;
-  border-radius: 6px;
-  color: #e8e9ed;
+  border-radius: 10px;
+  padding: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(8px);
+  box-sizing: border-box;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
-.identity-node--selected {
+.identity-node-group--selected {
   border-color: #5b8def;
   box-shadow: 0 0 0 2px rgba(91, 141, 239, 0.25);
 }
 
-.identity-node__name {
-  font-size: 14px;
-  font-weight: 600;
+.identity-node-group__header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #2a2e3a;
 }
 
-.identity-node__meta {
-  font-size: 12px;
-  color: #8b8fa3;
-  margin-top: 2px;
+.identity-node-group__icon {
+  font-size: 16px;
+}
+
+.identity-node-group__title {
+  font-weight: 600;
+  color: #e8e9ed;
+  font-size: 14px;
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.identity-node-group__badge {
+  background: #2a2e3a;
+  color: #5b8def;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 10px;
 }

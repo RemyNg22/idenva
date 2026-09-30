@@ -308,4 +308,10 @@ export const api = {
   deleteTask: (id: string) => request<void>(`/api/tasks/${id}`, { method: "DELETE" }),
 
   getSecurityDashboard: () => request<SecurityDashboard>("/api/dashboard/security"),
+
+  // -- Module de recherche
+  searchVault: (query: string) =>
+    request<{ identities: Identity[]; accounts: Account[] }>(
+      `/api/search?q=${encodeURIComponent(query)}`
+    ),
 };

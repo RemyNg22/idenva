@@ -10,13 +10,14 @@ type IdentityFlowNode = Node<IdentityNodeData, "identity">;
 
 export function IdentityNode({ data, selected }: NodeProps<IdentityFlowNode>) {
   return (
-    <div className={`identity-node ${selected ? "identity-node--selected" : ""}`}>
-      <Handle type="target" position={Position.Top} />
-      <div className="identity-node__name">{data.label}</div>
-      <div className="identity-node__meta">
-        {data.accountCount} compte{data.accountCount > 1 ? "s" : ""}
+    <div className={`identity-node-group ${selected ? "identity-node-group--selected" : ""}`}>
+      <div className="identity-node-group__header">
+        <span className="identity-node-group__icon">👤</span>
+        <span className="identity-node-group__title">{data.label}</span>
+        <span className="identity-node-group__badge">{data.accountCount}</span>
       </div>
-      <Handle type="source" position={Position.Bottom} />
+      <Handle type="target" position={Position.Top} style={{ opacity: 0 }} />
+      <Handle type="source" position={Position.Bottom} style={{ opacity: 0 }} />
     </div>
   );
 }

@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 
 from app.database import get_db
 from app.models import VaultMeta
-from app.security.crypto import DecryptionError, decrypt, encrypt, generate_dek
+from app.security.crypto import DecryptionError, decrypt, encrypt, generate_dek, rewrap_dek
 from app.security.kdf import derive_key, generate_salt
 from app.security.vault_session import VaultLockedError, vault_session_store
 
@@ -111,9 +111,7 @@ def change_master_password(
         raise HTTPException(status_code=401, detail="Mot de passe maître actuel incorrect.")
 
     # Générer un nouveau sel, dériver la nouvelle KEK et rechiffrer la même DEK
-    new_salt = generate_salt()
-    new_kek = derive_key(payload.new_password, new_salt)
-    new_dek_nonce, new_dek_ciphertext = encrypt(current_dek, new_kek)
+    new_salt, new_dek_nonce, new_dek_ciphertext = rewrap_dek(current_dek, payload.new_password)
 
     # Mettre à jour VaultMeta en base de données
     vault.argon2_salt = new_salt
