@@ -7,3 +7,4 @@ httpx
 sqlalchemy
 argon2-cffi
 cryptography
+pyinstaller

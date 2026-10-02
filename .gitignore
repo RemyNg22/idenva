@@ -1,10 +1,36 @@
+# Données locales et variables d'environnement
 data/
 *.db
 *.sqlite*
 .env
+
+# Cache Python & Environnement
 __pycache__/
+*.pyc
 venv/
+.venv/
+
+# Node / Frontend
 node_modules/
+frontend/node_modules/
 dist/
+frontend/dist/
+
+# PyInstaller (Backend)
+build/
+backend/build/
+backend/dist/
+*.spec
+
+# Tauri (Rust)
+src-tauri/target/
+frontend/src-tauri/target/
+
+# IDE / OS
 .vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Fichiers temporaires
 README_beta.md
