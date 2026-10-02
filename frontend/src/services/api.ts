@@ -183,6 +183,41 @@ export interface BackupInfo {
   size_bytes: number;
 }
 
+// --- Nouvelles interfaces ---
+
+export interface Credential {
+  id: string;
+  owner_type: "identity" | "account";
+  owner_id: string;
+  label: string;
+  secret_type: string;
+  created_at: string;
+}
+
+export interface EmailEntity {
+  id: string;
+  identity_id: string;
+  address: string;
+  is_sensitive: boolean;
+  created_at: string;
+}
+
+export interface Phone {
+  id: string;
+  identity_id: string;
+  number: string;
+  created_at: string;
+}
+
+export interface Domain {
+  id: string;
+  identity_id: string;
+  domain_name: string;
+  registrar?: string;
+  expiry_date?: string;
+  created_at: string;
+}
+
 export const api = {
   getStatus: () => request<VaultStatus>("/api/auth/status"),
 
@@ -283,6 +318,79 @@ export const api = {
     if (options.symbols !== undefined) params.set("symbols", String(options.symbols));
     return request<{ password: string }>(`/api/utils/generate-password?${params.toString()}`);
   },
+
+  // --- CREDENTIALS ---
+  listCredentials: (ownerType?: string, ownerId?: string) => {
+    const params = new URLSearchParams();
+    if (ownerType) params.append("owner_type", ownerType);
+    if (ownerId) params.append("owner_id", ownerId);
+    return request<Credential[]>(`/api/credentials?${params.toString()}`);
+  },
+
+  createCredential: (
+    ownerType: "identity" | "account",
+    ownerId: string,
+    label: string,
+    secretType: string,
+    secret: string
+  ) =>
+    request<Credential>("/api/credentials", {
+      method: "POST",
+      body: JSON.stringify({
+        owner_type: ownerType,
+        owner_id: ownerId,
+        label,
+        secret_type: secretType,
+        secret,
+      }),
+    }),
+
+  revealCredential: (credentialId: string) =>
+    request<{ value: string }>(`/api/credentials/${credentialId}/reveal`, { method: "POST" }),
+
+  deleteCredential: (credentialId: string) =>
+    request<void>(`/api/credentials/${credentialId}`, { method: "DELETE" }),
+
+  // --- EMAILS ---
+  listEmails: (identityId?: string) =>
+    request<EmailEntity[]>(`/api/emails${identityId ? `?identity_id=${identityId}` : ""}`),
+
+  createEmail: (identityId: string, address: string, isSensitive = false) =>
+    request<EmailEntity>("/api/emails", {
+      method: "POST",
+      body: JSON.stringify({ identity_id: identityId, address, is_sensitive: isSensitive }),
+    }),
+
+  deleteEmail: (emailId: string) => request<void>(`/api/emails/${emailId}`, { method: "DELETE" }),
+
+  // --- PHONES ---
+  listPhones: (identityId?: string) =>
+    request<Phone[]>(`/api/phones${identityId ? `?identity_id=${identityId}` : ""}`),
+
+  createPhone: (identityId: string, number: string) =>
+    request<Phone>("/api/phones", {
+      method: "POST",
+      body: JSON.stringify({ identity_id: identityId, number }),
+    }),
+
+  deletePhone: (phoneId: string) => request<void>(`/api/phones/${phoneId}`, { method: "DELETE" }),
+
+  // --- DOMAINS ---
+  listDomains: (identityId?: string) =>
+    request<Domain[]>(`/api/domains${identityId ? `?identity_id=${identityId}` : ""}`),
+
+  createDomain: (identityId: string, domainName: string, registrar?: string, expiryDate?: string) =>
+    request<Domain>("/api/domains", {
+      method: "POST",
+      body: JSON.stringify({
+        identity_id: identityId,
+        domain_name: domainName,
+        registrar,
+        expiry_date: expiryDate,
+      }),
+    }),
+
+  deleteDomain: (domainId: string) => request<void>(`/api/domains/${domainId}`, { method: "DELETE" }),
 
   // --- NOTES ---
   listNotes: (ownerId?: string, ownerType = "account") =>

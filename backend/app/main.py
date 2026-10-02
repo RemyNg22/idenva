@@ -17,6 +17,10 @@ from app.database import init_db
 from app.api.utils import router as utils_router
 from app.api.dashboard import router as dashboard_router
 from app.api.vault_export import router as vault_export_router
+from app.api.phones import router as phones_router
+from app.api.emails import router as emails_router
+from app.api.domains import router as domains_router
+from app.api.credentials import router as credentials_router
 
 
 @asynccontextmanager
@@ -43,6 +47,10 @@ app.include_router(notes_router)
 app.include_router(tasks_router)
 app.include_router(dashboard_router)
 app.include_router(vault_export_router)
+app.include_router(phones_router)
+app.include_router(emails_router)
+app.include_router(domains_router)
+app.include_router(credentials_router)
 
 @app.get("/health")
 def health():
