@@ -21,6 +21,7 @@ import { IdentityPanel } from "../panels/IdentityPanel";
 import { AccountPanel } from "../panels/AccountPanel";
 import { ChangePasswordModal } from "../components/ChangePasswordModal";
 import { SearchModal } from "../components/SearchModal";
+import { VaultDataModal } from "../components/VaultDataModal";
 import "./CanvasPage.css";
 
 const POSITION_SAVE_DEBOUNCE_MS = 500;
@@ -49,6 +50,7 @@ export function CanvasPage({ onLock, onOpenDashboard }: CanvasPageProps) {
   const [error, setError] = useState<string | null>(null);
   const [showChangePassword, setShowChangePassword] = useState(false);
   const [showSearch, setShowSearch] = useState(false);
+  const [showVaultData, setShowVaultData] = useState(false);
   const saveTimers = useRef<Record<string, ReturnType<typeof setTimeout>>>({});
 
   useEffect(() => {
@@ -62,7 +64,8 @@ export function CanvasPage({ onLock, onOpenDashboard }: CanvasPageProps) {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
 
-  useEffect(() => {
+  const loadCanvasData = useCallback(() => {
+    setLoading(true);
     Promise.all([api.getGraph(), api.listIdentities(), api.listAccounts()])
       .then(([graph, identities, accounts]) => {
         const identitiesMap = Object.fromEntries(identities.map((i) => [i.id, i]));
@@ -101,7 +104,6 @@ export function CanvasPage({ onLock, onOpenDashboard }: CanvasPageProps) {
           }
         });
 
-
         graph.nodes.forEach((n) => {
           if (n.entity_type === "account") {
             accountNodeIndex[n.entity_id] = n.id;
@@ -137,6 +139,10 @@ export function CanvasPage({ onLock, onOpenDashboard }: CanvasPageProps) {
       .catch(() => setError("Impossible de charger le canvas."))
       .finally(() => setLoading(false));
   }, []);
+
+  useEffect(() => {
+    loadCanvasData();
+  }, [loadCanvasData]);
 
   const onNodesChange: OnNodesChange = useCallback(
     (changes) => setNodes((nds) => applyNodeChanges(changes, nds)),
@@ -341,6 +347,14 @@ export function CanvasPage({ onLock, onOpenDashboard }: CanvasPageProps) {
       </form>
 
       <button
+        className="canvas-page__lock-button canvas-page__vault-button"
+        onClick={() => setShowVaultData(true)}
+        title="Gestion des données et sauvegardes"
+      >
+        💾 Données
+      </button>
+
+      <button
         className="canvas-page__lock-button canvas-page__search-button"
         onClick={() => setShowSearch(true)}
         title="Rechercher (Ctrl+K)"
@@ -418,7 +432,14 @@ export function CanvasPage({ onLock, onOpenDashboard }: CanvasPageProps) {
           onAccountDeleted={handleAccountDeleted}
         />
       )}
-      
+
+      {showVaultData && (
+        <VaultDataModal
+          onClose={() => setShowVaultData(false)}
+          onImported={loadCanvasData}
+        />
+      )}
+
       {showChangePassword && (
         <ChangePasswordModal onClose={() => setShowChangePassword(false)} />
       )}

@@ -160,6 +160,29 @@ export interface SecurityDashboard {
   correlations: CorrelationAlert[];
 }
 
+export interface ExportFile {
+  format_version: number;
+  exported_at: string;
+  kdf_salt: string;
+  nonce: string;
+  ciphertext: string;
+}
+
+export interface ImportSummary {
+  identities_imported: number;
+  accounts_imported: number;
+  notes_imported: number;
+  tasks_imported: number;
+  nodes_imported: number;
+  edges_imported: number;
+}
+
+export interface BackupInfo {
+  filename: string;
+  created_at: string;
+  size_bytes: number;
+}
+
 export const api = {
   getStatus: () => request<VaultStatus>("/api/auth/status"),
 
@@ -314,4 +337,28 @@ export const api = {
     request<{ identities: Identity[]; accounts: Account[] }>(
       `/api/search?q=${encodeURIComponent(query)}`
     ),
+
+
+  // -- Export du coffre fort
+  exportVault: (exportPassword: string) =>
+    request<ExportFile>("/api/vault/export", {
+      method: "POST",
+      body: JSON.stringify({ export_password: exportPassword }),
+    }),
+
+  importVault: (exportPassword: string, exportData: ExportFile) =>
+    request<ImportSummary>("/api/vault/import", {
+      method: "POST",
+      body: JSON.stringify({ export_password: exportPassword, export_data: exportData }),
+    }),
+
+  createBackup: (exportPassword: string) =>
+    request<BackupInfo>("/api/vault/backup", {
+      method: "POST",
+      body: JSON.stringify({ export_password: exportPassword }),
+    }),
+
+  listBackups: () => request<BackupInfo[]>("/api/vault/backups"),
+
+  downloadBackup: (filename: string) => request<ExportFile>(`/api/vault/backups/${filename}`),
 };

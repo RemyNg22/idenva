@@ -1,0 +1,82 @@
+.modal-card--wide {
+  width: 440px;
+}
+
+.vault-modal__tabs {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 18px;
+  border-bottom: 1px solid #2a2e3a;
+}
+
+.vault-modal__tab {
+  background: none;
+  border: none;
+  color: #8b8fa3;
+  padding: 8px 14px;
+  font-size: 13px;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+}
+
+.vault-modal__tab--active {
+  color: #e8e9ed;
+  border-bottom-color: #5b8def;
+}
+
+.vault-modal__hint {
+  font-size: 12px;
+  color: #8b8fa3;
+  margin: 0 0 14px;
+  line-height: 1.5;
+}
+
+.vault-modal__empty {
+  color: #8b8fa3;
+  font-size: 13px;
+}
+
+.vault-modal__backup-form {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.vault-modal__backup-form .modal-field {
+  flex: 1;
+  margin-bottom: 0;
+}
+
+.vault-modal__backup-list {
+  list-style: none;
+  padding: 0;
+  margin: 8px 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.vault-modal__backup-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #14161c;
+  border: 1px solid #2a2e3a;
+  border-radius: 6px;
+  padding: 10px 12px;
+}
+
+.vault-modal__backup-name {
+  font-size: 13px;
+  color: #e8e9ed;
+  font-family: "SFMono-Regular", "Consolas", "Menlo", monospace;
+}
+
+.vault-modal__backup-meta {
+  font-size: 11px;
+  color: #8b8fa3;
+  margin-top: 2px;
+}

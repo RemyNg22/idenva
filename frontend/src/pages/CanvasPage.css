@@ -8,7 +8,7 @@
 .canvas-page__lock-button {
   position: absolute;
   top: 16px;
-  right: 8px;
+  right: 16px;
   z-index: 10;
   padding: 8px 14px;
   background: #1c1f28;
@@ -25,15 +25,19 @@
 }
 
 .canvas-page__dashboard-button {
-  right: 96px;
+  right: 106px;
 }
 
 .canvas-page__settings-button {
-  right: 206px;
+  right: 216px;
 }
 
 .canvas-page__search-button {
-  right: 346px;
+  right: 326px;
+}
+
+.canvas-page__vault-button {
+  right: 456px;
 }
 
 .canvas-page__toolbar {
