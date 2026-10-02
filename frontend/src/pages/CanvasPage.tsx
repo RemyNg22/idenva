@@ -346,41 +346,47 @@ export function CanvasPage({ onLock, onOpenDashboard }: CanvasPageProps) {
         <button type="submit" className="canvas-page__toolbar-btn">+ Identité</button>
       </form>
 
-      <button
-        className="canvas-page__lock-button canvas-page__vault-button"
-        onClick={() => setShowVaultData(true)}
-        title="Gestion des données et sauvegardes"
-      >
-        💾 Données
-      </button>
+      <div className="canvas-page__top-actions">
+        <button
+          className="canvas-page__action-button"
+          onClick={() => setShowVaultData(true)}
+          title="Gestion des données et sauvegardes"
+        >
+          💾 Données
+        </button>
 
-      <button
-        className="canvas-page__lock-button canvas-page__search-button"
-        onClick={() => setShowSearch(true)}
-        title="Rechercher (Ctrl+K)"
-      >
-        🔍 Rechercher
-      </button>
+        <button
+          className="canvas-page__action-button"
+          onClick={() => setShowSearch(true)}
+          title="Rechercher (Ctrl+K)"
+        >
+          🔍 Rechercher
+        </button>
 
-      <button
-        className="canvas-page__lock-button canvas-page__settings-button"
-        onClick={() => setShowChangePassword(true)}
-        title="Changer le mot de passe maître"
-      >
-        🔑 Mot de passe
-      </button>
+        <button
+          className="canvas-page__action-button"
+          onClick={() => setShowChangePassword(true)}
+          title="Changer le mot de passe maître"
+        >
+          🔑 Mot de passe
+        </button>
 
-      <button
-        className="canvas-page__lock-button canvas-page__dashboard-button"
-        onClick={onOpenDashboard}
-        title="Dashboard sécurité"
-      >
-        🛡️ Sécurité
-      </button>
+        <button
+          className="canvas-page__action-button"
+          onClick={onOpenDashboard}
+          title="Dashboard sécurité"
+        >
+          🛡️ Sécurité
+        </button>
 
-      <button className="canvas-page__lock-button" onClick={handleLock} title="Verrouiller le coffre fort">
-        🔒 Lock
-      </button>
+        <button
+          className="canvas-page__action-button"
+          onClick={handleLock}
+          title="Verrouiller le coffre fort"
+        >
+          🔒 Lock
+        </button>
+      </div>
 
       {error && <div className="canvas-page__error">{error}</div>}
 

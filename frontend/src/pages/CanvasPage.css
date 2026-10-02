@@ -5,41 +5,6 @@
   position: relative;
 }
 
-.canvas-page__lock-button {
-  position: absolute;
-  top: 16px;
-  right: 16px;
-  z-index: 10;
-  padding: 8px 14px;
-  background: #1c1f28;
-  border: 1px solid #2a2e3a;
-  border-radius: 6px;
-  color: #e8e9ed;
-  font-size: 13px;
-  cursor: pointer;
-  white-space: nowrap;
-}
-
-.canvas-page__lock-button:hover {
-  border-color: #5b8def;
-}
-
-.canvas-page__dashboard-button {
-  right: 106px;
-}
-
-.canvas-page__settings-button {
-  right: 216px;
-}
-
-.canvas-page__search-button {
-  right: 326px;
-}
-
-.canvas-page__vault-button {
-  right: 456px;
-}
-
 .canvas-page__toolbar {
   position: absolute;
   top: 16px;
@@ -78,6 +43,32 @@
 
 .canvas-page__toolbar-btn:hover {
   filter: brightness(1.1);
+}
+
+.canvas-page__top-actions {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+
+.canvas-page__action-button {
+  padding: 8px 14px;
+  background: #1c1f28;
+  border: 1px solid #2a2e3a;
+  border-radius: 6px;
+  color: #e8e9ed;
+  font-size: 13px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.canvas-page__action-button:hover {
+  border-color: #5b8def;
 }
 
 .canvas-page__error {
