@@ -78,7 +78,7 @@ jobs:
       - name: Compilation Backend avec PyInstaller
         run: |
           cd backend
-          pyinstaller --onefile --add-data "../frontend/dist${{ matrix.sep }}frontend_dist" --name idenva-backend app/main.py
+          pyinstaller --onefile --add-data "../frontend/dist${{ matrix.sep }}frontend_dist" --name idenva-backend run_server.py
 
       - name: Placement du binaire sidecar pour Tauri
         run: |

@@ -1,15 +1,18 @@
-use std::process::Command;
+use tauri_plugin_shell::ShellExt;
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
-        .setup(|_app| {
+        .plugin(tauri_plugin_shell::init())
+        .setup(|app| {
             #[cfg(not(debug_assertions))]
             {
-                // Lance le backend compilé en production
-                Command::new("../backend/dist/idenva-backend/idenva-backend.exe")
-                    .spawn()
-                    .expect("Impossible de démarrer le backend Idenva");
+                let sidecar_command = app.shell().sidecar("idenva-backend");
+                if let Ok(command) = sidecar_command {
+                    tauri::async_runtime::spawn(async move {
+                        let _ = command.spawn();
+                    });
+                }
             }
             Ok(())
         })
