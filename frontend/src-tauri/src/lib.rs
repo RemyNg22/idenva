@@ -1,17 +1,23 @@
-use tauri_plugin_shell::ShellExt;
+use tauri::Manager;
+use std::process::Command;
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
-        .plugin(tauri_plugin_shell::init())
         .setup(|app| {
             #[cfg(not(debug_assertions))]
             {
-                let sidecar_command = app.shell().sidecar("idenva-backend");
-                if let Ok(command) = sidecar_command {
-                    tauri::async_runtime::spawn(async move {
-                        let _ = command.spawn();
-                    });
+                // Démarrage du binaire sidecar via la bibliothèque standard Rust
+                if let Ok(resource_dir) = app.path().resource_dir() {
+                    let mut binary_path = resource_dir.join("binaries").join("idenva-backend");
+                    
+                    if cfg!(target_os = "windows") {
+                        binary_path.set_extension("exe");
+                    }
+                    
+                    if binary_path.exists() {
+                        let _ = Command::new(binary_path).spawn();
+                    }
                 }
             }
             Ok(())
