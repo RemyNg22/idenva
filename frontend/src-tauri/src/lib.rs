@@ -7,9 +7,8 @@ pub fn run() {
         .setup(|app| {
             #[cfg(not(debug_assertions))]
             {
-                // Démarrage du binaire sidecar via la bibliothèque standard Rust
                 if let Ok(resource_dir) = app.path().resource_dir() {
-                    let mut binary_path = resource_dir.join("binaries").join("idenva-backend");
+                    let mut binary_path = resource_dir.join("idenva-backend");
                     
                     if cfg!(target_os = "windows") {
                         binary_path.set_extension("exe");
