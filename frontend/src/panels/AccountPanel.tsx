@@ -80,7 +80,16 @@ export function AccountPanel({ account, onClose, onAccountUpdated, onAccountDele
     }
   }
 
-  async function handleRevealCredential(id: string) {
+  async function handleToggleCredentialSecret(id: string) {
+    if (revealedSecrets[id]) {
+      setRevealedSecrets((prev) => {
+        const next = { ...prev };
+        delete next[id];
+        return next;
+      });
+      return;
+    }
+
     try {
       const res = await api.revealCredential(id);
       setRevealedSecrets((prev) => ({ ...prev, [id]: res.value }));
@@ -242,15 +251,14 @@ export function AccountPanel({ account, onClose, onAccountUpdated, onAccountDele
               <span><strong>{cred.label}</strong> ({cred.secret_type})</span>
               <button className="panel__btn panel__btn--danger" style={{ padding: "2px 6px" }} onClick={() => handleDeleteCredential(cred.id)}>×</button>
             </div>
-            {revealedSecrets[cred.id] ? (
+            {revealedSecrets[cred.id] && (
               <code style={{ fontSize: 11, background: "#14161c", padding: "4px 8px", width: "100%", marginTop: 4, borderRadius: 4, wordBreak: "break-all" }}>
                 {revealedSecrets[cred.id]}
               </code>
-            ) : (
-              <button className="panel__btn" style={{ fontSize: 11, marginTop: 4 }} onClick={() => handleRevealCredential(cred.id)}>
-                Révéler la clé
-              </button>
             )}
+            <button className="panel__btn" style={{ fontSize: 11, marginTop: 4 }} onClick={() => handleToggleCredentialSecret(cred.id)}>
+              {revealedSecrets[cred.id] ? "Masquer la clé" : "Révéler la clé"}
+            </button>
           </li>
         ))}
       </ul>
