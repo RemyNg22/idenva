@@ -37,6 +37,8 @@ jobs:
 
       - name: Configuration de Rust
         uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.target }}
 
       - name: Configuration de Python
         uses: actions/setup-python@v5
@@ -59,20 +61,37 @@ jobs:
           cd frontend
           npm run build
 
+      - name: Installation dépendances Python et PyInstaller
+        run: |
+          python -m pip install --upgrade pip
+          pip install pyinstaller
+          node -e "
+            const { execSync } = require('child_process');
+            const fs = require('fs');
+            if (fs.existsSync('backend/requirements.txt')) {
+              execSync('pip install -r backend/requirements.txt', { stdio: 'inherit' });
+            } else if (fs.existsSync('requirements.txt')) {
+              execSync('pip install -r requirements.txt', { stdio: 'inherit' });
+            }
+          "
+
       - name: Compilation Backend avec PyInstaller
         run: |
-                python -m pip install --upgrade pip
-                pip install pyinstaller
-                if [ -f "backend/requirements.txt" ]; then pip install -r backend/requirements.txt; fi
-                if [ -f "requirements.txt" ]; then pip install -r requirements.txt; fi
-                cd backend
-                pyinstaller --onefile --add-data "../frontend/dist${{ matrix.sep }}frontend_dist" --name idenva-backend app/main.py
+          cd backend
+          pyinstaller --onefile --add-data "../frontend/dist${{ matrix.sep }}frontend_dist" --name idenva-backend app/main.py
 
       - name: Placement du binaire sidecar pour Tauri
-        shell: bash
         run: |
-          mkdir -p frontend/src-tauri/binaries
-          cp backend/dist/idenva-backend${{ matrix.extension }} frontend/src-tauri/binaries/idenva-backend-${{ matrix.target }}${{ matrix.extension }}
+          node -e "
+            const fs = require('fs');
+            const path = require('path');
+            const targetDir = path.join('frontend', 'src-tauri', 'binaries');
+            if (!fs.existsSync(targetDir)) fs.mkdirSync(targetDir, { recursive: true });
+            const ext = '${{ matrix.extension }}';
+            const src = path.join('backend', 'dist', 'idenva-backend' + ext);
+            const dest = path.join(targetDir, 'idenva-backend-${{ matrix.target }}' + ext);
+            fs.copyFileSync(src, dest);
+          "
 
       - name: Build de l'application Tauri
         uses: tauri-apps/tauri-action@v0
