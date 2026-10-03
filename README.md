@@ -117,14 +117,16 @@ cd ..
 
 Terminal 1 — backend:
 ```bash
-cd backend
 venv\Scripts\activate        # Windows
 source venv/bin/activate     # macOS/Linux
-uvicorn app.main:app --reload
+cd backend
+python -m uvicorn app.main:app --reload
 ```
 
-Terminal 2 — frontend:
+Terminal 2 — frontend :
 ```bash
+venv\Scripts\activate        # Windows
+source venv/bin/activate     # macOS/Linux
 cd frontend
 npm run dev
 ```
@@ -256,14 +258,16 @@ cd ..
 
 Terminal 1 — backend :
 ```bash
-cd backend
 venv\Scripts\activate        # Windows
 source venv/bin/activate     # macOS/Linux
-uvicorn app.main:app --reload
+cd backend
+python -m uvicorn app.main:app --reload
 ```
 
 Terminal 2 — frontend :
 ```bash
+venv\Scripts\activate        # Windows
+source venv/bin/activate     # macOS/Linux
 cd frontend
 npm run dev
 ```
