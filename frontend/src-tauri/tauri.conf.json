@@ -2,7 +2,7 @@
   "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
   "productName": "Idenva",
   "version": "0.1.0",
-  "identifier": "com.idenva.app",
+  "identifier": "com.idenva.desktop",
   "build": {
     "frontendDist": "http://127.0.0.1:8000",
     "devUrl": "http://localhost:5173",
@@ -26,6 +26,9 @@
   "bundle": {
     "active": true,
     "targets": "all",
+    "externalBin": [
+      "binaries/idenva-backend"
+    ],
     "icon": [
       "icons/32x32.png",
       "icons/128x128.png",
