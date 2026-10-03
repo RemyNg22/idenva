@@ -34,3 +34,5 @@ Thumbs.db
 
 # Fichiers temporaires
 README_beta.md
+
+.pytest_cache
