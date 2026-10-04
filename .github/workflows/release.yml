@@ -93,6 +93,11 @@ jobs:
             fs.copyFileSync(src, dest);
           "
 
+      - name: Rendre le binaire exécutable (macOS / Linux)
+        if: matrix.platform != 'windows-latest'
+        run: |
+          chmod +x frontend/src-tauri/binaries/idenva-backend-${{ matrix.target }}
+
       - name: Build de l'application Tauri
         uses: tauri-apps/tauri-action@v0
         env:

@@ -11,40 +11,46 @@ export default function App() {
   const [view, setView] = useState<View>("canvas");
 
   useEffect(() => {
+    let timer: ReturnType<typeof setTimeout>;
     let retries = 0;
-    const maxRetries = 15; // 15 secondes max
+    const maxRetries = 30;
 
     const checkHealth = async () => {
       try {
-        const res = await fetch("/health");
+        const res = await fetch("/health", { cache: "no-store" });
         if (res.ok) {
           setIsBackendReady(true);
           return;
         }
       } catch {
+        // En attente du démarrage de FastAPI
       }
 
       if (retries < maxRetries) {
         retries++;
-        setTimeout(checkHealth, 1000);
+        timer = setTimeout(checkHealth, 500);
       }
     };
 
     checkHealth();
+
+    return () => clearTimeout(timer);
   }, []);
 
   if (!isBackendReady) {
     return (
       <div style={{ 
         display: "flex", 
+        flexDirection: "column",
         justifyContent: "center", 
         alignItems: "center", 
         height: "100vh",
         backgroundColor: "#0f172a",
         color: "#f8fafc",
-        fontFamily: "sans-serif"
+        fontFamily: "system-ui, sans-serif"
       }}>
-        <p>Lancement d'Idenva en cours...</p>
+        <h2>Lancement d'Idenva...</h2>
+        <p style={{ color: "#94a3b8", fontSize: "14px" }}>Connexion au serveur en cours</p>
       </div>
     );
   }
