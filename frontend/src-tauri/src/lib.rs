@@ -1,5 +1,6 @@
-use tauri::Manager;
-use std::process::Command;
+use tauri::{Manager, RunEvent};
+use std::process::{Command, Child};
+use std::sync::{Arc, Mutex};
 use std::net::TcpStream;
 use std::time::Duration;
 use std::thread;
@@ -9,12 +10,16 @@ use std::os::windows::process::CommandExt;
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
+    let backend_process: Arc<Mutex<Option<Child>>> = Arc::new(Mutex::new(None));
+    let backend_process_clone = Arc::clone(&backend_process);
+
     tauri::Builder::default()
-        .setup(|app| {
+        .setup(move |app| {
             #[cfg(not(debug_assertions))]
             {
                 if let Ok(resource_dir) = app.path().resource_dir() {
                     let mut binary_path = resource_dir.join("idenva-backend");
+                    
                     if cfg!(target_os = "windows") {
                         binary_path.set_extension("exe");
                     }
@@ -24,7 +29,10 @@ pub fn run() {
                         #[cfg(target_os = "windows")]
                         cmd.creation_flags(0x08000000);
                         
-                        let _ = cmd.spawn();
+                        if let Ok(child) = cmd.spawn() {
+                            let mut process_guard = backend_process_clone.lock().unwrap();
+                            *process_guard = Some(child);
+                        }
                     }
                 }
 
@@ -42,6 +50,14 @@ pub fn run() {
             }
             Ok(())
         })
-        .run(tauri::generate_context!())
-        .expect("Erreur lors du lancement de l'application Tauri");
+        .build(tauri::generate_context!())
+        .expect("Erreur lors de la construction de l'application Tauri")
+        .run(move |_app_handle, event| {
+            if let RunEvent::Exit = event {
+                let mut process_guard = backend_process.lock().unwrap();
+                if let Some(mut child) = process_guard.take() {
+                    let _ = child.kill();
+                }
+            }
+        });
 }
