@@ -1,5 +1,8 @@
 use tauri::Manager;
 use std::process::Command;
+use std::net::TcpStream;
+use std::time::Duration;
+use std::thread;
 
 #[cfg(target_os = "windows")]
 use std::os::windows::process::CommandExt;
@@ -23,6 +26,18 @@ pub fn run() {
                         
                         let _ = cmd.spawn();
                     }
+                }
+
+                let mut retries = 0;
+                while retries < 30 {
+                    if TcpStream::connect_timeout(
+                        &"127.0.0.1:8000".parse().unwrap(), 
+                        Duration::from_millis(200)
+                    ).is_ok() {
+                        break;
+                    }
+                    thread::sleep(Duration::from_millis(200));
+                    retries += 1;
                 }
             }
             Ok(())
