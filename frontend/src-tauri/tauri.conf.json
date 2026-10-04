@@ -4,7 +4,7 @@
   "version": "0.1.0",
   "identifier": "com.idenva.desktop",
   "build": {
-    "frontendDist": "../dist",
+    "frontendDist": "http://127.0.0.1:8000",
     "devUrl": "http://localhost:5173",
     "beforeDevCommand": "npm run dev",
     "beforeBuildCommand": "npm run build"

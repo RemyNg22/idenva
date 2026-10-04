@@ -9,11 +9,22 @@ pub fn run() {
             {
                 if let Ok(resource_dir) = app.path().resource_dir() {
                     let mut binary_path = resource_dir.join("idenva-backend");
-                    
                     if cfg!(target_os = "windows") {
                         binary_path.set_extension("exe");
                     }
-                    
+
+                    if !binary_path.exists() {
+                        if let Some(parent_dir) = resource_dir.parent() {
+                            let mut parent_binary = parent_dir.join("idenva-backend");
+                            if cfg!(target_os = "windows") {
+                                parent_binary.set_extension("exe");
+                            }
+                            if parent_binary.exists() {
+                                binary_path = parent_binary;
+                            }
+                        }
+                    }
+
                     if binary_path.exists() {
                         let _ = Command::new(binary_path).spawn();
                     }
