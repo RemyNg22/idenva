@@ -1,13 +1,17 @@
 import json
 import re
 from datetime import datetime, timezone
-from fastapi import APIRouter, Depends, HTTPException
+
+from fastapi import APIRouter, Cookie, Depends, HTTPException, Response
 from sqlalchemy.orm import Session
-from app.api.auth import get_current_dek
+from app.api.auth import COOKIE_NAME, get_current_dek
 from app.config import settings
 from app.database import get_db
-from app.schemas.export import BackupInfo, ExportFile, ExportPasswordIn, ImportIn, ImportSummary
-from app.security.crypto import DecryptionError
+from app.models import Account, Credential, Domain, Edge, Email, Identity, Node, Note, Phone, Tag, Task, VaultMeta
+from app.schemas.export import BackupInfo, ExportFile, ExportPasswordIn, ImportIn, ImportSummary, ResetVaultIn
+from app.security.crypto import DecryptionError, decrypt
+from app.security.kdf import derive_key
+from app.security.vault_session import vault_session_store
 from app.services.vault_export import build_export_payload, decrypt_export, encrypt_export, import_payload
 
 router = APIRouter(prefix="/api/vault", tags=["vault"], dependencies=[Depends(get_current_dek)])
@@ -60,6 +64,59 @@ def list_backups():
             size_bytes=path.stat().st_size,
         ))
     return results
+
+
+@router.post("/reset")
+def reset_vault(
+    payload: ResetVaultIn,
+    response: Response,
+    dek: bytes = Depends(get_current_dek),
+    db: Session = Depends(get_db),
+    idenva_session: str | None = Cookie(default=None),
+):
+    """
+    Remise à zéro complète, supprime toutes les données et le coffre-fort
+    lui-même (identique à l'état du tout premier lancement, écran
+    "Create Master Password" inclus).
+    Double vérification avant toute suppression :
+    1. get_current_dek : le vault doit déjà être déverrouillé.
+    2. Le mot de passe maître doit être re-saisi ici et redéchiffrer
+    correctement la vraie DEK du vault - une session active seule ne suffit pas à déclencher cette action.
+
+    Les fichiers de backup sur disque ne sont volontairement PAS
+    supprimés - ils restent un filet de rattrapage en cas de reset
+    accidentel malgré les deux confirmations.
+    """
+    vault = db.query(VaultMeta).filter_by(id="main").first()
+    if vault is None:
+        raise HTTPException(status_code=404, detail="Aucun vault à réinitialiser.")
+
+    kek = derive_key(payload.master_password, vault.argon2_salt)
+    try:
+        decrypted_dek = decrypt(vault.dek_nonce, vault.dek_ciphertext, kek)
+        if decrypted_dek != dek:
+            raise DecryptionError()
+    except DecryptionError:
+        raise HTTPException(status_code=401, detail="Mot de passe incorrect - réinitialisation annulée.")
+
+    db.query(Edge).delete(synchronize_session=False)
+    db.query(Node).delete(synchronize_session=False)
+    db.query(Credential).delete(synchronize_session=False)
+    db.query(Note).delete(synchronize_session=False)
+    db.query(Task).delete(synchronize_session=False)
+    db.query(Email).delete(synchronize_session=False)
+    db.query(Phone).delete(synchronize_session=False)
+    db.query(Domain).delete(synchronize_session=False)
+    db.query(Account).delete(synchronize_session=False)
+    db.query(Identity).delete(synchronize_session=False)
+    db.query(Tag).delete(synchronize_session=False)
+    db.query(VaultMeta).delete(synchronize_session=False)
+    db.commit()
+
+    vault_session_store.lock(idenva_session)
+    response.delete_cookie(COOKIE_NAME, path="/")
+
+    return {"status": "vault_reset"}
 
 
 @router.get("/backups/{filename}", response_model=ExportFile)

@@ -33,3 +33,7 @@ class BackupInfo(BaseModel):
     filename: str
     created_at: str
     size_bytes: int
+
+
+class ResetVaultIn(BaseModel):
+    master_password: str = Field(min_length=1)

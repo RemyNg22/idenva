@@ -7,7 +7,7 @@ interface VaultDataModalProps {
   onImported: () => void;
 }
 
-type Tab = "export" | "import" | "backups";
+type Tab = "export" | "import" | "backups" | "reset";
 
 function downloadJson(data: unknown, filename: string) {
   const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
@@ -35,11 +35,15 @@ export function VaultDataModal({ onClose, onImported }: VaultDataModalProps) {
           <button className={tab === "backups" ? "vault-modal__tab vault-modal__tab--active" : "vault-modal__tab"} onClick={() => setTab("backups")}>
             Sauvegardes
           </button>
+          <button className={tab === "reset" ? "vault-modal__tab vault-modal__tab--danger vault-modal__tab--active" : "vault-modal__tab vault-modal__tab--danger"} onClick={() => setTab("reset")}>
+            Réinitialisation
+          </button>
         </div>
 
         {tab === "export" && <ExportTab />}
         {tab === "import" && <ImportTab onImported={onImported} />}
         {tab === "backups" && <BackupsTab />}
+        {tab === "reset" && <ResetTab />}
 
         <div className="modal-actions">
           <button type="button" className="btn-secondary" onClick={onClose}>Fermer</button>
@@ -251,6 +255,96 @@ function BackupsTab() {
             </li>
           ))}
         </ul>
+      )}
+    </div>
+  );
+}
+
+function ResetTab() {
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [masterPassword, setMasterPassword] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  async function handleResetSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setError(null);
+    setLoading(true);
+
+    try {
+      await api.resetVault(masterPassword);
+      window.location.reload();
+    } catch (err) {
+      if (err instanceof ApiError) {
+        setError(err.message);
+      } else {
+        setError("Échec de la réinitialisation.");
+      }
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <div className="vault-modal__danger-zone">
+      <div className="vault-modal__danger-box">
+        <h4>Réinitialisation complète de l'application</h4>
+        <p className="vault-modal__hint">
+          Cette action effacera définitivement l'intégralité de la base de données (identités, mots de passe, coffres). L'application retournera à l'état du tout premier démarrage.
+        </p>
+        <button
+          type="button"
+          className="btn-danger-bold"
+          onClick={() => setShowConfirmModal(true)}
+        >
+          Réinitialiser totalement l'application
+        </button>
+      </div>
+
+      {showConfirmModal && (
+        <div className="danger-modal-backdrop">
+          <div className="danger-modal-card">
+            <h3>Confirmation de réinitialisation</h3>
+            <p>
+              Toutes vos données seront définitivement supprimées.
+            </p>
+            <p className="danger-modal-subtext">
+              Veuillez saisir votre mot de passe maître actuel pour confirmer :
+            </p>
+
+            <form onSubmit={handleResetSubmit}>
+              {error && <div className="modal-error">{error}</div>}
+
+              <div className="modal-field">
+                <input
+                  type="password"
+                  required
+                  placeholder="Mot de passe maître actuel"
+                  value={masterPassword}
+                  onChange={(e) => setMasterPassword(e.target.value)}
+                  autoFocus
+                />
+              </div>
+
+              <div className="danger-modal-actions">
+                <button
+                  type="button"
+                  className="btn-secondary"
+                  onClick={() => {
+                    setShowConfirmModal(false);
+                    setError(null);
+                    setMasterPassword("");
+                  }}
+                >
+                  Annuler
+                </button>
+                <button type="submit" className="btn-danger-confirm" disabled={loading}>
+                  {loading ? "Réinitialisation..." : "Confirmer la réinitialisation"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
       )}
     </div>
   );

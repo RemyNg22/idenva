@@ -185,8 +185,6 @@ export interface BackupInfo {
   size_bytes: number;
 }
 
-// --- Nouvelles interfaces ---
-
 export interface Credential {
   id: string;
   owner_type: "identity" | "account";
@@ -471,4 +469,10 @@ export const api = {
   listBackups: () => request<BackupInfo[]>("/api/vault/backups"),
 
   downloadBackup: (filename: string) => request<ExportFile>(`/api/vault/backups/${filename}`),
+
+  resetVault: (masterPassword: string) =>
+    request<{ status: string }>("/api/vault/reset", {
+      method: "POST",
+      body: JSON.stringify({ master_password: masterPassword }),
+    }),
 };
