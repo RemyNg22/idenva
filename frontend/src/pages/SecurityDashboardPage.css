@@ -1,9 +1,15 @@
 .security-dashboard {
-  min-height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow-y: auto;
   background: #14161c;
   color: #e8e9ed;
   padding: 24px 40px 60px;
   box-sizing: border-box;
+  z-index: 1000;
 }
 
 .security-dashboard__header {
