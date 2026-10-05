@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { UnlockPage } from "./pages/UnlockPage";
 import { CanvasPage } from "./pages/CanvasPage";
 import { SecurityDashboardPage } from "./pages/SecurityDashboardPage";
+import { OnboardingModal } from "./components/OnboardingModal";
+import { HelpButton } from "./components/HelpButton";
 
 type View = "canvas" | "dashboard";
 
@@ -59,14 +61,22 @@ export default function App() {
     return <UnlockPage onUnlocked={() => setUnlocked(true)} />;
   }
 
-  if (view === "dashboard") {
-    return <SecurityDashboardPage onClose={() => setView("canvas")} />;
-  }
-
   return (
-    <CanvasPage
-      onLock={() => setUnlocked(false)}
-      onOpenDashboard={() => setView("dashboard")}
-    />
+    <>
+      {/* La modale s'affichera au-dessus de l'application si non masquée */}
+      <OnboardingModal />
+
+      {/* Le bouton d'aide flottant en bas à droite */}
+      <HelpButton />
+
+      {view === "dashboard" ? (
+        <SecurityDashboardPage onClose={() => setView("canvas")} />
+      ) : (
+        <CanvasPage
+          onLock={() => setUnlocked(false)}
+          onOpenDashboard={() => setView("dashboard")}
+        />
+      )}
+    </>
   );
 }

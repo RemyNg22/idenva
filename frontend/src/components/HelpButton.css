@@ -1,0 +1,22 @@
+.help-floating-btn {
+  position: fixed;
+  bottom: 16px;
+  right: 16px;
+  background: #1e293b;
+  color: #94a3b8;
+  border: 1px solid #334155;
+  border-radius: 20px;
+  padding: 6px 12px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  z-index: 900;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.help-floating-btn:hover {
+  background: #334155;
+  color: #f8fafc;
+  border-color: #475569;
+}

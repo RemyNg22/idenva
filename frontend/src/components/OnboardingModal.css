@@ -1,0 +1,82 @@
+.onboarding-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.75);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.onboarding-card {
+  background: #14161c;
+  border: 1px solid #2a2e3a;
+  border-radius: 12px;
+  padding: 24px;
+  width: 400px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+  color: #e8e9ed;
+}
+
+.onboarding-card h3 {
+  margin-top: 0;
+  font-size: 18px;
+  color: #5b8def;
+}
+
+.onboarding-card p {
+  font-size: 14px;
+  color: #8b8fa3;
+  line-height: 1.5;
+  min-height: 60px;
+}
+
+.onboarding-dots {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin: 16px 0;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #2a2e3a;
+  cursor: pointer;
+}
+
+.dot.active {
+  background: #5b8def;
+}
+
+.onboarding-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+  border-top: 1px solid #2a2e3a;
+  padding-top: 16px;
+}
+
+.btn-skip {
+  background: none;
+  border: none;
+  color: #6b7280;
+  font-size: 12px;
+  cursor: pointer;
+  padding: 0;
+}
+
+.btn-skip:hover {
+  color: #9ca3af;
+  text-decoration: underline;
+}
+
+.onboarding-nav {
+  display: flex;
+  gap: 8px;
+}
