@@ -2,147 +2,6 @@
 
 ---
 
-## English
-
-Local application for visually managing digital identities and accounts, through an interactive canvas. All data stays on your machine — no Internet connection required to use it.
-
-### Features
-
-- Interactive canvas: identities, accounts, emails, phones, domains, notes, tasks represented as connected nodes
-- Encrypted vault: passwords and generic credentials (API keys, etc.) are never stored in plaintext
-- Phone numbers are always encrypted; emails and domains are stored as plain metadata
-- Security / OPSEC dashboard: detects weak or reused passwords, disabled 2FA, correlation between identities
-- Change your master password at any time — nothing needs to be re-encrypted
-- Encrypted export / import of your whole vault, protected by a password of your choice
-- Encrypted backups, created and managed from the app
-- 100% local: backend and database run on `localhost`, nothing is sent over the Internet
-
-### Project structure
-
-```
-idenva/
-├── .github/
-│   └── workflows/
-│       └── release.yml        # GitHub Actions CI/CD (Windows, macOS, Linux builds)
-│
-├── backend/
-│   ├── app/
-│   │   ├── main.py            # FastAPI / Uvicorn server entry point
-│   │   ├── config.py          # Settings (timeout, file paths)
-│   │   ├── database.py        # SQLite connection setup
-│   │   ├── models/            # Database ORM models
-│   │   ├── schemas/           # Pydantic schemas (API request/response payloads)
-│   │   ├── api/               # HTTP API routes (identities, accounts, credentials...)
-│   │   ├── services/          # Business logic
-│   │   └── security/          # Encryption, key derivation, vault session management
-│   ├── requirements.txt       # Python dependencies
-│   └── tests/
-│
-├── frontend/
-│   ├── src/
-│   │   ├── components/        # Reusable UI components (PasswordField, NotesSection, TasksSection...)
-│   │   ├── nodes/             # Canvas node components (Person, Identity, Account...)
-│   │   ├── panels/            # Side panels (AccountPanel, IdentityPanel...)
-│   │   ├── pages/             # Main screens (unlock screen, dashboard...)
-│   │   └── services/          # API client and network calls (api.ts)
-│   │
-│   ├── src-tauri/             # Tauri configuration and native wrapper code
-│   │   ├── binaries/          # OS-specific compiled backend sidecar executables
-│   │   │   ├── idenva-backend-x86_64-pc-windows-msvc.exe
-│   │   │   ├── idenva-backend-aarch64-apple-darwin
-│   │   │   └── idenva-backend-x86_64-unknown-linux-gnu
-│   │   ├── icons/             # Application icons (.ico, .icns, .png)
-│   │   ├── src/               # Rust source code (main.rs, lib.rs)
-│   │   ├── tauri.conf.json    # Tauri config (externalBin declaration, window settings, bundler)
-│   │   └── Cargo.toml         # Rust dependencies
-│   │
-│   ├── package.json           # Node.js / React dependencies
-│   └── vite.config.ts         # Vite bundler configuration
-│
-├── data/                      # Local database folder (idenva.db) — git-ignored
-├── docs/
-│   └── security.md            # Security documentation (threat model, encryption details)
-│
-├── README.md
-├── requirements.txt
-└── .gitignore
-```
-
-### Running Idenva
-
-#### Option 1 — Installed app (Windows only, for now)
-
-Download the installer from the project's [GitHub Releases](../../releases) page and run it. This installs Idenva like any desktop app, with a shortcut you can use directly.
-
-You can also launch it from the command line instead of the shortcut:
-```cmd
-cd "%LOCALAPPDATA%\Idenva"
-idenva.exe
-```
-*(Adjust the path above to wherever the installer actually placed it on your machine — it depends on the install location you chose.)*
-
-macOS and Linux don't have a packaged installer yet — use dev mode below on those platforms.
-
-#### Option 2 — Dev mode (all platforms: Windows, macOS, Linux)
-
-**Requirements** (install once):
-- [Python 3.12 or newer](https://www.python.org/downloads/) — check "Add Python to PATH" during Windows install
-- [Node.js LTS version](https://nodejs.org/)
-
-```bash
-python --version   # Windows
-python3 --version  # macOS/Linux
-node --version
-```
-
-**Installation** (once):
-```bash
-git clone https://github.com/RemyNg22/idenva.git
-cd idenva
-
-cd backend
-python -m venv venv
-venv\Scripts\activate        # Windows
-source venv/bin/activate     # macOS/Linux
-pip install -r requirements.txt
-cd ..
-
-cd frontend
-npm install
-cd ..
-```
-
-
-**Manual launch (two separate terminals):**
-
-Terminal 1 — backend:
-```bash
-venv\Scripts\activate        # Windows
-source venv/bin/activate     # macOS/Linux
-cd backend
-python -m uvicorn app.main:app --reload
-```
-
-Terminal 2 — frontend :
-```bash
-venv\Scripts\activate        # Windows
-source venv/bin/activate     # macOS/Linux
-cd frontend
-npm run dev
-```
-
-Then open: `http://localhost:5173/`
-
-### First launch
-
-No vault exists yet -> the "Create Master Password" screen appears. Choose a strong, memorable master password: **it cannot be recovered if lost**, and no "forgot password" feature exists by design (that would be a backdoor in the encryption).
-
-### Security — read this
-
-See `docs/security.md` for exactly what is encrypted, what is not, and the limits of the protection (notably: no protection against malware already present on the machine during an unlocked session). Do not consider this application "unbreakable" just because it uses AES-256-GCM and Argon2id.
-
----
-
 ## Français
 
 Application locale de gestion visuelle d'identités numériques et de comptes, sous forme de canvas interactif. Toutes les données restent sur votre machine — aucune connexion Internet requise pour l'utiliser.
@@ -281,3 +140,144 @@ Aucun coffre n'existe encore -> l'écran "Create Master Password" s'affiche. Cho
 ### Sécurité — à lire
 
 Voir `docs/security.md` pour le détail exact de ce qui est chiffré, ce qui ne l'est pas, et les limites de la protection (notamment : pas de protection contre un malware déjà présent sur la machine pendant une session déverrouillée). Ne pas considérer cette application comme "inviolable" simplement parce qu'elle utilise AES-256-GCM et Argon2id.
+
+---
+
+## English
+
+Local application for visually managing digital identities and accounts, through an interactive canvas. All data stays on your machine — no Internet connection required to use it.
+
+### Features
+
+- Interactive canvas: identities, accounts, emails, phones, domains, notes, tasks represented as connected nodes
+- Encrypted vault: passwords and generic credentials (API keys, etc.) are never stored in plaintext
+- Phone numbers are always encrypted; emails and domains are stored as plain metadata
+- Security / OPSEC dashboard: detects weak or reused passwords, disabled 2FA, correlation between identities
+- Change your master password at any time — nothing needs to be re-encrypted
+- Encrypted export / import of your whole vault, protected by a password of your choice
+- Encrypted backups, created and managed from the app
+- 100% local: backend and database run on `localhost`, nothing is sent over the Internet
+
+### Project structure
+
+```
+idenva/
+├── .github/
+│   └── workflows/
+│       └── release.yml        # GitHub Actions CI/CD (Windows, macOS, Linux builds)
+│
+├── backend/
+│   ├── app/
+│   │   ├── main.py            # FastAPI / Uvicorn server entry point
+│   │   ├── config.py          # Settings (timeout, file paths)
+│   │   ├── database.py        # SQLite connection setup
+│   │   ├── models/            # Database ORM models
+│   │   ├── schemas/           # Pydantic schemas (API request/response payloads)
+│   │   ├── api/               # HTTP API routes (identities, accounts, credentials...)
+│   │   ├── services/          # Business logic
+│   │   └── security/          # Encryption, key derivation, vault session management
+│   ├── requirements.txt       # Python dependencies
+│   └── tests/
+│
+├── frontend/
+│   ├── src/
+│   │   ├── components/        # Reusable UI components (PasswordField, NotesSection, TasksSection...)
+│   │   ├── nodes/             # Canvas node components (Person, Identity, Account...)
+│   │   ├── panels/            # Side panels (AccountPanel, IdentityPanel...)
+│   │   ├── pages/             # Main screens (unlock screen, dashboard...)
+│   │   └── services/          # API client and network calls (api.ts)
+│   │
+│   ├── src-tauri/             # Tauri configuration and native wrapper code
+│   │   ├── binaries/          # OS-specific compiled backend sidecar executables
+│   │   │   ├── idenva-backend-x86_64-pc-windows-msvc.exe
+│   │   │   ├── idenva-backend-aarch64-apple-darwin
+│   │   │   └── idenva-backend-x86_64-unknown-linux-gnu
+│   │   ├── icons/             # Application icons (.ico, .icns, .png)
+│   │   ├── src/               # Rust source code (main.rs, lib.rs)
+│   │   ├── tauri.conf.json    # Tauri config (externalBin declaration, window settings, bundler)
+│   │   └── Cargo.toml         # Rust dependencies
+│   │
+│   ├── package.json           # Node.js / React dependencies
+│   └── vite.config.ts         # Vite bundler configuration
+│
+├── data/                      # Local database folder (idenva.db) — git-ignored
+├── docs/
+│   └── security.md            # Security documentation (threat model, encryption details)
+│
+├── README.md
+├── requirements.txt
+└── .gitignore
+```
+
+### Running Idenva
+
+#### Option 1 — Installed app (Windows only, for now)
+
+Download the installer from the project's [GitHub Releases](../../releases) page and run it. This installs Idenva like any desktop app, with a shortcut you can use directly.
+
+You can also launch it from the command line instead of the shortcut:
+```cmd
+cd "%LOCALAPPDATA%\Idenva"
+idenva.exe
+```
+*(Adjust the path above to wherever the installer actually placed it on your machine — it depends on the install location you chose.)*
+
+macOS and Linux don't have a packaged installer yet — use dev mode below on those platforms.
+
+#### Option 2 — Dev mode (all platforms: Windows, macOS, Linux)
+
+**Requirements** (install once):
+- [Python 3.12 or newer](https://www.python.org/downloads/) — check "Add Python to PATH" during Windows install
+- [Node.js LTS version](https://nodejs.org/)
+
+```bash
+python --version   # Windows
+python3 --version  # macOS/Linux
+node --version
+```
+
+**Installation** (once):
+```bash
+git clone https://github.com/RemyNg22/idenva.git
+cd idenva
+
+cd backend
+python -m venv venv
+venv\Scripts\activate        # Windows
+source venv/bin/activate     # macOS/Linux
+pip install -r requirements.txt
+cd ..
+
+cd frontend
+npm install
+cd ..
+```
+
+
+**Manual launch (two separate terminals):**
+
+Terminal 1 — backend:
+```bash
+venv\Scripts\activate        # Windows
+source venv/bin/activate     # macOS/Linux
+cd backend
+python -m uvicorn app.main:app --reload
+```
+
+Terminal 2 — frontend :
+```bash
+venv\Scripts\activate        # Windows
+source venv/bin/activate     # macOS/Linux
+cd frontend
+npm run dev
+```
+
+Then open: `http://localhost:5173/`
+
+### First launch
+
+No vault exists yet -> the "Create Master Password" screen appears. Choose a strong, memorable master password: **it cannot be recovered if lost**, and no "forgot password" feature exists by design (that would be a backdoor in the encryption).
+
+### Security — read this
+
+See `docs/security.md` for exactly what is encrypted, what is not, and the limits of the protection (notably: no protection against malware already present on the machine during an unlocked session). Do not consider this application "unbreakable" just because it uses AES-256-GCM and Argon2id.

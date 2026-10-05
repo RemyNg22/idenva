@@ -1,125 +1,3 @@
-
-# Security & Cryptographic Architecture — Idenva
-
-This document details Idenva's security architecture, the cryptographic mechanisms in place, the actual scope of data protection, and the threat model's inherent limits.
-
-## 1. Data Protection Scope
-
-Idenva applies selective field-level encryption. The master key only decrypts data classified as "secrets".
-
-```text
-+-----------------------------------------------------------------------+
-|                              DATABASE                                 |
-|                                                                       |
-|  [ PLAINTEXT DATA ]                   [ ENCRYPTED DATA (AES-GCM) ]    |
-|  - Identities (names, descriptions)   - Passwords                     |
-|  - Services (names, URLs)             - Note content                  |
-|  - Usernames                          - Phone numbers                 |
-|  - Domain names, tags                 - Generic credentials           |
-|  - Task titles                          (API keys, etc.)              |
-|  - Emails                                                              |
-+-----------------------------------------------------------------------+
-```
-
-### Scope Summary
-
-| **Data Category** | **Cryptographic Status** | **Impact if the .db File Leaks** |
-|---|---|---|
-| **Secrets** *(Passwords, Notes, Phone numbers, Generic credentials)* | **Encrypted** *(AES-256-GCM)* | Unreadable without the master key. |
-| **Metadata** *(Identities, services, usernames, emails, domains, tags, tasks)* | **Plaintext** | The topology of your digital presence remains analyzable. |
-
-> **Architecture note:** Emails are not encrypted in the current version — they're treated as metadata, the same as a username. Encrypting the storage file as a whole (metadata included) would be an additional protection layer, not currently implemented.
-
-## 2. Encryption Model & Key Management
-
-Idenva uses a two-level key hierarchy (envelope encryption). The master password is **never stored** on disk, neither as plaintext nor as a traditional hash.
-
-### Unlock Flow
-
-```text
-Master Password + Salt
-              │
-              ▼
-    [ Argon2id (KDF) ]
-              │
-              ▼
-   Vault Key (Master Key)
-              │
-              ▼ (Decrypts)
-+------------------------------------+
-|  Encrypted Data Key (On-Disk)      |
-+------------------------------------+
-              │
-              ▼
-   Data Key (DEK) ────────────► [ Encrypts / Decrypts Secrets ]
- (Stored only in RAM)
-```
-
-### Derivation and Envelope Mechanism
-
-1. **Vault creation:** a random key is generated — the **Data Encryption Key** (DEK). This is the key that actually encrypts your secrets.
-2. **Password derivation:** the master password goes through **Argon2id** to produce the **Vault Key** (Master Key).
-3. **Envelope encryption:** the Vault Key encrypts the Data Key. Only the encrypted version of the Data Key is saved in the SQLite file.
-4. **Password validation:** the master password's correctness is validated by the Data Key's decryption succeeding. No separate verification hash is kept.
-
-### Changing the Master Password
-
-When changing the master password, only the **Data Key** is re-encrypted with the new Vault Key. All secrets in the database do not need to be re-encrypted, making this an instant, atomic operation.
-
-## 3. Key Lifecycle in RAM
-
-For as long as the vault is unlocked, the Data Key (DEK) lives exclusively in RAM.
-
-```text
-   +--------------------+
-   |   Vault Unlocked   | ─── Data Key active in RAM
-   +--------------------+
-             │
-     ┌───────┴───────┐
-     │    Triggers   │
-     └───────┬───────┘
-             ├─────────────────► User action ("Lock")
-             │
-             └─────────────────► Inactivity (configurable timeout, e.g. 15 min)
-             │
-             ▼
-   +--------------------+
-   | RAM Overwrite      | ─── Explicitly replaced with 0x00
-   +--------------------+
-             │
-             ▼
-   +--------------------+
-   |    Vault Locked    | ─── Key removed from memory
-   +--------------------+
-```
-
-### Locking & Memory Cleanup
-
-On every lock (manual or on inactivity timeout):
-
-1. The Data Key is removed from active memory.
-2. A binary overwrite procedure (replacement with `0x00` zeros) is run on the targeted memory region.
-
-## 4. Threat Model & Security Limits
-
-Idenva is designed to resist theft or offline analysis of the database file. However, some hardware and software limits apply:
-
-- **Host machine infection (Malware / Keylogger):** if malicious software is active on the OS during a session, it can intercept keystrokes or analyze RAM to extract the key.
-- **Lost master password:** with no backdoor or recovery mechanism, losing the master password makes decrypting the secrets permanently impossible.
-- **Backup protection:** copies of the `idenva.db` file inherit exactly the same level of protection, and the same plaintext metadata, as the original file.
-- **Unencrypted emails:** if you use an alias or address you consider sensitive, keep in mind it remains readable in plaintext in the database file.
-
-## 5. Cryptographic Specifications
-
-The application relies on modern, proven cryptographic primitives and standards:
-
-- **KDF (Key Derivation Function):** `Argon2id`
-  - Tuned to resist dedicated-hardware attacks (GPU / ASIC) and side-channel attacks.
-- **Symmetric Encryption:** `AES-256-GCM` (Galois/Counter Mode)
-  - Provides authenticated encryption (AEAD), guaranteeing both the **confidentiality** of secrets and the **detection of unauthorized alteration** of data.
-
----
-
 # Architecture & Modèle de Sécurité — Idenva
 
 Ce document détaille l'architecture de sécurité d'Idenva, les mécanismes cryptographiques mis en oeuvre, la portée de la protection des données ainsi que les limites inhérentes au modèle de menace de l'application.
@@ -238,3 +116,124 @@ L'application s'appuie sur des primitives et standards cryptographiques modernes
   - Paramétré pour résister aux attaques par matériel dédié (GPU / ASIC) et attaques par canaux auxiliaires.
 - **Chiffrement Symétrique :** `AES-256-GCM` (Galois/Counter Mode)
   - Fournit un chiffrement authentifié (AEAD), garantissant à la fois la **confidentialité** des secrets et la **détection d'altérations** non autorisées des données.
+
+---
+
+# Security & Cryptographic Architecture — Idenva
+
+This document details Idenva's security architecture, the cryptographic mechanisms in place, the actual scope of data protection, and the threat model's inherent limits.
+
+## 1. Data Protection Scope
+
+Idenva applies selective field-level encryption. The master key only decrypts data classified as "secrets".
+
+```text
++-----------------------------------------------------------------------+
+|                              DATABASE                                 |
+|                                                                       |
+|  [ PLAINTEXT DATA ]                   [ ENCRYPTED DATA (AES-GCM) ]    |
+|  - Identities (names, descriptions)   - Passwords                     |
+|  - Services (names, URLs)             - Note content                  |
+|  - Usernames                          - Phone numbers                 |
+|  - Domain names, tags                 - Generic credentials           |
+|  - Task titles                          (API keys, etc.)              |
+|  - Emails                                                              |
++-----------------------------------------------------------------------+
+```
+
+### Scope Summary
+
+| **Data Category** | **Cryptographic Status** | **Impact if the .db File Leaks** |
+|---|---|---|
+| **Secrets** *(Passwords, Notes, Phone numbers, Generic credentials)* | **Encrypted** *(AES-256-GCM)* | Unreadable without the master key. |
+| **Metadata** *(Identities, services, usernames, emails, domains, tags, tasks)* | **Plaintext** | The topology of your digital presence remains analyzable. |
+
+> **Architecture note:** The database model and API technically support marking an individual email as "sensitive" to encrypt it, but nothing in the current application ever sets that flag — in practice, every email is always stored in plaintext today, the same as a username. Encrypting the storage file as a whole (metadata included) would be an additional protection layer, not currently implemented.
+
+## 2. Encryption Model & Key Management
+
+Idenva uses a two-level key hierarchy (envelope encryption). The master password is **never stored** on disk, neither as plaintext nor as a traditional hash.
+
+### Unlock Flow
+
+```text
+Master Password + Salt
+              │
+              ▼
+    [ Argon2id (KDF) ]
+              │
+              ▼
+   Vault Key (Master Key)
+              │
+              ▼ (Decrypts)
++------------------------------------+
+|  Encrypted Data Key (On-Disk)      |
++------------------------------------+
+              │
+              ▼
+   Data Key (DEK) ────────────► [ Encrypts / Decrypts Secrets ]
+ (Stored only in RAM)
+```
+
+### Derivation and Envelope Mechanism
+
+1. **Vault creation:** a random key is generated — the **Data Encryption Key** (DEK). This is the key that actually encrypts your secrets.
+2. **Password derivation:** the master password goes through **Argon2id** to produce the **Vault Key** (Master Key).
+3. **Envelope encryption:** the Vault Key encrypts the Data Key. Only the encrypted version of the Data Key is saved in the SQLite file.
+4. **Password validation:** the master password's correctness is validated by the Data Key's decryption succeeding. No separate verification hash is kept.
+
+### Changing the Master Password
+
+When changing the master password, only the **Data Key** is re-encrypted with the new Vault Key. All secrets in the database do not need to be re-encrypted, making this an instant, atomic operation.
+
+## 3. Key Lifecycle in RAM
+
+For as long as the vault is unlocked, the Data Key (DEK) lives exclusively in RAM.
+
+```text
+   +--------------------+
+   |   Vault Unlocked   | ─── Data Key active in RAM
+   +--------------------+
+             │
+     ┌───────┴───────┐
+     │    Triggers   │
+     └───────┬───────┘
+             ├─────────────────► User action ("Lock")
+             │
+             └─────────────────► Inactivity (configurable timeout, e.g. 15 min)
+             │
+             ▼
+   +--------------------+
+   | RAM Overwrite      | ─── Explicitly replaced with 0x00
+   +--------------------+
+             │
+             ▼
+   +--------------------+
+   |    Vault Locked    | ─── Key removed from memory
+   +--------------------+
+```
+
+### Locking & Memory Cleanup
+
+On every lock (manual or on inactivity timeout):
+
+1. The Data Key is removed from active memory.
+2. A binary overwrite procedure (replacement with `0x00` zeros) is run on the targeted memory region.
+
+## 4. Threat Model & Security Limits
+
+Idenva is designed to resist theft or offline analysis of the database file. However, some hardware and software limits apply:
+
+- **Host machine infection (Malware / Keylogger):** if malicious software is active on the OS during a session, it can intercept keystrokes or analyze RAM to extract the key.
+- **Lost master password:** with no backdoor or recovery mechanism, losing the master password makes decrypting the secrets permanently impossible.
+- **Backup protection:** copies of the `idenva.db` file inherit exactly the same level of protection, and the same plaintext metadata, as the original file.
+- **Unencrypted emails:** if you use an alias or address you consider sensitive, keep in mind it remains readable in plaintext in the database file.
+
+## 5. Cryptographic Specifications
+
+The application relies on modern, proven cryptographic primitives and standards:
+
+- **KDF (Key Derivation Function):** `Argon2id`
+  - Tuned to resist dedicated-hardware attacks (GPU / ASIC) and side-channel attacks.
+- **Symmetric Encryption:** `AES-256-GCM` (Galois/Counter Mode)
+  - Provides authenticated encryption (AEAD), guaranteeing both the **confidentiality** of secrets and the **detection of unauthorized alteration** of data.

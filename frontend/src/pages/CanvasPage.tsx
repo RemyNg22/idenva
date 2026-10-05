@@ -264,6 +264,29 @@ export function CanvasPage({ onLock, onOpenDashboard }: CanvasPageProps) {
 
   function handleIdentityDeleted(identityId: string) {
     const nodeId = identityNodeByEntityId[identityId];
+
+    setIdentitiesById((prev) => {
+      const next = { ...prev };
+      delete next[identityId];
+      return next;
+    });
+
+    setAccountsById((prev) => {
+      const next = { ...prev };
+      Object.values(next).forEach((acc) => {
+        if (acc.identity_id === identityId) {
+          delete next[acc.id];
+        }
+      });
+      return next;
+    });
+
+    setIdentityNodeByEntityId((prev) => {
+      const next = { ...prev };
+      delete next[identityId];
+      return next;
+    });
+
     setNodes((prev) => prev.filter((n) => n.id !== nodeId && n.parentId !== nodeId));
     setSelected(null);
   }
@@ -295,6 +318,12 @@ export function CanvasPage({ onLock, onOpenDashboard }: CanvasPageProps) {
     const parentNodeId = identityNodeByEntityId[account.identity_id];
 
     setAccountsById((prev) => {
+      const next = { ...prev };
+      delete next[accountId];
+      return next;
+    });
+
+    setAccountNodeByEntityId((prev) => {
       const next = { ...prev };
       delete next[accountId];
       return next;
