@@ -19,6 +19,7 @@ import { IdentityNode, type IdentityNodeData } from "../nodes/IdentityNode";
 import { AccountNode, type AccountNodeData } from "../nodes/AccountNode";
 import { IdentityPanel } from "../panels/IdentityPanel";
 import { AccountPanel } from "../panels/AccountPanel";
+import { GlobalActivityPanel } from "../components/GlobalActivityPanel";
 import { ChangePasswordModal } from "../components/ChangePasswordModal";
 import { SearchModal } from "../components/SearchModal";
 import { VaultDataModal } from "../components/VaultDataModal";
@@ -48,9 +49,13 @@ export function CanvasPage({ onLock, onOpenDashboard }: CanvasPageProps) {
   const [newIdentityName, setNewIdentityName] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  // Modales & Panneaux
   const [showChangePassword, setShowChangePassword] = useState(false);
   const [showSearch, setShowSearch] = useState(false);
   const [showVaultData, setShowVaultData] = useState(false);
+  const [showGlobalActivity, setShowGlobalActivity] = useState(false);
+
   const saveTimers = useRef<Record<string, ReturnType<typeof setTimeout>>>({});
 
   useEffect(() => {
@@ -336,6 +341,7 @@ export function CanvasPage({ onLock, onOpenDashboard }: CanvasPageProps) {
 
   return (
     <div className="canvas-page">
+      {/* Formulaire d'ajout rapide (haut gauche) */}
       <form className="canvas-page__toolbar" onSubmit={handleCreateIdentity}>
         <input
           className="canvas-page__toolbar-input"
@@ -346,29 +352,22 @@ export function CanvasPage({ onLock, onOpenDashboard }: CanvasPageProps) {
         <button type="submit" className="canvas-page__toolbar-btn">+ Identité</button>
       </form>
 
-      <div className="canvas-page__top-actions">
-        <button
-          className="canvas-page__action-button"
-          onClick={() => setShowVaultData(true)}
-          title="Gestion des données et sauvegardes"
-        >
-          💾 Données
-        </button>
-
+      {/* Barre d'outils verticale / latérale (haut droite) */}
+      <nav className="canvas-page__top-actions">
         <button
           className="canvas-page__action-button"
           onClick={() => setShowSearch(true)}
           title="Rechercher (Ctrl+K)"
         >
-          🔍 Rechercher
+          🔍 <span className="action-label">Rechercher</span>
         </button>
 
         <button
           className="canvas-page__action-button"
-          onClick={() => setShowChangePassword(true)}
-          title="Changer le mot de passe maître"
+          onClick={() => setShowGlobalActivity(true)}
+          title="Consulter les notes et tâches"
         >
-          🔑 Mot de passe
+          📋 <span className="action-label">Notes & Tâches</span>
         </button>
 
         <button
@@ -376,17 +375,33 @@ export function CanvasPage({ onLock, onOpenDashboard }: CanvasPageProps) {
           onClick={onOpenDashboard}
           title="Dashboard sécurité"
         >
-          🛡️ Sécurité
+          🛡️ <span className="action-label">Sécurité</span>
         </button>
 
         <button
           className="canvas-page__action-button"
+          onClick={() => setShowVaultData(true)}
+          title="Gestion des données et sauvegardes"
+        >
+          💾 <span className="action-label">Données</span>
+        </button>
+
+        <button
+          className="canvas-page__action-button"
+          onClick={() => setShowChangePassword(true)}
+          title="Changer le mot de passe maître"
+        >
+          🔑 <span className="action-label">Mot de passe</span>
+        </button>
+
+        <button
+          className="canvas-page__action-button canvas-page__action-button--danger"
           onClick={handleLock}
           title="Verrouiller le coffre fort"
         >
-          🔒 Lock
+          🔒 <span className="action-label">Verrouiller</span>
         </button>
-      </div>
+      </nav>
 
       {error && <div className="canvas-page__error">{error}</div>}
 
@@ -436,6 +451,14 @@ export function CanvasPage({ onLock, onOpenDashboard }: CanvasPageProps) {
           onClose={() => setSelected(null)}
           onAccountUpdated={handleAccountUpdated}
           onAccountDeleted={handleAccountDeleted}
+        />
+      )}
+
+      {showGlobalActivity && (
+        <GlobalActivityPanel
+          identitiesById={identitiesById}
+          accountsById={accountsById}
+          onClose={() => setShowGlobalActivity(false)}
         />
       )}
 
