@@ -1,23 +1,25 @@
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import "./OnboardingModal.css";
 
 const STORAGE_KEY = "idenva_onboarding_completed";
 
 export function OnboardingModal() {
+  const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
 
-useEffect(() => {
-  const hasSeenGuide = localStorage.getItem("idenva_onboarding_completed");
-  if (!hasSeenGuide) {
-    setIsOpen(true);
-  }
+  useEffect(() => {
+    const hasSeenGuide = localStorage.getItem(STORAGE_KEY);
+    if (!hasSeenGuide) {
+      setIsOpen(true);
+    }
 
-  const handleOpen = () => setIsOpen(true);
-  window.addEventListener("open-onboarding", handleOpen);
+    const handleOpen = () => setIsOpen(true);
+    window.addEventListener("open-onboarding", handleOpen);
 
-  return () => window.removeEventListener("open-onboarding", handleOpen);
-}, []);
+    return () => window.removeEventListener("open-onboarding", handleOpen);
+  }, []);
 
   function handleClosePermanently() {
     localStorage.setItem(STORAGE_KEY, "true");
@@ -26,37 +28,30 @@ useEffect(() => {
 
   const steps = [
     {
-      title: "Bienvenue sur Idenva ! 👋",
-      content:
-        "Votre coffre-fort numérique sécurisé pour organiser et visualiser l'ensemble de vos données confidentielles, comptes et identités.",
+      title: t("onboarding.steps.0.title"),
+      content: t("onboarding.steps.0.content"),
     },
     {
-      title: "1. Créez vos identités 👤",
-      content:
-        "Commencez par cliquer sur le bouton « + Identité » en haut à gauche en donnant un nom à cette identité. À partir de chaque identité, vous pourrez lui rattacher directement des comptes, des notes et des tâches.",
+      title: t("onboarding.steps.1.title"),
+      content: t("onboarding.steps.1.content"),
     },
     {
-      title: "2. Complétez vos comptes 🔑",
-      content:
-        "Pour chaque compte, ajoutez un nom d'utilisateur, gérez et générez des mots de passe forts, renseignez des clés API, emails, numéros de téléphone, domaines, ainsi que des notes et tâches dédiées.",
+      title: t("onboarding.steps.2.title"),
+      content: t("onboarding.steps.2.content"),
     },
     {
-      title: "3. Outils & Navigation 🛠️",
-      content:
-        "Utilisez 🔍 Rechercher pour trouver rapidement un compte, 🔑 Mot de passe pour modifier votre mot de passe maître, et 🛡️ Sécurité pour contrôler la robustesse de vos accès.",
+      title: t("onboarding.steps.3.title"),
+      content: t("onboarding.steps.3.content"),
     },
     {
-      title: "4. Notes & Tâches 📋",
-      content:
-        "Un bouton dédié aux Notes & Tâches vous permet d'ouvrir un panneau récapitulatif pour consulter et gérer toutes vos notes et tâches associées à chaque identité ou compte au même endroit.",
+      title: t("onboarding.steps.4.title"),
+      content: t("onboarding.steps.4.content"),
     },
     {
-      title: "5. Données & Sécurité 💾",
-      content:
-        "Le bouton « 💾 Données » vous donne un accès centralisé pour créer des sauvegardes de sécurité, importer des exports et effectuer la réinitialisation de l'application.",
+      title: t("onboarding.steps.5.title"),
+      content: t("onboarding.steps.5.content"),
     },
   ];
-
 
   if (!isOpen) return null;
 
@@ -78,7 +73,7 @@ useEffect(() => {
 
         <div className="onboarding-actions">
           <button type="button" className="btn-skip" onClick={handleClosePermanently}>
-            Ne plus me rappeler
+            {t("onboarding.buttons.skip")}
           </button>
 
           <div className="onboarding-nav">
@@ -88,7 +83,7 @@ useEffect(() => {
                 className="btn-secondary"
                 onClick={() => setCurrentStep((prev) => prev - 1)}
               >
-                Précédent
+                {t("onboarding.buttons.previous")}
               </button>
             )}
 
@@ -98,11 +93,11 @@ useEffect(() => {
                 className="btn-primary"
                 onClick={() => setCurrentStep((prev) => prev + 1)}
               >
-                Suivant
+                {t("onboarding.buttons.next")}
               </button>
             ) : (
               <button type="button" className="btn-primary" onClick={handleClosePermanently}>
-                Terminer
+                {t("onboarding.buttons.finish")}
               </button>
             )}
           </div>
@@ -113,6 +108,6 @@ useEffect(() => {
 }
 
 export function triggerOnboarding() {
-  localStorage.removeItem("idenva_onboarding_completed");
+  localStorage.removeItem(STORAGE_KEY);
   window.dispatchEvent(new Event("open-onboarding"));
 }

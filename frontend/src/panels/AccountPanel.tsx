@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { 
   api, 
   ApiError, 
@@ -21,6 +22,7 @@ interface AccountPanelProps {
 }
 
 export function AccountPanel({ account, onClose, onAccountUpdated, onAccountDeleted }: AccountPanelProps) {
+  const { t, i18n } = useTranslation();
   const [serviceName, setServiceName] = useState(account.service_name);
   const [username, setUsername] = useState(account.username ?? "");
   const [url, setUrl] = useState(account.url ?? "");
@@ -76,7 +78,7 @@ export function AccountPanel({ account, onClose, onAccountUpdated, onAccountDele
       setCredSecret("");
       loadAllRelatedData();
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : "Échec de l'ajout du credential.");
+      setError(err instanceof ApiError ? err.message : t("accountPanel.errors.addCredential"));
     }
   }
 
@@ -94,7 +96,7 @@ export function AccountPanel({ account, onClose, onAccountUpdated, onAccountDele
       const res = await api.revealCredential(id);
       setRevealedSecrets((prev) => ({ ...prev, [id]: res.value }));
     } catch {
-      setError("Impossible de révéler le secret.");
+      setError(t("accountPanel.errors.revealSecret"));
     }
   }
 
@@ -103,7 +105,7 @@ export function AccountPanel({ account, onClose, onAccountUpdated, onAccountDele
       await api.deleteCredential(id);
       loadAllRelatedData();
     } catch {
-      setError("Erreur lors de la suppression du credential.");
+      setError(t("accountPanel.errors.deleteCredential"));
     }
   }
 
@@ -115,7 +117,7 @@ export function AccountPanel({ account, onClose, onAccountUpdated, onAccountDele
       setNewEmail("");
       loadAllRelatedData();
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : "Échec de l'ajout de l'email.");
+      setError(err instanceof ApiError ? err.message : t("accountPanel.errors.addEmail"));
     }
   }
 
@@ -124,7 +126,7 @@ export function AccountPanel({ account, onClose, onAccountUpdated, onAccountDele
       await api.deleteEmail(id);
       loadAllRelatedData();
     } catch {
-      setError("Erreur lors de la suppression de l'email.");
+      setError(t("accountPanel.errors.deleteEmail"));
     }
   }
 
@@ -135,7 +137,7 @@ export function AccountPanel({ account, onClose, onAccountUpdated, onAccountDele
       setNewPhone("");
       loadAllRelatedData();
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : "Échec de l'ajout du téléphone.");
+      setError(err instanceof ApiError ? err.message : t("accountPanel.errors.addPhone"));
     }
   }
 
@@ -144,7 +146,7 @@ export function AccountPanel({ account, onClose, onAccountUpdated, onAccountDele
       await api.deletePhone(id);
       loadAllRelatedData();
     } catch {
-      setError("Erreur lors de la suppression du téléphone.");
+      setError(t("accountPanel.errors.deletePhone"));
     }
   }
 
@@ -155,7 +157,7 @@ export function AccountPanel({ account, onClose, onAccountUpdated, onAccountDele
       setNewDomain("");
       loadAllRelatedData();
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : "Échec de l'ajout du domaine.");
+      setError(err instanceof ApiError ? err.message : t("accountPanel.errors.addDomain"));
     }
   }
 
@@ -164,7 +166,7 @@ export function AccountPanel({ account, onClose, onAccountUpdated, onAccountDele
       await api.deleteDomain(id);
       loadAllRelatedData();
     } catch {
-      setError("Erreur lors de la suppression du domaine.");
+      setError(t("accountPanel.errors.deleteDomain"));
     }
   }
 
@@ -178,7 +180,7 @@ export function AccountPanel({ account, onClose, onAccountUpdated, onAccountDele
       });
       onAccountUpdated(updated);
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : "Échec de la sauvegarde.");
+      setError(err instanceof ApiError ? err.message : t("accountPanel.errors.saveDetails"));
     }
   }
 
@@ -189,7 +191,7 @@ export function AccountPanel({ account, onClose, onAccountUpdated, onAccountDele
       onAccountUpdated(updated);
       setNewPassword("");
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : "Échec de la mise à jour du mot de passe.");
+      setError(err instanceof ApiError ? err.message : t("accountPanel.errors.updatePassword"));
     }
   }
 
@@ -198,7 +200,7 @@ export function AccountPanel({ account, onClose, onAccountUpdated, onAccountDele
       const updated = await api.updateAccount(account.id, { has_2fa: !account.has_2fa });
       onAccountUpdated(updated);
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : "Échec de la mise à jour.");
+      setError(err instanceof ApiError ? err.message : t("accountPanel.errors.update2fa"));
     }
   }
 
@@ -207,43 +209,43 @@ export function AccountPanel({ account, onClose, onAccountUpdated, onAccountDele
       await api.deleteAccount(account.id);
       onAccountDeleted(account.id);
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : "Échec de la suppression.");
+      setError(err instanceof ApiError ? err.message : t("accountPanel.errors.deleteAccount"));
     }
   }
 
   return (
     <div className="panel">
       <div className="panel__header">
-        <span className="panel__type">Compte</span>
+        <span className="panel__type">{t("accountPanel.type")}</span>
         <button className="panel__close" onClick={onClose}>×</button>
       </div>
 
-      <label className="panel__label">Service</label>
+      <label className="panel__label">{t("accountPanel.labels.service")}</label>
       <input className="panel__input" value={serviceName} onChange={(e) => setServiceName(e.target.value)} onBlur={handleSaveDetails} />
 
-      <label className="panel__label">Nom d'utilisateur</label>
+      <label className="panel__label">{t("accountPanel.labels.username")}</label>
       <input className="panel__input" value={username} onChange={(e) => setUsername(e.target.value)} onBlur={handleSaveDetails} />
 
-      <label className="panel__label">URL</label>
+      <label className="panel__label">{t("accountPanel.labels.url")}</label>
       <input className="panel__input" value={url} onChange={(e) => setUrl(e.target.value)} onBlur={handleSaveDetails} />
 
-      <label className="panel__label">Mot de passe principal</label>
+      <label className="panel__label">{t("accountPanel.labels.mainPassword")}</label>
       <PasswordField mode="reveal" accountId={account.id} secretType="password" hasSecret={account.has_password} />
 
-      <label className="panel__label panel__label--spaced">Changer le mot de passe</label>
+      <label className="panel__label panel__label--spaced">{t("accountPanel.labels.changePassword")}</label>
       <PasswordField mode="new" value={newPassword} onChange={setNewPassword} />
       {newPassword && (
         <button className="panel__btn" onClick={handleSetPassword} style={{ marginTop: 8 }}>
-          Enregistrer le nouveau mot de passe
+          {t("accountPanel.buttons.saveNewPassword")}
         </button>
       )}
 
       <label className="panel__label panel__label--spaced">
-        <input type="checkbox" checked={account.has_2fa} onChange={handleToggle2fa} /> 2FA activée
+        <input type="checkbox" checked={account.has_2fa} onChange={handleToggle2fa} /> {t("accountPanel.labels.has2fa")}
       </label>
 
       {/* --- Section Credentials --- */}
-      <h3 className="panel__section-title">Credentials & Clés API</h3>
+      <h3 className="panel__section-title">{t("accountPanel.sections.credentials")}</h3>
       <ul className="panel__account-list">
         {credentials.map((cred) => (
           <li key={cred.id} className="panel__account-item" style={{ flexDirection: "column", alignItems: "flex-start" }}>
@@ -257,26 +259,26 @@ export function AccountPanel({ account, onClose, onAccountUpdated, onAccountDele
               </code>
             )}
             <button className="panel__btn" style={{ fontSize: 11, marginTop: 4 }} onClick={() => handleToggleCredentialSecret(cred.id)}>
-              {revealedSecrets[cred.id] ? "Masquer la clé" : "Révéler la clé"}
+              {revealedSecrets[cred.id] ? t("accountPanel.buttons.hideKey") : t("accountPanel.buttons.revealKey")}
             </button>
           </li>
         ))}
       </ul>
 
       <div className="panel__add-form">
-        <input className="panel__input" placeholder="Libellé (ex: Clé Stripe)" value={credLabel} onChange={(e) => setCredLabel(e.target.value)} />
+        <input className="panel__input" placeholder={t("accountPanel.placeholders.credLabel")} value={credLabel} onChange={(e) => setCredLabel(e.target.value)} />
         <select className="panel__input" value={credType} onChange={(e) => setCredType(e.target.value)}>
-          <option value="api_key">Clé API</option>
-          <option value="ssh_key">Clé SSH</option>
-          <option value="token">Token</option>
-          <option value="other">Autre</option>
+          <option value="api_key">{t("accountPanel.credTypes.apiKey")}</option>
+          <option value="ssh_key">{t("accountPanel.credTypes.sshKey")}</option>
+          <option value="token">{t("accountPanel.credTypes.token")}</option>
+          <option value="other">{t("accountPanel.credTypes.other")}</option>
         </select>
-        <input className="panel__input" placeholder="Valeur secrète" value={credSecret} onChange={(e) => setCredSecret(e.target.value)} />
-        <button className="panel__btn" onClick={handleAddCredential}>+ Ajouter un credential</button>
+        <input className="panel__input" placeholder={t("accountPanel.placeholders.credSecret")} value={credSecret} onChange={(e) => setCredSecret(e.target.value)} />
+        <button className="panel__btn" onClick={handleAddCredential}>{t("accountPanel.buttons.addCredential")}</button>
       </div>
 
       {/* --- Section Emails --- */}
-      <h3 className="panel__section-title">Adresses E-mail</h3>
+      <h3 className="panel__section-title">{t("accountPanel.sections.emails")}</h3>
       <ul className="panel__account-list">
         {emails.map((email) => (
           <li key={email.id} className="panel__account-item">
@@ -286,12 +288,12 @@ export function AccountPanel({ account, onClose, onAccountUpdated, onAccountDele
         ))}
       </ul>
       <div className="panel__add-form" style={{ display: "flex", gap: 8 }}>
-        <input className="panel__input" placeholder="ex: contact@domaine.com" value={newEmail} onChange={(e) => setNewEmail(e.target.value)} />
-        <button className="panel__btn" onClick={handleAddEmail}>+ Ajouter Email</button>
+        <input className="panel__input" placeholder={t("accountPanel.placeholders.email")} value={newEmail} onChange={(e) => setNewEmail(e.target.value)} />
+        <button className="panel__btn" onClick={handleAddEmail}>{t("accountPanel.buttons.addEmail")}</button>
       </div>
 
       {/* --- Section Téléphones --- */}
-      <h3 className="panel__section-title">Téléphones</h3>
+      <h3 className="panel__section-title">{t("accountPanel.sections.phones")}</h3>
       <ul className="panel__account-list">
         {phones.map((phone) => (
           <li key={phone.id} className="panel__account-item">
@@ -301,12 +303,12 @@ export function AccountPanel({ account, onClose, onAccountUpdated, onAccountDele
         ))}
       </ul>
       <div className="panel__add-form" style={{ display: "flex", gap: 8 }}>
-        <input className="panel__input" placeholder="ex: +33612345678" value={newPhone} onChange={(e) => setNewPhone(e.target.value)} />
-        <button className="panel__btn" onClick={handleAddPhone}>+ Ajouter Phone</button>
+        <input className="panel__input" placeholder={t("accountPanel.placeholders.phone")} value={newPhone} onChange={(e) => setNewPhone(e.target.value)} />
+        <button className="panel__btn" onClick={handleAddPhone}>{t("accountPanel.buttons.addPhone")}</button>
       </div>
 
       {/* --- Section Domaines --- */}
-      <h3 className="panel__section-title">Domaines</h3>
+      <h3 className="panel__section-title">{t("accountPanel.sections.domains")}</h3>
       <ul className="panel__account-list">
         {domains.map((domain) => (
           <li key={domain.id} className="panel__account-item">
@@ -316,13 +318,15 @@ export function AccountPanel({ account, onClose, onAccountUpdated, onAccountDele
         ))}
       </ul>
       <div className="panel__add-form" style={{ display: "flex", gap: 8 }}>
-        <input className="panel__input" placeholder="ex: mon-site.com" value={newDomain} onChange={(e) => setNewDomain(e.target.value)} />
-        <button className="panel__btn" onClick={handleAddDomain}>+ Ajouter Domaine</button>
+        <input className="panel__input" placeholder={t("accountPanel.placeholders.domain")} value={newDomain} onChange={(e) => setNewDomain(e.target.value)} />
+        <button className="panel__btn" onClick={handleAddDomain}>{t("accountPanel.buttons.addDomain")}</button>
       </div>
 
       {account.last_password_change && (
         <p className="panel__meta">
-          Dernier changement : {new Date(account.last_password_change).toLocaleDateString("fr-FR")}
+          {t("accountPanel.lastPasswordChange", {
+            date: new Date(account.last_password_change).toLocaleDateString(i18n.language === "en" ? "en-US" : "fr-FR")
+          })}
         </p>
       )}
 
@@ -334,14 +338,14 @@ export function AccountPanel({ account, onClose, onAccountUpdated, onAccountDele
       <div className="panel__danger-zone">
         {!showDeleteConfirm ? (
           <button className="panel__btn panel__btn--danger" onClick={() => setShowDeleteConfirm(true)}>
-            Supprimer ce compte
+            {t("accountPanel.buttons.deleteAccount")}
           </button>
         ) : (
           <div className="panel__confirm">
-            <p>Supprimer "{account.service_name}" ? Cette action est irréversible.</p>
+            <p>{t("accountPanel.confirmDelete", { serviceName: account.service_name })}</p>
             <div className="panel__confirm-actions">
-              <button className="panel__btn panel__btn--danger" onClick={handleDelete}>Confirmer</button>
-              <button className="panel__btn" onClick={() => setShowDeleteConfirm(false)}>Annuler</button>
+              <button className="panel__btn panel__btn--danger" onClick={handleDelete}>{t("common.confirm")}</button>
+              <button className="panel__btn" onClick={() => setShowDeleteConfirm(false)}>{t("common.cancel")}</button>
             </div>
           </div>
         )}

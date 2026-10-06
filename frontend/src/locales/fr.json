@@ -1,0 +1,426 @@
+{
+  "app": {
+    "loadingTitle": "Lancement d'Idenva...",
+    "loadingSubtitle": "Connexion au serveur en cours"
+  },
+  "common": {
+    "confirm": "Confirmer",
+    "cancel": "Annuler"
+  },
+  "accountPanel": {
+    "type": "Compte",
+    "lastPasswordChange": "Dernier changement : {{date}}",
+    "confirmDelete": "Supprimer \"{{serviceName}}\" ? Cette action est irréversible.",
+    "labels": {
+      "service": "Service",
+      "username": "Nom d'utilisateur",
+      "url": "URL",
+      "mainPassword": "Mot de passe principal",
+      "changePassword": "Changer le mot de passe",
+      "has2fa": "2FA activée"
+    },
+    "buttons": {
+      "saveNewPassword": "Enregistrer le nouveau mot de passe",
+      "hideKey": "Masquer la clé",
+      "revealKey": "Révéler la clé",
+      "addCredential": "+ Ajouter un credential",
+      "addEmail": "+ Ajouter Email",
+      "addPhone": "+ Ajouter Phone",
+      "addDomain": "+ Ajouter Domaine",
+      "deleteAccount": "Supprimer ce compte"
+    },
+    "sections": {
+      "credentials": "Credentials & Clés API",
+      "emails": "Adresses E-mail",
+      "phones": "Téléphones",
+      "domains": "Domaines"
+    },
+    "placeholders": {
+      "credLabel": "Libellé (ex: Clé Stripe)",
+      "credSecret": "Valeur secrète",
+      "email": "ex: contact@domaine.com",
+      "phone": "ex: +33612345678",
+      "domain": "ex: mon-site.com"
+    },
+    "credTypes": {
+      "apiKey": "Clé API",
+      "sshKey": "Clé SSH",
+      "token": "Token",
+      "other": "Autre"
+    },
+    "errors": {
+      "addCredential": "Échec de l'ajout du credential.",
+      "revealSecret": "Impossible de révéler le secret.",
+      "deleteCredential": "Erreur lors de la suppression du credential.",
+      "addEmail": "Échec de l'ajout de l'email.",
+      "deleteEmail": "Erreur lors de la suppression de l'email.",
+      "addPhone": "Échec de l'ajout du téléphone.",
+      "deletePhone": "Erreur lors de la suppression du téléphone.",
+      "addDomain": "Échec de l'ajout du domaine.",
+      "deleteDomain": "Erreur lors de la suppression du domaine.",
+      "saveDetails": "Échec de la sauvegarde.",
+      "updatePassword": "Échec de la mise à jour du mot de passe.",
+      "update2fa": "Échec de la mise à jour.",
+      "deleteAccount": "Échec de la suppression."
+    }
+  },
+  "identityPanel": {
+    "type": "IDENTITÉ",
+    "confirmDelete": "Supprimer \"{{name}}\" et ses {{count}} compte(s) ? Cette action est irréversible.",
+    "labels": {
+      "name": "Nom",
+      "description": "Description"
+    },
+    "sections": {
+      "accounts": "Comptes ({{count}})"
+    },
+    "placeholders": {
+      "accountName": "Nom du service (ex: GitHub)"
+    },
+    "buttons": {
+      "addAccount": "+ Ajouter un compte",
+      "deleteIdentity": "Supprimer cette identité"
+    },
+    "errors": {
+      "saveDetails": "Échec de la sauvegarde.",
+      "createAccount": "Échec de la création du compte.",
+      "deleteIdentity": "Échec de la suppression."
+    }
+  },
+  "canvasPage": {
+    "placeholders": {
+      "newIdentity": "Nouvelle identité..."
+    },
+    "buttons": {
+      "addIdentity": "+ Identité"
+    },
+    "actions": {
+      "search": "Rechercher",
+      "activity": "Notes & Tâches",
+      "security": "Sécurité",
+      "vaultData": "Données",
+      "password": "Mot de passe",
+      "lock": "Verrouiller"
+    },
+    "titles": {
+      "search": "Rechercher (Ctrl+K)",
+      "activity": "Consulter les notes et tâches",
+      "security": "Dashboard sécurité",
+      "vaultData": "Gestion des données et sauvegardes",
+      "password": "Changer le mot de passe maître",
+      "lock": "Verrouiller le coffre-fort"
+    },
+    "errors": {
+      "loadCanvas": "Impossible de charger le canvas.",
+      "savePosition": "Échec de la sauvegarde de la position.",
+      "createIdentity": "Échec de la création de l'identité."
+    }
+  },
+  "securityDashboard": {
+    "title": "Sécurité",
+    "backToCanvas": "× Retour au canvas",
+    "emptyScores": "Aucune identité pour l'instant.",
+    "emptyAlerts": "Aucune alerte. 👍",
+    "correlationText": "{{identityA}} et {{identityB}} partagent : {{fields}}",
+    "stats": {
+      "identities": "Identités",
+      "accounts": "Comptes",
+      "passwords": "Mots de passe",
+      "twoFaEnabled": "2FA activée",
+      "weakPasswords": "Mots de passe faibles",
+      "reusedPasswords": "Mots de passe réutilisés",
+      "oldPasswords": "Mots de passe anciens",
+      "opsecAlerts": "Alertes OPSEC"
+    },
+    "sections": {
+      "scoresTitle": "Scores OPSEC par identité",
+      "alertsTitle": "Alertes",
+      "correlationsTitle": "Corrélations d'identité"
+    },
+    "errors": {
+      "loadFailed": "Échec du chargement."
+    }
+  },
+  "unlockPage": {
+    "subtitleFirstRun": "Crée ton mot de passe principal",
+    "subtitleUnlock": "Déverrouille ton coffre",
+    "masterPasswordLabel": "Mot de passe maître",
+    "confirmPasswordLabel": "Confirmer le mot de passe",
+    "footnote": "Ce mot de passe ne peut pas être récupéré s'il est perdu.",
+    "buttons": {
+      "createVault": "Créer le coffre-fort",
+      "unlock": "Déverrouiller"
+    },
+    "errors": {
+      "serverUnreachable": "Impossible de joindre le serveur Idenva.",
+      "passwordMismatch": "Les deux mots de passe ne correspondent pas.",
+      "connectionError": "Erreur de connexion au serveur."
+    }
+  },
+  "nodes": {
+    "account": {
+      "pwdBadge": "MDP",
+      "twoFaBadge": "2FA"
+    },
+    "identity": {
+      "accountsCountTitle": "{{count}} compte(s) associé(s)"
+    }
+  },
+  "changePasswordModal": {
+    "title": "Changer le mot de passe maître",
+    "success": "Mot de passe maître mis à jour avec succès !",
+    "currentPasswordLabel": "Mot de passe actuel",
+    "newPasswordLabel": "Nouveau mot de passe (min. 12 car.)",
+    "confirmPasswordLabel": "Confirmer le nouveau mot de passe",
+    "buttons": {
+      "cancel": "Annuler",
+      "save": "Enregistrer",
+      "saving": "Modification..."
+    },
+    "errors": {
+      "minLength": "Le nouveau mot de passe doit faire au moins 12 caractères.",
+      "mismatch": "Les deux nouveaux mots de passe ne correspondent pas.",
+      "generic": "Erreur lors de la modification."
+    }
+  },
+  "globalActivityPanel": {
+    "title": "Notes & Tâches",
+    "loading": "Chargement...",
+    "deletedIdentity": "Identité supprimée",
+    "deletedAccount": "Compte supprimé",
+    "emptyTasks": "Aucune tâche enregistrée.",
+    "emptyNotes": "Aucune note enregistrée.",
+    "tabs": {
+      "tasks": "Tâches ({{count}})",
+      "notes": "Notes ({{count}})"
+    },
+    "sections": {
+      "completed": "Terminées"
+    },
+    "buttons": {
+      "delete": "Supprimer"
+    },
+    "errors": {
+      "loadFailed": "Échec du chargement.",
+      "statusChangeFailed": "Échec du changement de statut.",
+      "deleteFailed": "Échec de la suppression."
+    }
+  },
+  "helpButton": {
+    "label": "Aide",
+    "title": "Revoir le guide d'utilisation"
+  },
+  "notesSection": {
+    "title": "Notes (chiffrées)",
+    "placeholder": "Ajouter une note sécurisée...",
+    "empty": "Aucune note enregistrée.",
+    "buttons": {
+      "add": "Ajouter",
+      "ok": "OK",
+      "cancel": "Annuler",
+      "edit": "Éditer",
+      "delete": "Supprimer"
+    },
+    "errors": {
+      "loadFailed": "Échec du chargement des notes.",
+      "addFailed": "Échec de l'ajout.",
+      "updateFailed": "Échec de la modification.",
+      "deleteFailed": "Échec de la suppression."
+    }
+  },
+  "onboarding": {
+    "buttons": {
+      "skip": "Ne plus me rappeler",
+      "previous": "Précédent",
+      "next": "Suivant",
+      "finish": "Terminer"
+    },
+    "steps": [
+      {
+        "title": "Bienvenue sur Idenva ! 👋",
+        "content": "Votre coffre-fort numérique sécurisé pour organiser et visualiser l'ensemble de vos données confidentielles, comptes et identités."
+      },
+      {
+        "title": "1. Créez vos identités 👤",
+        "content": "Commencez par cliquer sur le bouton « + Identité » en haut à gauche en donnant un nom à cette identité. À partir de chaque identité, vous pourrez lui rattacher directement des comptes, des notes et des tâches."
+      },
+      {
+        "title": "2. Complétez vos comptes 🔑",
+        "content": "Pour chaque compte, ajoutez un nom d'utilisateur, gérez et générez des mots de passe forts, renseignez des clés API, emails, numéros de téléphone, domaines, ainsi que des notes et tâches dédiées."
+      },
+      {
+        "title": "3. Outils & Navigation 🛠️",
+        "content": "Utilisez 🔍 Rechercher pour trouver rapidement un compte, 🔑 Mot de passe pour modifier votre mot de passe maître, et 🛡️ Sécurité pour contrôler la robustesse de vos accès."
+      },
+      {
+        "title": "4. Notes & Tâches 📋",
+        "content": "Un bouton dédié aux Notes & Tâches vous permet d'ouvrir un panneau récapitulatif pour consulter et gérer toutes vos notes et tâches associées à chaque identité ou compte au même endroit."
+      },
+      {
+        "title": "5. Données & Sécurité 💾",
+        "content": "Le bouton « 💾 Données » vous donne un accès centralisé pour créer des sauvegardes de sécurité, importer des exports et effectuer la réinitialisation de l'application."
+      }
+    ]
+  },
+  "passwordField": {
+    "placeholders": {
+      "newPassword": "Laisser vide pour ne pas définir de mot de passe"
+    },
+    "emptyTotp": "Aucun secret TOTP enregistré.",
+    "emptyPassword": "Aucun mot de passe enregistré.",
+    "buttons": {
+      "generate": "Générer",
+      "show": "Afficher",
+      "hide": "Masquer",
+      "copy": "Copier",
+      "copied": "Copié !"
+    },
+    "errors": {
+      "generateFailed": "Échec de la génération.",
+      "revealFailed": "Échec de la révélation.",
+      "copyFailed": "Échec de la copie."
+    }
+  },
+  "searchModal": {
+    "placeholder": "Rechercher une identité, un compte...",
+    "empty": "Aucun résultat trouvé.",
+    "filters": {
+      "all": "Tout",
+      "identities": "Identités",
+      "accounts": "Comptes",
+      "no2fa": "Sans 2FA",
+      "noPassword": "Sans MDP"
+    },
+    "groups": {
+      "identities": "Identités ({{count}})",
+      "accounts": "Comptes ({{count}})"
+    },
+    "badges": {
+      "noPassword": "Sans MDP",
+      "no2fa": "Sans 2FA"
+    },
+    "buttons": {
+      "close": "Fermer"
+    }
+  },
+  "tasksSection": {
+    "title": "Tâches à faire",
+    "placeholder": "Nouvelle tâche...",
+    "empty": "Aucune tâche enregistrée.",
+    "buttons": {
+      "add": "Ajouter",
+      "delete": "Supprimer"
+    },
+    "errors": {
+      "loadFailed": "Échec du chargement des tâches.",
+      "addFailed": "Échec de la création.",
+      "statusFailed": "Échec du changement de statut.",
+      "deleteFailed": "Échec de la suppression."
+    }
+  },
+  "vaultDataModal": {
+    "buttons": {
+      "close": "Fermer"
+    },
+    "tabs": {
+      "export": "Export",
+      "import": "Import",
+      "backups": "Sauvegardes",
+      "reset": "Réinitialisation"
+    },
+    "exportTab": {
+      "hintStart": "Choisis un mot de passe d'export",
+      "hintDifferent": "différent",
+      "hintEnd": "de ton mot de passe maître. Il te sera redemandé pour ré-importer ce fichier plus tard.",
+      "success": "Fichier d'export téléchargé.",
+      "labels": {
+        "password": "Mot de passe d'export (min. 12 car.)",
+        "confirmPassword": "Confirmer le mot de passe d'export"
+      },
+      "buttons": {
+        "submit": "Exporter et télécharger",
+        "exporting": "Export en cours..."
+      },
+      "errors": {
+        "passwordLength": "Le mot de passe d'export doit faire au moins 12 caractères.",
+        "passwordMismatch": "Les deux mots de passe ne correspondent pas.",
+        "exportFailed": "Échec de l'export."
+      }
+    },
+    "importTab": {
+      "hint": "Les données importées créent de nouvelles identités et comptes - rien n'écrase tes données existantes.",
+      "success": "Importé : {{identities}} identité(s), {{accounts}} compte(s), {{notes}} note(s), {{tasks}} tâche(s).",
+      "labels": {
+        "file": "Fichier d'export (.json)",
+        "password": "Mot de passe d'export"
+      },
+      "buttons": {
+        "submit": "Importer",
+        "importing": "Import en cours..."
+      },
+      "errors": {
+        "noFile": "Choisis un fichier d'export.",
+        "invalidFile": "Ce fichier n'est pas un export Idenva valide.",
+        "importFailed": "Échec de l'import."
+      }
+    },
+    "backupsTab": {
+      "existingBackups": "Sauvegardes existantes",
+      "empty": "Aucune sauvegarde pour l'instant.",
+      "sizeUnit": "Ko",
+      "success": "Sauvegarde créée : {{filename}}",
+      "labels": {
+        "password": "Mot de passe de sauvegarde (min. 12 car.)"
+      },
+      "buttons": {
+        "create": "💾 Créer une sauvegarde maintenant",
+        "creating": "Création...",
+        "download": "Télécharger"
+      },
+      "errors": {
+        "loadFailed": "Échec du chargement des sauvegardes.",
+        "passwordLength": "Le mot de passe de sauvegarde doit faire au moins 12 caractères.",
+        "createFailed": "Échec de la sauvegarde.",
+        "downloadFailed": "Échec du téléchargement de la sauvegarde."
+      }
+    },
+    "resetTab": {
+      "title": "Réinitialisation complète de l'application",
+      "warning": "Cette action effacera définitivement l'intégralité de la base de données (identités, mots de passe, coffres). L'application retournera à l'état du tout premier démarrage.",
+      "buttons": {
+        "openReset": "Réinitialiser totalement l'application"
+      },
+      "errors": {
+        "resetFailed": "Échec de la réinitialisation."
+      },
+      "modal": {
+        "title": "Confirmation de réinitialisation",
+        "description": "Toutes vos données seront définitivement supprimées.",
+        "prompt": "Veuillez saisir votre mot de passe maître actuel pour confirmer :",
+        "placeholder": "Mot de passe maître actuel",
+        "buttons": {
+          "cancel": "Annuler",
+          "confirm": "Confirmer la réinitialisation",
+          "resetting": "Réinitialisation..."
+        }
+      }
+    }
+  },
+"dashboard": {
+    "alerts": {
+      "password_weak": "Mot de passe faible",
+      "password_reused": "Mot de passe réutilisé sur plusieurs comptes",
+      "password_old": "Mot de passe non changé depuis plus de 12 mois",
+      "2fa_disabled": "2FA désactivée",
+      "sharedFields": "Partage {{fields}} avec {{targetName}}"
+    },
+    "factors": {
+      "factor_weak_passwords": "{{count}} mot(s) de passe faible(s)",
+      "factor_reused_passwords": "{{count}} mot(s) de passe réutilisé(s)",
+      "factor_old_passwords": "{{count}} mot(s) de passe ancien(s) (>12 mois)",
+      "factor_no_2fa": "{{count}} compte(s) sans 2FA",
+      "factor_correlations": "{{count}} corrélation(s) avec une autre identité"
+    }
+  }
+}
+

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { api, ApiError } from "../services/api";
 import "./ChangePasswordModal.css";
 
@@ -7,6 +8,7 @@ interface ChangePasswordModalProps {
 }
 
 export function ChangePasswordModal({ onClose }: ChangePasswordModalProps) {
+  const { t } = useTranslation();
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -19,12 +21,12 @@ export function ChangePasswordModal({ onClose }: ChangePasswordModalProps) {
     setError(null);
 
     if (newPassword.length < 12) {
-      setError("Le nouveau mot de passe doit faire au moins 12 caractères.");
+      setError(t("changePasswordModal.errors.minLength"));
       return;
     }
 
     if (newPassword !== confirmPassword) {
-      setError("Les deux nouveaux mots de passe ne correspondent pas.");
+      setError(t("changePasswordModal.errors.mismatch"));
       return;
     }
 
@@ -36,7 +38,7 @@ export function ChangePasswordModal({ onClose }: ChangePasswordModalProps) {
         onClose();
       }, 1500);
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : "Erreur lors de la modification.");
+      setError(err instanceof ApiError ? err.message : t("changePasswordModal.errors.generic"));
     } finally {
       setLoading(false);
     }
@@ -45,16 +47,16 @@ export function ChangePasswordModal({ onClose }: ChangePasswordModalProps) {
   return (
     <div className="modal-backdrop">
       <div className="modal-card">
-        <h2>Changer le mot de passe maître</h2>
+        <h2>{t("changePasswordModal.title")}</h2>
 
         {success ? (
-          <div className="modal-success">Mot de passe maître mis à jour avec succès !</div>
+          <div className="modal-success">{t("changePasswordModal.success")}</div>
         ) : (
           <form onSubmit={handleSubmit}>
             {error && <div className="modal-error">{error}</div>}
 
             <div className="modal-field">
-              <label>Mot de passe actuel</label>
+              <label>{t("changePasswordModal.currentPasswordLabel")}</label>
               <input
                 type="password"
                 required
@@ -64,7 +66,7 @@ export function ChangePasswordModal({ onClose }: ChangePasswordModalProps) {
             </div>
 
             <div className="modal-field">
-              <label>Nouveau mot de passe (min. 12 car.)</label>
+              <label>{t("changePasswordModal.newPasswordLabel")}</label>
               <input
                 type="password"
                 required
@@ -74,7 +76,7 @@ export function ChangePasswordModal({ onClose }: ChangePasswordModalProps) {
             </div>
 
             <div className="modal-field">
-              <label>Confirmer le nouveau mot de passe</label>
+              <label>{t("changePasswordModal.confirmPasswordLabel")}</label>
               <input
                 type="password"
                 required
@@ -85,10 +87,10 @@ export function ChangePasswordModal({ onClose }: ChangePasswordModalProps) {
 
             <div className="modal-actions">
               <button type="button" className="btn-secondary" onClick={onClose} disabled={loading}>
-                Annuler
+                {t("changePasswordModal.buttons.cancel")}
               </button>
               <button type="submit" className="btn-primary" disabled={loading}>
-                {loading ? "Modification..." : "Enregistrer"}
+                {loading ? t("changePasswordModal.buttons.saving") : t("changePasswordModal.buttons.save")}
               </button>
             </div>
           </form>

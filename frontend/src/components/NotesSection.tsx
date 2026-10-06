@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { api, ApiError, type Note } from "../services/api";
 import "./NotesSection.css";
 
@@ -8,6 +9,7 @@ interface NotesSectionProps {
 }
 
 export function NotesSection({ ownerId, ownerType = "account" }: NotesSectionProps) {
+  const { t } = useTranslation();
   const [notes, setNotes] = useState<Note[]>([]);
   const [newContent, setNewContent] = useState("");
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -20,7 +22,7 @@ export function NotesSection({ ownerId, ownerType = "account" }: NotesSectionPro
       const data = await api.listNotes(ownerId, ownerType);
       setNotes(data);
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : "Échec du chargement des notes.");
+      setError(err instanceof ApiError ? err.message : t("notesSection.errors.loadFailed"));
     }
   }
 
@@ -39,7 +41,7 @@ export function NotesSection({ ownerId, ownerType = "account" }: NotesSectionPro
       setNewContent("");
       await loadNotes();
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : "Échec de l'ajout.");
+      setError(err instanceof ApiError ? err.message : t("notesSection.errors.addFailed"));
     } finally {
       setLoading(false);
     }
@@ -54,7 +56,7 @@ export function NotesSection({ ownerId, ownerType = "account" }: NotesSectionPro
       setEditingId(null);
       await loadNotes();
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : "Échec de la modification.");
+      setError(err instanceof ApiError ? err.message : t("notesSection.errors.updateFailed"));
     } finally {
       setLoading(false);
     }
@@ -66,31 +68,31 @@ export function NotesSection({ ownerId, ownerType = "account" }: NotesSectionPro
       await api.deleteNote(id);
       await loadNotes();
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : "Échec de la suppression.");
+      setError(err instanceof ApiError ? err.message : t("notesSection.errors.deleteFailed"));
     }
   }
 
   return (
     <div className="notes-section">
-      <h4 className="notes-section__title">Notes (chiffrées)</h4>
+      <h4 className="notes-section__title">{t("notesSection.title")}</h4>
 
       <form className="notes-section__form" onSubmit={handleAddNote}>
         <input
           type="text"
           className="notes-section__input"
-          placeholder="Ajouter une note sécurisée..."
+          placeholder={t("notesSection.placeholder")}
           value={newContent}
           onChange={(e) => setNewContent(e.target.value)}
         />
         <button type="submit" className="notes-section__btn" disabled={loading || !newContent.trim()}>
-          Ajouter
+          {t("notesSection.buttons.add")}
         </button>
       </form>
 
       {error && <p className="notes-section__error">{error}</p>}
 
       {notes.length === 0 ? (
-        <p className="notes-section__empty">Aucune note enregistrée.</p>
+        <p className="notes-section__empty">{t("notesSection.empty")}</p>
       ) : (
         <ul className="notes-section__list">
           {notes.map((note) => (
@@ -104,10 +106,10 @@ export function NotesSection({ ownerId, ownerType = "account" }: NotesSectionPro
                     onChange={(e) => setEditContent(e.target.value)}
                   />
                   <button type="button" className="notes-section__btn" onClick={() => handleSaveEdit(note.id)}>
-                    OK
+                    {t("notesSection.buttons.ok")}
                   </button>
                   <button type="button" className="notes-section__btn" onClick={() => setEditingId(null)}>
-                    Annuler
+                    {t("notesSection.buttons.cancel")}
                   </button>
                 </div>
               ) : (
@@ -122,14 +124,14 @@ export function NotesSection({ ownerId, ownerType = "account" }: NotesSectionPro
                         setEditContent(note.content);
                       }}
                     >
-                      Éditer
+                      {t("notesSection.buttons.edit")}
                     </button>
                     <button
                       type="button"
                       className="notes-section__btn notes-section__btn--danger"
                       onClick={() => handleDelete(note.id)}
                     >
-                      Supprimer
+                      {t("notesSection.buttons.delete")}
                     </button>
                   </div>
                 </>

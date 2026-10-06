@@ -2,145 +2,6 @@
 
 ---
 
-## Français
-
-Application locale de gestion visuelle d'identités numériques et de comptes, sous forme de canvas interactif. Toutes les données restent sur votre machine — aucune connexion Internet requise pour l'utiliser.
-
-### Fonctionnalités
-
-- Canvas interactif : identités, comptes, emails, téléphones, domaines, notes, tâches représentés en nœuds reliés entre eux
-- Coffre chiffré : mots de passe et credentials génériques (clés API, etc.) jamais stockés en clair
-- Les numéros de téléphone sont toujours chiffrés ; emails et domaines sont stockés comme métadonnées en clair
-- Dashboard sécurité / OPSEC : détection de mots de passe faibles, réutilisés, 2FA désactivée, corrélation entre identités
-- Changement du mot de passe maître à tout moment — rien n'a besoin d'être re-chiffré
-- Export / Import chiffré de tout ton coffre, protégé par un mot de passe que vous choisissez
-- Sauvegardes chiffrées, créées et gérées depuis l'appli
-- 100% local : backend et base de données tournent sur `localhost`, rien n'est envoyé sur Internet
-
-### Arborescence du projet
-
-```
-idenva/
-├── .github/
-│   └── workflows/
-│       └── release.yml        # CI/CD GitHub Actions (build Windows, macOS, Linux)
-│
-├── backend/
-│   ├── app/
-│   │   ├── main.py            # Point d'entrée du serveur FastAPI / Uvicorn
-│   │   ├── config.py          # Paramètres (timeout, chemins)
-│   │   ├── database.py        # Connexion SQLite
-│   │   ├── models/            # Tables de la base de données
-│   │   ├── schemas/           # Formats des données envoyées/reçues par l'API
-│   │   ├── api/               # Routes HTTP (identities, accounts, credentials...)
-│   │   ├── services/          # Logique métier
-│   │   └── security/          # Chiffrement, dérivation de clé, session du coffre
-│   ├── requirements.txt       # Dépendances Python
-│   └── tests/
-│
-├── frontend/
-│   ├── src/
-│   │   ├── components/        # Éléments d'interface (PasswordField, NotesSection, TasksSection...)
-│   │   ├── nodes/             # Nœuds du canvas (Person, Identity, Account...)
-│   │   ├── panels/            # Panneaux d'édition (AccountPanel, IdentityPanel...)
-│   │   ├── pages/             # Écrans (déverrouillage, page principale)
-│   │   └── services/          # Appels API (api.ts)
-│   │
-│   ├── src-tauri/             # Configuration et fichiers natifs Tauri
-│   │   ├── binaries/          # Executables backend générés pour chaque OS
-│   │   │   ├── idenva-backend-x86_64-pc-windows-msvc.exe
-│   │   │   ├── idenva-backend-aarch64-apple-darwin
-│   │   │   └── idenva-backend-x86_64-unknown-linux-gnu
-│   │   ├── icons/             # Icônes de l'application (.ico, .icns, .png)
-│   │   ├── src/               # Code Rust principal (main.rs, lib.rs)
-│   │   ├── tauri.conf.json    # Configuration Tauri (déclaration d'externalBin, fenêtres, bundle)
-│   │   └── Cargo.toml         # Dépendances Rust
-│   │
-│   ├── package.json           # Dépendances Node.js / React
-│   └── vite.config.ts         # Configuration du bundler Vite
-│
-├── data/                      # Base de données locale (idenva.db) — jamais versionnée
-├── docs/
-│   └── security.md            # Ce qui est protégé / ce qui ne l'est pas
-│
-├── README.md
-├── requirements.txt
-└── .gitignore
-```
-
-### Lancer Idenva
-
-#### Option 1 — Application installée (Windows uniquement, pour l'instant)
-
-Téléchargez l'installeur depuis la page [GitHub Releases](../../releases) du projet et lancez-le. Idenva s'installe comme n'importe quelle application de bureau, avec un raccourci directement utilisable.
-
-Vous pouvez aussi le lancer depuis l'invite de commandes plutôt que le raccourci :
-```cmd
-cd "%LOCALAPPDATA%\Idenva"
-idenva.exe
-```
-*(Ajustez le chemin ci-dessus à l'endroit où l'installeur a réellement placé l'appli sur votre machine — ça dépend de l'emplacement choisi à l'installation.)*
-
-macOS et Linux n'ont pas encore d'installeur empaqueté — utilisez le mode développement ci-dessous sur ces plateformes.
-
-#### Option 2 — Mode développement (toutes plateformes : Windows, macOS, Linux)
-
-**Prérequis** (une seule fois) :
-- [Python 3.12 ou plus récent](https://www.python.org/downloads/) — cocher "Add Python to PATH" sous Windows
-- [Node.js version LTS](https://nodejs.org/)
-
-```bash
-python --version   # Windows
-python3 --version  # macOS/Linux
-node --version
-```
-
-**Installation** (une seule fois) :
-```bash
-git clone https://github.com/RemyNg22/idenva.git
-cd idenva
-
-python -m venv venv
-venv\Scripts\activate        # Windows
-source venv/bin/activate     # macOS/Linux
-pip install -r requirements.txt
-
-cd frontend
-npm install
-cd ..
-```
-
-
-**Lancement manuel (deux terminaux séparés) :**
-
-Terminal 1 — backend :
-```bash
-venv\Scripts\activate        # Windows
-source venv/bin/activate     # macOS/Linux
-cd backend
-python -m uvicorn app.main:app --reload
-```
-
-Terminal 2 — frontend :
-```bash
-venv\Scripts\activate        # Windows
-source venv/bin/activate     # macOS/Linux
-cd frontend
-npm run dev
-```
-
-Puis ouvrir : `http://localhost:5173/`
-
-### Premier lancement
-
-Aucun coffre n'existe encore -> l'écran "Create Master Password" s'affiche. Choisissez un mot de passe maître solide et mémorisable : **il ne peut pas être récupéré s'il est perdu**, et aucune fonctionnalité de "mot de passe oublié" n'existe par design (ce serait une porte dérobée dans le chiffrement).
-
-### Sécurité — à lire
-
-Voir `docs/security.md` pour le détail exact de ce qui est chiffré, ce qui ne l'est pas, et les limites de la protection (notamment : pas de protection contre un malware déjà présent sur la machine pendant une session déverrouillée). Ne pas considérer cette application comme "inviolable" simplement parce qu'elle utilise AES-256-GCM et Argon2id.
-
----
-
 ## English
 
 Local application for visually managing digital identities and accounts, through an interactive canvas. All data stays on your machine — no Internet connection required to use it.
@@ -277,3 +138,143 @@ No vault exists yet -> the "Create Master Password" screen appears. Choose a str
 ### Security — read this
 
 See `docs/security.md` for exactly what is encrypted, what is not, and the limits of the protection (notably: no protection against malware already present on the machine during an unlocked session). Do not consider this application "unbreakable" just because it uses AES-256-GCM and Argon2id.
+
+
+---
+
+## Français
+
+Application locale de gestion visuelle d'identités numériques et de comptes, sous forme de canvas interactif. Toutes les données restent sur votre machine — aucune connexion Internet requise pour l'utiliser.
+
+### Fonctionnalités
+
+- Canvas interactif : identités, comptes, emails, téléphones, domaines, notes, tâches représentés en nœuds reliés entre eux
+- Coffre chiffré : mots de passe et credentials génériques (clés API, etc.) jamais stockés en clair
+- Les numéros de téléphone sont toujours chiffrés ; emails et domaines sont stockés comme métadonnées en clair
+- Dashboard sécurité / OPSEC : détection de mots de passe faibles, réutilisés, 2FA désactivée, corrélation entre identités
+- Changement du mot de passe maître à tout moment — rien n'a besoin d'être re-chiffré
+- Export / Import chiffré de tout ton coffre, protégé par un mot de passe que vous choisissez
+- Sauvegardes chiffrées, créées et gérées depuis l'appli
+- 100% local : backend et base de données tournent sur `localhost`, rien n'est envoyé sur Internet
+
+### Arborescence du projet
+
+```
+idenva/
+├── .github/
+│   └── workflows/
+│       └── release.yml        # CI/CD GitHub Actions (build Windows, macOS, Linux)
+│
+├── backend/
+│   ├── app/
+│   │   ├── main.py            # Point d'entrée du serveur FastAPI / Uvicorn
+│   │   ├── config.py          # Paramètres (timeout, chemins)
+│   │   ├── database.py        # Connexion SQLite
+│   │   ├── models/            # Tables de la base de données
+│   │   ├── schemas/           # Formats des données envoyées/reçues par l'API
+│   │   ├── api/               # Routes HTTP (identities, accounts, credentials...)
+│   │   ├── services/          # Logique métier
+│   │   └── security/          # Chiffrement, dérivation de clé, session du coffre
+│   ├── requirements.txt       # Dépendances Python
+│   └── tests/
+│
+├── frontend/
+│   ├── src/
+│   │   ├── components/        # Éléments d'interface (PasswordField, NotesSection, TasksSection...)
+│   │   ├── nodes/             # Nœuds du canvas (Person, Identity, Account...)
+│   │   ├── panels/            # Panneaux d'édition (AccountPanel, IdentityPanel...)
+│   │   ├── pages/             # Écrans (déverrouillage, page principale)
+│   │   └── services/          # Appels API (api.ts)
+│   │
+│   ├── src-tauri/             # Configuration et fichiers natifs Tauri
+│   │   ├── binaries/          # Executables backend générés pour chaque OS
+│   │   │   ├── idenva-backend-x86_64-pc-windows-msvc.exe
+│   │   │   ├── idenva-backend-aarch64-apple-darwin
+│   │   │   └── idenva-backend-x86_64-unknown-linux-gnu
+│   │   ├── icons/             # Icônes de l'application (.ico, .icns, .png)
+│   │   ├── src/               # Code Rust principal (main.rs, lib.rs)
+│   │   ├── tauri.conf.json    # Configuration Tauri (déclaration d'externalBin, fenêtres, bundle)
+│   │   └── Cargo.toml         # Dépendances Rust
+│   │
+│   ├── package.json           # Dépendances Node.js / React
+│   └── vite.config.ts         # Configuration du bundler Vite
+│
+├── data/                      # Base de données locale (idenva.db) — jamais versionnée
+├── docs/
+│   └── security.md            # Ce qui est protégé / ce qui ne l'est pas
+│
+├── README.md
+├── requirements.txt
+└── .gitignore
+```
+
+### Lancer Idenva
+
+#### Option 1 — Application installée (Windows uniquement, pour l'instant)
+
+Téléchargez l'installeur depuis la page [GitHub Releases](../../releases) du projet et lancez-le. Idenva s'installe comme n'importe quelle application de bureau, avec un raccourci directement utilisable.
+
+Vous pouvez aussi le lancer depuis l'invite de commandes plutôt que le raccourci :
+```cmd
+cd "%LOCALAPPDATA%\Idenva"
+idenva.exe
+```
+*(Ajustez le chemin ci-dessus à l'endroit où l'installeur a réellement placé l'appli sur votre machine — ça dépend de l'emplacement choisi à l'installation.)*
+
+macOS et Linux n'ont pas encore d'installeur empaqueté — utilisez le mode développement ci-dessous sur ces plateformes.
+
+#### Option 2 — Mode développement (toutes plateformes : Windows, macOS, Linux)
+
+**Prérequis** (une seule fois) :
+- [Python 3.12 ou plus récent](https://www.python.org/downloads/) — cocher "Add Python to PATH" sous Windows
+- [Node.js version LTS](https://nodejs.org/)
+
+```bash
+python --version   # Windows
+python3 --version  # macOS/Linux
+node --version
+```
+
+**Installation** (une seule fois) :
+```bash
+git clone https://github.com/RemyNg22/idenva.git
+cd idenva
+
+python -m venv venv
+venv\Scripts\activate        # Windows
+source venv/bin/activate     # macOS/Linux
+pip install -r requirements.txt
+
+cd frontend
+npm install
+cd ..
+```
+
+
+**Lancement manuel (deux terminaux séparés) :**
+
+Terminal 1 — backend :
+```bash
+venv\Scripts\activate        # Windows
+source venv/bin/activate     # macOS/Linux
+cd backend
+python -m uvicorn app.main:app --reload
+```
+
+Terminal 2 — frontend :
+```bash
+venv\Scripts\activate        # Windows
+source venv/bin/activate     # macOS/Linux
+cd frontend
+npm run dev
+```
+
+Puis ouvrir : `http://localhost:5173/`
+
+### Premier lancement
+
+Aucun coffre n'existe encore -> l'écran "Create Master Password" s'affiche. Choisissez un mot de passe maître solide et mémorisable : **il ne peut pas être récupéré s'il est perdu**, et aucune fonctionnalité de "mot de passe oublié" n'existe par design (ce serait une porte dérobée dans le chiffrement).
+
+### Sécurité — à lire
+
+Voir `docs/security.md` pour le détail exact de ce qui est chiffré, ce qui ne l'est pas, et les limites de la protection (notamment : pas de protection contre un malware déjà présent sur la machine pendant une session déverrouillée). Ne pas considérer cette application comme "inviolable" simplement parce qu'elle utilise AES-256-GCM et Argon2id.

@@ -1,6 +1,6 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { api, ApiError } from "../services/api";
-import "./PasswordField.css";
 import "./PasswordField.css";
 
 interface NewPasswordFieldProps {
@@ -21,6 +21,7 @@ type PasswordFieldProps = NewPasswordFieldProps | RevealPasswordFieldProps;
 const REVEAL_HIDE_DELAY_MS = 15_000;
 
 export function PasswordField(props: PasswordFieldProps) {
+  const { t } = useTranslation();
   const [revealed, setRevealed] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -32,7 +33,7 @@ export function PasswordField(props: PasswordFieldProps) {
       const { password } = await api.generatePassword({ length: 24 });
       props.onChange(password);
     } catch {
-      setError("Échec de la génération.");
+      setError(t("passwordField.errors.generateFailed"));
     }
   }
 
@@ -48,7 +49,7 @@ export function PasswordField(props: PasswordFieldProps) {
       setRevealed(result.value);
       setTimeout(() => setRevealed(null), REVEAL_HIDE_DELAY_MS);
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : "Échec de la révélation.");
+      setError(err instanceof ApiError ? err.message : t("passwordField.errors.revealFailed"));
     } finally {
       setLoading(false);
     }
@@ -65,7 +66,7 @@ export function PasswordField(props: PasswordFieldProps) {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : "Échec de la copie.");
+      setError(err instanceof ApiError ? err.message : t("passwordField.errors.copyFailed"));
     }
   }
 
@@ -77,10 +78,10 @@ export function PasswordField(props: PasswordFieldProps) {
           className="password-field__input"
           value={props.value}
           onChange={(e) => props.onChange(e.target.value)}
-          placeholder="Laisser vide pour ne pas définir de mot de passe"
+          placeholder={t("passwordField.placeholders.newPassword")}
         />
         <button type="button" className="password-field__btn" onClick={handleGenerate}>
-          Générer
+          {t("passwordField.buttons.generate")}
         </button>
         {error && <p className="password-field__error">{error}</p>}
       </div>
@@ -88,7 +89,13 @@ export function PasswordField(props: PasswordFieldProps) {
   }
 
   if (!props.hasSecret) {
-    return <p className="password-field__empty">Aucun {props.secretType === "totp" ? "secret TOTP" : "mot de passe"} enregistré.</p>;
+    return (
+      <p className="password-field__empty">
+        {props.secretType === "totp"
+          ? t("passwordField.emptyTotp")
+          : t("passwordField.emptyPassword")}
+      </p>
+    );
   }
 
   return (
@@ -102,10 +109,10 @@ export function PasswordField(props: PasswordFieldProps) {
         onClick={revealed ? () => setRevealed(null) : handleReveal}
         disabled={loading}
       >
-        {revealed ? "Masquer" : "Afficher"}
+        {revealed ? t("passwordField.buttons.hide") : t("passwordField.buttons.show")}
       </button>
       <button type="button" className="password-field__btn" onClick={handleCopy}>
-        {copied ? "Copié !" : "Copier"}
+        {copied ? t("passwordField.buttons.copied") : t("passwordField.buttons.copy")}
       </button>
       {error && <p className="password-field__error">{error}</p>}
     </div>

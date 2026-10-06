@@ -1,4 +1,5 @@
 import { useState, type FormEvent } from "react";
+import { useTranslation } from "react-i18next";
 import { api, ApiError, type Account, type Identity } from "../services/api";
 import { NotesSection } from "../components/NotesSection";
 import { TasksSection } from "../components/TasksSection";
@@ -23,6 +24,7 @@ export function IdentityPanel({
   onAccountCreated,
   onSelectAccount,
 }: IdentityPanelProps) {
+  const { t } = useTranslation();
   const [name, setName] = useState(identity.name);
   const [description, setDescription] = useState(identity.description ?? "");
   const [newAccountName, setNewAccountName] = useState("");
@@ -34,7 +36,7 @@ export function IdentityPanel({
       const updated = await api.updateIdentity(identity.id, { name, description: description || undefined });
       onIdentityUpdated(updated);
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : "Échec de la sauvegarde.");
+      setError(err instanceof ApiError ? err.message : t("identityPanel.errors.saveDetails"));
     }
   }
 
@@ -46,7 +48,7 @@ export function IdentityPanel({
       onAccountCreated(account);
       setNewAccountName("");
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : "Échec de la création du compte.");
+      setError(err instanceof ApiError ? err.message : t("identityPanel.errors.createAccount"));
     }
   }
 
@@ -55,21 +57,21 @@ export function IdentityPanel({
       await api.deleteIdentity(identity.id);
       onIdentityDeleted(identity.id);
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : "Échec de la suppression.");
+      setError(err instanceof ApiError ? err.message : t("identityPanel.errors.deleteIdentity"));
     }
   }
 
   return (
     <div className="panel">
       <div className="panel__header">
-        <span className="panel__type">IDENTITY</span>
+        <span className="panel__type">{t("identityPanel.type")}</span>
         <button className="panel__close" onClick={onClose}>×</button>
       </div>
 
-      <label className="panel__label">Nom</label>
+      <label className="panel__label">{t("identityPanel.labels.name")}</label>
       <input className="panel__input" value={name} onChange={(e) => setName(e.target.value)} onBlur={handleSaveDetails} />
 
-      <label className="panel__label">Description</label>
+      <label className="panel__label">{t("identityPanel.labels.description")}</label>
       <textarea
         className="panel__textarea"
         value={description}
@@ -81,7 +83,7 @@ export function IdentityPanel({
       {error && <p className="panel__error">{error}</p>}
 
       <div className="panel__section-title">
-        Comptes ({accounts.length})
+        {t("identityPanel.sections.accounts", { count: accounts.length })}
       </div>
       <ul className="panel__account-list">
         {accounts.map((account) => (
@@ -95,11 +97,11 @@ export function IdentityPanel({
       <form onSubmit={handleAddAccount} className="panel__add-form">
         <input
           className="panel__input"
-          placeholder="Nom du service (ex: GitHub)"
+          placeholder={t("identityPanel.placeholders.accountName")}
           value={newAccountName}
           onChange={(e) => setNewAccountName(e.target.value)}
         />
-        <button type="submit" className="panel__btn">+ Ajouter un compte</button>
+        <button type="submit" className="panel__btn">{t("identityPanel.buttons.addAccount")}</button>
       </form>
 
       <NotesSection ownerId={identity.id} ownerType="identity" />
@@ -108,17 +110,19 @@ export function IdentityPanel({
       <div className="panel__danger-zone">
         {!showDeleteConfirm ? (
           <button className="panel__btn panel__btn--danger" onClick={() => setShowDeleteConfirm(true)}>
-            Supprimer cette identité
+            {t("identityPanel.buttons.deleteIdentity")}
           </button>
         ) : (
           <div className="panel__confirm">
             <p>
-              Supprimer "{identity.name}" et ses {accounts.length} compte{accounts.length > 1 ? "s" : ""} ?
-              Cette action est irréversible.
+              {t("identityPanel.confirmDelete", {
+                name: identity.name,
+                count: accounts.length
+              })}
             </p>
             <div className="panel__confirm-actions">
-              <button className="panel__btn panel__btn--danger" onClick={handleDelete}>Confirmer</button>
-              <button className="panel__btn" onClick={() => setShowDeleteConfirm(false)}>Annuler</button>
+              <button className="panel__btn panel__btn--danger" onClick={handleDelete}>{t("common.confirm")}</button>
+              <button className="panel__btn" onClick={() => setShowDeleteConfirm(false)}>{t("common.cancel")}</button>
             </div>
           </div>
         )}

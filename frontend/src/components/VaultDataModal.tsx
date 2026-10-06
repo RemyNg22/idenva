@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { api, ApiError, type BackupInfo, type ExportFile, type ImportSummary } from "../services/api";
 import "./VaultDataModal.css";
 
@@ -20,6 +21,7 @@ function downloadJson(data: unknown, filename: string) {
 }
 
 export function VaultDataModal({ onClose, onImported }: VaultDataModalProps) {
+  const { t } = useTranslation();
   const [tab, setTab] = useState<Tab>("export");
 
   return (
@@ -27,16 +29,16 @@ export function VaultDataModal({ onClose, onImported }: VaultDataModalProps) {
       <div className="modal-card modal-card--wide">
         <div className="vault-modal__tabs">
           <button className={tab === "export" ? "vault-modal__tab vault-modal__tab--active" : "vault-modal__tab"} onClick={() => setTab("export")}>
-            Export
+            {t("vaultDataModal.tabs.export")}
           </button>
           <button className={tab === "import" ? "vault-modal__tab vault-modal__tab--active" : "vault-modal__tab"} onClick={() => setTab("import")}>
-            Import
+            {t("vaultDataModal.tabs.import")}
           </button>
           <button className={tab === "backups" ? "vault-modal__tab vault-modal__tab--active" : "vault-modal__tab"} onClick={() => setTab("backups")}>
-            Sauvegardes
+            {t("vaultDataModal.tabs.backups")}
           </button>
           <button className={tab === "reset" ? "vault-modal__tab vault-modal__tab--danger vault-modal__tab--active" : "vault-modal__tab vault-modal__tab--danger"} onClick={() => setTab("reset")}>
-            Réinitialisation
+            {t("vaultDataModal.tabs.reset")}
           </button>
         </div>
 
@@ -46,7 +48,9 @@ export function VaultDataModal({ onClose, onImported }: VaultDataModalProps) {
         {tab === "reset" && <ResetTab />}
 
         <div className="modal-actions">
-          <button type="button" className="btn-secondary" onClick={onClose}>Fermer</button>
+          <button type="button" className="btn-secondary" onClick={onClose}>
+            {t("vaultDataModal.buttons.close")}
+          </button>
         </div>
       </div>
     </div>
@@ -54,6 +58,7 @@ export function VaultDataModal({ onClose, onImported }: VaultDataModalProps) {
 }
 
 function ExportTab() {
+  const { t } = useTranslation();
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -65,11 +70,11 @@ function ExportTab() {
     setError(null);
 
     if (password.length < 12) {
-      setError("Le mot de passe d'export doit faire au moins 12 caractères.");
+      setError(t("vaultDataModal.exportTab.errors.passwordLength"));
       return;
     }
     if (password !== confirmPassword) {
-      setError("Les deux mots de passe ne correspondent pas.");
+      setError(t("vaultDataModal.exportTab.errors.passwordMismatch"));
       return;
     }
 
@@ -79,7 +84,7 @@ function ExportTab() {
       downloadJson(file, `idenva-export-${new Date().toISOString().slice(0, 10)}.json`);
       setSuccess(true);
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : "Échec de l'export.");
+      setError(err instanceof ApiError ? err.message : t("vaultDataModal.exportTab.errors.exportFailed"));
     } finally {
       setLoading(false);
     }
@@ -88,29 +93,31 @@ function ExportTab() {
   return (
     <form onSubmit={handleExport}>
       <p className="vault-modal__hint">
-        Choisis un mot de passe d'export <strong>différent</strong> de ton mot de passe maître. Il te sera
-        redemandé pour ré-importer ce fichier plus tard.
+        {t("vaultDataModal.exportTab.hintStart")}{" "}
+        <strong>{t("vaultDataModal.exportTab.hintDifferent")}</strong>{" "}
+        {t("vaultDataModal.exportTab.hintEnd")}
       </p>
       {error && <div className="modal-error">{error}</div>}
-      {success && <div className="modal-success">Fichier d'export téléchargé.</div>}
+      {success && <div className="modal-success">{t("vaultDataModal.exportTab.success")}</div>}
 
       <div className="modal-field">
-        <label>Mot de passe d'export (min. 12 car.)</label>
+        <label>{t("vaultDataModal.exportTab.labels.password")}</label>
         <input type="password" required value={password} onChange={(e) => setPassword(e.target.value)} />
       </div>
       <div className="modal-field">
-        <label>Confirmer le mot de passe d'export</label>
+        <label>{t("vaultDataModal.exportTab.labels.confirmPassword")}</label>
         <input type="password" required value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
       </div>
 
       <button type="submit" className="btn-primary" disabled={loading}>
-        {loading ? "Export en cours..." : "Exporter et télécharger"}
+        {loading ? t("vaultDataModal.exportTab.buttons.exporting") : t("vaultDataModal.exportTab.buttons.submit")}
       </button>
     </form>
   );
 }
 
 function ImportTab({ onImported }: { onImported: () => void }) {
+  const { t } = useTranslation();
   const [file, setFile] = useState<File | null>(null);
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -123,7 +130,7 @@ function ImportTab({ onImported }: { onImported: () => void }) {
     setSummary(null);
 
     if (!file) {
-      setError("Choisis un fichier d'export.");
+      setError(t("vaultDataModal.importTab.errors.noFile"));
       return;
     }
 
@@ -138,9 +145,9 @@ function ImportTab({ onImported }: { onImported: () => void }) {
       if (err instanceof ApiError) {
         setError(err.message);
       } else if (err instanceof SyntaxError) {
-        setError("Ce fichier n'est pas un export Idenva valide.");
+        setError(t("vaultDataModal.importTab.errors.invalidFile"));
       } else {
-        setError("Échec de l'import.");
+        setError(t("vaultDataModal.importTab.errors.importFailed"));
       }
     } finally {
       setLoading(false);
@@ -149,34 +156,37 @@ function ImportTab({ onImported }: { onImported: () => void }) {
 
   return (
     <form onSubmit={handleImport}>
-      <p className="vault-modal__hint">
-        Les données importées créent de nouvelles identités et comptes - rien n'écrase tes données existantes.
-      </p>
+      <p className="vault-modal__hint">{t("vaultDataModal.importTab.hint")}</p>
       {error && <div className="modal-error">{error}</div>}
       {summary && (
         <div className="modal-success">
-          Importé : {summary.identities_imported} identité(s), {summary.accounts_imported} compte(s),{" "}
-          {summary.notes_imported} note(s), {summary.tasks_imported} tâche(s).
+          {t("vaultDataModal.importTab.success", {
+            identities: summary.identities_imported,
+            accounts: summary.accounts_imported,
+            notes: summary.notes_imported,
+            tasks: summary.tasks_imported,
+          })}
         </div>
       )}
 
       <div className="modal-field">
-        <label>Fichier d'export (.json)</label>
+        <label>{t("vaultDataModal.importTab.labels.file")}</label>
         <input type="file" accept="application/json" required onChange={(e) => setFile(e.target.files?.[0] ?? null)} />
       </div>
       <div className="modal-field">
-        <label>Mot de passe d'export</label>
+        <label>{t("vaultDataModal.importTab.labels.password")}</label>
         <input type="password" required value={password} onChange={(e) => setPassword(e.target.value)} />
       </div>
 
       <button type="submit" className="btn-primary" disabled={loading}>
-        {loading ? "Import en cours..." : "Importer"}
+        {loading ? t("vaultDataModal.importTab.buttons.importing") : t("vaultDataModal.importTab.buttons.submit")}
       </button>
     </form>
   );
 }
 
 function BackupsTab() {
+  const { t, i18n } = useTranslation();
   const [backups, setBackups] = useState<BackupInfo[]>([]);
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -184,7 +194,10 @@ function BackupsTab() {
   const [loading, setLoading] = useState(false);
 
   function loadBackups() {
-    api.listBackups().then(setBackups).catch(() => setError("Échec du chargement des sauvegardes."));
+    api
+      .listBackups()
+      .then(setBackups)
+      .catch(() => setError(t("vaultDataModal.backupsTab.errors.loadFailed")));
   }
 
   useEffect(loadBackups, []);
@@ -195,18 +208,18 @@ function BackupsTab() {
     setSuccess(null);
 
     if (password.length < 12) {
-      setError("Le mot de passe de sauvegarde doit faire au moins 12 caractères.");
+      setError(t("vaultDataModal.backupsTab.errors.passwordLength"));
       return;
     }
 
     setLoading(true);
     try {
       const backup = await api.createBackup(password);
-      setSuccess(`Sauvegarde créée : ${backup.filename}`);
+      setSuccess(t("vaultDataModal.backupsTab.success", { filename: backup.filename }));
       setPassword("");
       loadBackups();
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : "Échec de la sauvegarde.");
+      setError(err instanceof ApiError ? err.message : t("vaultDataModal.backupsTab.errors.createFailed"));
     } finally {
       setLoading(false);
     }
@@ -217,7 +230,7 @@ function BackupsTab() {
       const data = await api.downloadBackup(filename);
       downloadJson(data, filename);
     } catch {
-      setError("Échec du téléchargement de la sauvegarde.");
+      setError(t("vaultDataModal.backupsTab.errors.downloadFailed"));
     }
   }
 
@@ -225,20 +238,24 @@ function BackupsTab() {
     <div>
       <form onSubmit={handleCreateBackup} className="vault-modal__backup-form">
         <div className="modal-field">
-          <label>Mot de passe de sauvegarde (min. 12 car.)</label>
+          <label>{t("vaultDataModal.backupsTab.labels.password")}</label>
           <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
         </div>
         <button type="submit" className="btn-primary" disabled={loading}>
-          {loading ? "Création..." : "💾 Créer une sauvegarde maintenant"}
+          {loading
+            ? t("vaultDataModal.backupsTab.buttons.creating")
+            : t("vaultDataModal.backupsTab.buttons.create")}
         </button>
       </form>
 
       {error && <div className="modal-error">{error}</div>}
       {success && <div className="modal-success">{success}</div>}
 
-      <p className="vault-modal__hint" style={{ marginTop: 16 }}>Sauvegardes existantes</p>
+      <p className="vault-modal__hint" style={{ marginTop: 16 }}>
+        {t("vaultDataModal.backupsTab.existingBackups")}
+      </p>
       {backups.length === 0 ? (
-        <p className="vault-modal__empty">Aucune sauvegarde pour l'instant.</p>
+        <p className="vault-modal__empty">{t("vaultDataModal.backupsTab.empty")}</p>
       ) : (
         <ul className="vault-modal__backup-list">
           {backups.map((b) => (
@@ -246,11 +263,12 @@ function BackupsTab() {
               <div>
                 <div className="vault-modal__backup-name">{b.filename}</div>
                 <div className="vault-modal__backup-meta">
-                  {new Date(b.created_at).toLocaleString("fr-FR")} · {(b.size_bytes / 1024).toFixed(1)} Ko
+                  {new Date(b.created_at).toLocaleString(i18n.language === "fr" ? "fr-FR" : "en-US")}{" "}
+                  · {(b.size_bytes / 1024).toFixed(1)} {t("vaultDataModal.backupsTab.sizeUnit")}
                 </div>
               </div>
               <button type="button" className="btn-secondary" onClick={() => handleDownload(b.filename)}>
-                Télécharger
+                {t("vaultDataModal.backupsTab.buttons.download")}
               </button>
             </li>
           ))}
@@ -261,6 +279,7 @@ function BackupsTab() {
 }
 
 function ResetTab() {
+  const { t } = useTranslation();
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [masterPassword, setMasterPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -278,7 +297,7 @@ function ResetTab() {
       if (err instanceof ApiError) {
         setError(err.message);
       } else {
-        setError("Échec de la réinitialisation.");
+        setError(t("vaultDataModal.resetTab.errors.resetFailed"));
       }
     } finally {
       setLoading(false);
@@ -288,29 +307,23 @@ function ResetTab() {
   return (
     <div className="vault-modal__danger-zone">
       <div className="vault-modal__danger-box">
-        <h4>Réinitialisation complète de l'application</h4>
-        <p className="vault-modal__hint">
-          Cette action effacera définitivement l'intégralité de la base de données (identités, mots de passe, coffres). L'application retournera à l'état du tout premier démarrage.
-        </p>
+        <h4>{t("vaultDataModal.resetTab.title")}</h4>
+        <p className="vault-modal__hint">{t("vaultDataModal.resetTab.warning")}</p>
         <button
           type="button"
           className="btn-danger-bold"
           onClick={() => setShowConfirmModal(true)}
         >
-          Réinitialiser totalement l'application
+          {t("vaultDataModal.resetTab.buttons.openReset")}
         </button>
       </div>
 
       {showConfirmModal && (
         <div className="danger-modal-backdrop">
           <div className="danger-modal-card">
-            <h3>Confirmation de réinitialisation</h3>
-            <p>
-              Toutes vos données seront définitivement supprimées.
-            </p>
-            <p className="danger-modal-subtext">
-              Veuillez saisir votre mot de passe maître actuel pour confirmer :
-            </p>
+            <h3>{t("vaultDataModal.resetTab.modal.title")}</h3>
+            <p>{t("vaultDataModal.resetTab.modal.description")}</p>
+            <p className="danger-modal-subtext">{t("vaultDataModal.resetTab.modal.prompt")}</p>
 
             <form onSubmit={handleResetSubmit}>
               {error && <div className="modal-error">{error}</div>}
@@ -319,7 +332,7 @@ function ResetTab() {
                 <input
                   type="password"
                   required
-                  placeholder="Mot de passe maître actuel"
+                  placeholder={t("vaultDataModal.resetTab.modal.placeholder")}
                   value={masterPassword}
                   onChange={(e) => setMasterPassword(e.target.value)}
                   autoFocus
@@ -336,10 +349,12 @@ function ResetTab() {
                     setMasterPassword("");
                   }}
                 >
-                  Annuler
+                  {t("vaultDataModal.resetTab.modal.buttons.cancel")}
                 </button>
                 <button type="submit" className="btn-danger-confirm" disabled={loading}>
-                  {loading ? "Réinitialisation..." : "Confirmer la réinitialisation"}
+                  {loading
+                    ? t("vaultDataModal.resetTab.modal.buttons.resetting")
+                    : t("vaultDataModal.resetTab.modal.buttons.confirm")}
                 </button>
               </div>
             </form>

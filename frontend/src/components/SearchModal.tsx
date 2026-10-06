@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import type { Identity, Account } from "../services/api";
 import "./SearchModal.css";
 
@@ -17,6 +18,7 @@ export function SearchModal({
   onSelectEntity,
   onClose,
 }: SearchModalProps) {
+  const { t } = useTranslation();
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState<FilterType>("all");
 
@@ -65,7 +67,7 @@ export function SearchModal({
           <input
             type="text"
             className="search-input"
-            placeholder="Rechercher une identité, un compte..."
+            placeholder={t("searchModal.placeholder")}
             autoFocus
             value={query}
             onChange={(e) => setQuery(e.target.value)}
@@ -79,44 +81,46 @@ export function SearchModal({
             className={`search-filter-btn ${filter === "all" ? "active" : ""}`}
             onClick={() => setFilter("all")}
           >
-            Tout
+            {t("searchModal.filters.all")}
           </button>
           <button
             type="button"
             className={`search-filter-btn ${filter === "identity" ? "active" : ""}`}
             onClick={() => setFilter("identity")}
           >
-            👤 Identités
+            👤 {t("searchModal.filters.identities")}
           </button>
           <button
             type="button"
             className={`search-filter-btn ${filter === "account" ? "active" : ""}`}
             onClick={() => setFilter("account")}
           >
-            🔑 Comptes
+            🔑 {t("searchModal.filters.accounts")}
           </button>
           <button
             type="button"
             className={`search-filter-btn ${filter === "no-2fa" ? "active" : ""}`}
             onClick={() => setFilter("no-2fa")}
           >
-            ⚠️ Sans 2FA
+            ⚠️ {t("searchModal.filters.no2fa")}
           </button>
           <button
             type="button"
             className={`search-filter-btn ${filter === "no-password" ? "active" : ""}`}
             onClick={() => setFilter("no-password")}
           >
-            🚫 Sans MDP
+            🚫 {t("searchModal.filters.noPassword")}
           </button>
         </div>
 
         <div className="search-results">
-          {!hasResults && <div className="search-empty">Aucun résultat trouvé.</div>}
+          {!hasResults && <div className="search-empty">{t("searchModal.empty")}</div>}
 
           {filteredIdentities.length > 0 && (
             <div className="search-group">
-              <div className="search-group-title">Identités ({filteredIdentities.length})</div>
+              <div className="search-group-title">
+                {t("searchModal.groups.identities", { count: filteredIdentities.length })}
+              </div>
               {filteredIdentities.map((identity) => (
                 <div
                   key={identity.id}
@@ -135,7 +139,9 @@ export function SearchModal({
 
           {filteredAccounts.length > 0 && (
             <div className="search-group">
-              <div className="search-group-title">Comptes ({filteredAccounts.length})</div>
+              <div className="search-group-title">
+                {t("searchModal.groups.accounts", { count: filteredAccounts.length })}
+              </div>
               {filteredAccounts.map((account) => (
                 <div
                   key={account.id}
@@ -148,8 +154,16 @@ export function SearchModal({
                   <span className="search-item-icon">🔑</span>
                   <span className="search-item-label">{account.service_name}</span>
                   <div className="search-item-badges">
-                    {!account.has_password && <span className="search-badge badge-error">Sans MDP</span>}
-                    {!account.has_2fa && <span className="search-badge badge-warning">Sans 2FA</span>}
+                    {!account.has_password && (
+                      <span className="search-badge badge-error">
+                        {t("searchModal.badges.noPassword")}
+                      </span>
+                    )}
+                    {!account.has_2fa && (
+                      <span className="search-badge badge-warning">
+                        {t("searchModal.badges.no2fa")}
+                      </span>
+                    )}
                   </div>
                 </div>
               ))}
@@ -159,7 +173,7 @@ export function SearchModal({
 
         <div className="modal-actions">
           <button type="button" className="btn-secondary" onClick={onClose}>
-            Fermer
+            {t("searchModal.buttons.close")}
           </button>
         </div>
       </div>

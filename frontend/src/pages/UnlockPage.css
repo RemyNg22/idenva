@@ -108,3 +108,10 @@
   color: #8b8fa3;
   margin: 20px 0 0;
 }
+
+.unlock-page__lang-switcher {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 10;
+}

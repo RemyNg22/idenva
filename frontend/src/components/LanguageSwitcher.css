@@ -1,0 +1,29 @@
+.language-switcher-compact {
+  background: #14161c;
+  border: 1px solid #2a2e3a;
+  border-radius: 6px;
+  color: #8b8fa3;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 5px 9px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+.language-switcher-compact:hover {
+  border-color: #5b8def;
+  color: #e8e9ed;
+}
+
+.language-switcher-compact .active {
+  color: #5b8def;
+}
+
+.language-switcher-compact .separator {
+  opacity: 0.3;
+  font-weight: 400;
+}

@@ -1,5 +1,7 @@
 import { useEffect, useState, type FormEvent } from "react";
+import { useTranslation } from "react-i18next";
 import { api, ApiError, type VaultStatus } from "../services/api";
+import { LanguageSwitcher } from "../components/LanguageSwitcher";
 import "./UnlockPage.css";
 
 interface UnlockPageProps {
@@ -7,6 +9,7 @@ interface UnlockPageProps {
 }
 
 export function UnlockPage({ onUnlocked }: UnlockPageProps) {
+  const { t } = useTranslation();
   const [status, setStatus] = useState<VaultStatus | null>(null);
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -14,8 +17,11 @@ export function UnlockPage({ onUnlocked }: UnlockPageProps) {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    api.getStatus().then(setStatus).catch(() => setError("Impossible de joindre le serveur Idenva."));
-  }, []);
+    api
+      .getStatus()
+      .then(setStatus)
+      .catch(() => setError(t("unlockPage.errors.serverUnreachable")));
+  }, [t]);
 
   const isFirstRun = status?.vault_exists === false;
 
@@ -24,7 +30,7 @@ export function UnlockPage({ onUnlocked }: UnlockPageProps) {
     setError(null);
 
     if (isFirstRun && password !== confirmPassword) {
-      setError("Les deux mots de passe ne correspondent pas.");
+      setError(t("unlockPage.errors.passwordMismatch"));
       return;
     }
 
@@ -37,7 +43,7 @@ export function UnlockPage({ onUnlocked }: UnlockPageProps) {
       }
       onUnlocked();
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : "Erreur de connexion au serveur.");
+      setError(err instanceof ApiError ? err.message : t("unlockPage.errors.connectionError"));
     } finally {
       setLoading(false);
     }
@@ -51,18 +57,23 @@ export function UnlockPage({ onUnlocked }: UnlockPageProps) {
     <div className="unlock-page">
       <div className="unlock-page__grid" aria-hidden="true" />
 
+      {/* Switcher discret positionné en haut à droite */}
+      <div className="unlock-page__lang-switcher">
+        <LanguageSwitcher />
+      </div>
+
       <div className="unlock-card">
         <div className="unlock-card__mark">
           <img src="/favicon.svg" alt="Idenva Logo" width={32} height={32} />
         </div>
         <h1 className="unlock-card__title">Idenva</h1>
         <p className="unlock-card__subtitle">
-          {isFirstRun ? "Crée ton mot de passe principal" : "Déverrouille ton coffre"}
+          {isFirstRun ? t("unlockPage.subtitleFirstRun") : t("unlockPage.subtitleUnlock")}
         </p>
 
         <form onSubmit={handleSubmit} className="unlock-form">
           <label className="unlock-form__label" htmlFor="master-password">
-            Mot de passe maître
+            {t("unlockPage.masterPasswordLabel")}
           </label>
           <input
             id="master-password"
@@ -78,7 +89,7 @@ export function UnlockPage({ onUnlocked }: UnlockPageProps) {
           {isFirstRun && (
             <>
               <label className="unlock-form__label" htmlFor="confirm-password">
-                Confirmer le mot de passe
+                {t("unlockPage.confirmPasswordLabel")}
               </label>
               <input
                 id="confirm-password"
@@ -94,13 +105,13 @@ export function UnlockPage({ onUnlocked }: UnlockPageProps) {
           {error && <p className="unlock-form__error">{error}</p>}
 
           <button type="submit" className="unlock-form__submit" disabled={loading}>
-            {loading ? "..." : isFirstRun ? "Créer le coffre-fort" : "Déverrouiller"}
+            {loading ? "..." : isFirstRun ? t("unlockPage.buttons.createVault") : t("unlockPage.buttons.unlock")}
           </button>
         </form>
 
         {isFirstRun && (
           <p className="unlock-card__footnote">
-            Ce mot de passe ne peut pas être récupéré s'il est perdu.
+            {t("unlockPage.footnote")}
           </p>
         )}
       </div>

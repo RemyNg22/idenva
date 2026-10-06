@@ -1,0 +1,425 @@
+{
+  "app": {
+    "loadingTitle": "Starting Idenva...",
+    "loadingSubtitle": "Connecting to server"
+  },
+  "common": {
+    "confirm": "Confirm",
+    "cancel": "Cancel"
+  },
+  "accountPanel": {
+    "type": "Account",
+    "lastPasswordChange": "Last change: {{date}}",
+    "confirmDelete": "Delete \"{{serviceName}}\"? This action cannot be undone.",
+    "labels": {
+      "service": "Service",
+      "username": "Username",
+      "url": "URL",
+      "mainPassword": "Main password",
+      "changePassword": "Change password",
+      "has2fa": "2FA enabled"
+    },
+    "buttons": {
+      "saveNewPassword": "Save new password",
+      "hideKey": "Hide key",
+      "revealKey": "Reveal key",
+      "addCredential": "+ Add credential",
+      "addEmail": "+ Add Email",
+      "addPhone": "+ Add Phone",
+      "addDomain": "+ Add Domain",
+      "deleteAccount": "Delete this account"
+    },
+    "sections": {
+      "credentials": "Credentials & API Keys",
+      "emails": "Email addresses",
+      "phones": "Phone numbers",
+      "domains": "Domains"
+    },
+    "placeholders": {
+      "credLabel": "Label (e.g. Stripe Key)",
+      "credSecret": "Secret value",
+      "email": "e.g. contact@domain.com",
+      "phone": "e.g. +1234567890",
+      "domain": "e.g. my-site.com"
+    },
+    "credTypes": {
+      "apiKey": "API Key",
+      "sshKey": "SSH Key",
+      "token": "Token",
+      "other": "Other"
+    },
+    "errors": {
+      "addCredential": "Failed to add credential.",
+      "revealSecret": "Failed to reveal secret.",
+      "deleteCredential": "Error deleting credential.",
+      "addEmail": "Failed to add email.",
+      "deleteEmail": "Error deleting email.",
+      "addPhone": "Failed to add phone.",
+      "deletePhone": "Error deleting phone.",
+      "addDomain": "Failed to add domain.",
+      "deleteDomain": "Error deleting domain.",
+      "saveDetails": "Failed to save details.",
+      "updatePassword": "Failed to update password.",
+      "update2fa": "Failed to update 2FA status.",
+      "deleteAccount": "Failed to delete account."
+    }
+  },
+  "identityPanel": {
+    "type": "IDENTITY",
+    "confirmDelete": "Delete \"{{name}}\" and its {{count}} account(s)? This action cannot be undone.",
+    "labels": {
+      "name": "Name",
+      "description": "Description"
+    },
+    "sections": {
+      "accounts": "Accounts ({{count}})"
+    },
+    "placeholders": {
+      "accountName": "Service name (e.g. GitHub)"
+    },
+    "buttons": {
+      "addAccount": "+ Add account",
+      "deleteIdentity": "Delete this identity"
+    },
+    "errors": {
+      "saveDetails": "Failed to save details.",
+      "createAccount": "Failed to create account.",
+      "deleteIdentity": "Failed to delete identity."
+    }
+  },
+  "canvasPage": {
+    "placeholders": {
+      "newIdentity": "New identity..."
+    },
+    "buttons": {
+      "addIdentity": "+ Identity"
+    },
+    "actions": {
+      "search": "Search",
+      "activity": "Notes & Tasks",
+      "security": "Security",
+      "vaultData": "Data",
+      "password": "Password",
+      "lock": "Lock"
+    },
+    "titles": {
+      "search": "Search (Ctrl+K)",
+      "activity": "View notes and tasks",
+      "security": "Security dashboard",
+      "vaultData": "Manage data and backups",
+      "password": "Change master password",
+      "lock": "Lock vault"
+    },
+    "errors": {
+      "loadCanvas": "Unable to load canvas.",
+      "savePosition": "Failed to save position.",
+      "createIdentity": "Failed to create identity."
+    }
+  },
+  "securityDashboard": {
+    "title": "Security",
+    "backToCanvas": "× Back to canvas",
+    "emptyScores": "No identities yet.",
+    "emptyAlerts": "No alerts. 👍",
+    "correlationText": "{{identityA}} and {{identityB}} share: {{fields}}",
+    "stats": {
+      "identities": "Identities",
+      "accounts": "Accounts",
+      "passwords": "Passwords",
+      "twoFaEnabled": "2FA Enabled",
+      "weakPasswords": "Weak passwords",
+      "reusedPasswords": "Reused passwords",
+      "oldPasswords": "Old passwords",
+      "opsecAlerts": "OPSEC Alerts"
+    },
+    "sections": {
+      "scoresTitle": "OPSEC Scores per Identity",
+      "alertsTitle": "Alerts",
+      "correlationsTitle": "Identity Correlations"
+    },
+    "errors": {
+      "loadFailed": "Failed to load."
+    }
+  },
+  "unlockPage": {
+    "subtitleFirstRun": "Create your master password",
+    "subtitleUnlock": "Unlock your vault",
+    "masterPasswordLabel": "Master password",
+    "confirmPasswordLabel": "Confirm password",
+    "footnote": "This password cannot be recovered if lost.",
+    "buttons": {
+      "createVault": "Create vault",
+      "unlock": "Unlock"
+    },
+    "errors": {
+      "serverUnreachable": "Unable to reach the Idenva server.",
+      "passwordMismatch": "Passwords do not match.",
+      "connectionError": "Server connection error."
+    }
+  },
+  "nodes": {
+    "account": {
+      "pwdBadge": "PWD",
+      "twoFaBadge": "2FA"
+    },
+    "identity": {
+      "accountsCountTitle": "{{count}} linked account(s)"
+    }
+  },
+  "changePasswordModal": {
+    "title": "Change master password",
+    "success": "Master password successfully updated!",
+    "currentPasswordLabel": "Current password",
+    "newPasswordLabel": "New password (min. 12 chars)",
+    "confirmPasswordLabel": "Confirm new password",
+    "buttons": {
+      "cancel": "Cancel",
+      "save": "Save",
+      "saving": "Saving..."
+    },
+    "errors": {
+      "minLength": "The new password must be at least 12 characters long.",
+      "mismatch": "The two new passwords do not match.",
+      "generic": "An error occurred while changing password."
+    }
+  },
+  "globalActivityPanel": {
+    "title": "Notes & Tasks",
+    "loading": "Loading...",
+    "deletedIdentity": "Deleted identity",
+    "deletedAccount": "Deleted account",
+    "emptyTasks": "No tasks recorded.",
+    "emptyNotes": "No notes recorded.",
+    "tabs": {
+      "tasks": "Tasks ({{count}})",
+      "notes": "Notes ({{count}})"
+    },
+    "sections": {
+      "completed": "Completed"
+    },
+    "buttons": {
+      "delete": "Delete"
+    },
+    "errors": {
+      "loadFailed": "Failed to load.",
+      "statusChangeFailed": "Failed to update status.",
+      "deleteFailed": "Failed to delete."
+    }
+  },
+  "helpButton": {
+    "label": "Help",
+    "title": "Review user guide"
+  },
+  "notesSection": {
+    "title": "Notes (encrypted)",
+    "placeholder": "Add a secure note...",
+    "empty": "No notes recorded.",
+    "buttons": {
+      "add": "Add",
+      "ok": "OK",
+      "cancel": "Cancel",
+      "edit": "Edit",
+      "delete": "Delete"
+    },
+    "errors": {
+      "loadFailed": "Failed to load notes.",
+      "addFailed": "Failed to add note.",
+      "updateFailed": "Failed to update note.",
+      "deleteFailed": "Failed to delete note."
+    }
+  },
+  "onboarding": {
+    "buttons": {
+      "skip": "Don't show again",
+      "previous": "Previous",
+      "next": "Next",
+      "finish": "Finish"
+    },
+    "steps": [
+      {
+        "title": "Welcome to Idenva! 👋",
+        "content": "Your secure digital vault to organize and visualize all your confidential data, accounts, and identities."
+      },
+      {
+        "title": "1. Create your identities 👤",
+        "content": "Start by clicking the '+ Identity' button at the top left and give it a name. From each identity, you can directly attach accounts, notes, and tasks."
+      },
+      {
+        "title": "2. Add your accounts 🔑",
+        "content": "For each account, add a username, manage and generate strong passwords, enter API keys, emails, phone numbers, domains, as well as dedicated notes and tasks."
+      },
+      {
+        "title": "3. Tools & Navigation 🛠️",
+        "content": "Use 🔍 Search to quickly find an account, 🔑 Password to change your master password, and 🛡️ Security to inspect your access strength."
+      },
+      {
+        "title": "4. Notes & Tasks 📋",
+        "content": "A dedicated Notes & Tasks button opens a summary panel allowing you to view and manage all notes and tasks associated with each identity or account in one place."
+      },
+      {
+        "title": "5. Data & Security 💾",
+        "content": "The '💾 Data' button gives you centralized access to create backups, import exports, and perform an application reset."
+      }
+    ]
+  },
+  "passwordField": {
+    "placeholders": {
+      "newPassword": "Leave blank to not set a password"
+    },
+    "emptyTotp": "No TOTP secret recorded.",
+    "emptyPassword": "No password recorded.",
+    "buttons": {
+      "generate": "Generate",
+      "show": "Show",
+      "hide": "Hide",
+      "copy": "Copy",
+      "copied": "Copied!"
+    },
+    "errors": {
+      "generateFailed": "Failed to generate password.",
+      "revealFailed": "Failed to reveal secret.",
+      "copyFailed": "Failed to copy."
+    }
+  },
+  "searchModal": {
+    "placeholder": "Search an identity, account...",
+    "empty": "No results found.",
+    "filters": {
+      "all": "All",
+      "identities": "Identities",
+      "accounts": "Accounts",
+      "no2fa": "No 2FA",
+      "noPassword": "No Pass"
+    },
+    "groups": {
+      "identities": "Identities ({{count}})",
+      "accounts": "Accounts ({{count}})"
+    },
+    "badges": {
+      "noPassword": "No Pass",
+      "no2fa": "No 2FA"
+    },
+    "buttons": {
+      "close": "Close"
+    }
+  },
+  "tasksSection": {
+    "title": "To-do list",
+    "placeholder": "New task...",
+    "empty": "No tasks recorded.",
+    "buttons": {
+      "add": "Add",
+      "delete": "Delete"
+    },
+    "errors": {
+      "loadFailed": "Failed to load tasks.",
+      "addFailed": "Failed to create task.",
+      "statusFailed": "Failed to update status.",
+      "deleteFailed": "Failed to delete task."
+    }
+  },
+  "vaultDataModal": {
+    "buttons": {
+      "close": "Close"
+    },
+    "tabs": {
+      "export": "Export",
+      "import": "Import",
+      "backups": "Backups",
+      "reset": "Reset"
+    },
+    "exportTab": {
+      "hintStart": "Choose an export password",
+      "hintDifferent": "different",
+      "hintEnd": "from your master password. You will need it to re-import this file later.",
+      "success": "Export file downloaded.",
+      "labels": {
+        "password": "Export password (min. 12 chars)",
+        "confirmPassword": "Confirm export password"
+      },
+      "buttons": {
+        "submit": "Export and download",
+        "exporting": "Exporting..."
+      },
+      "errors": {
+        "passwordLength": "The export password must be at least 12 characters long.",
+        "passwordMismatch": "The two passwords do not match.",
+        "exportFailed": "Export failed."
+      }
+    },
+    "importTab": {
+      "hint": "Imported data creates new identities and accounts - nothing overwrites your existing data.",
+      "success": "Imported: {{identities}} identity(ies), {{accounts}} account(s), {{notes}} note(s), {{tasks}} task(s).",
+      "labels": {
+        "file": "Export file (.json)",
+        "password": "Export password"
+      },
+      "buttons": {
+        "submit": "Import",
+        "importing": "Importing..."
+      },
+      "errors": {
+        "noFile": "Please select an export file.",
+        "invalidFile": "This file is not a valid Idenva export.",
+        "importFailed": "Import failed."
+      }
+    },
+    "backupsTab": {
+      "existingBackups": "Existing backups",
+      "empty": "No backups yet.",
+      "sizeUnit": "KB",
+      "success": "Backup created: {{filename}}",
+      "labels": {
+        "password": "Backup password (min. 12 chars)"
+      },
+      "buttons": {
+        "create": "💾 Create backup now",
+        "creating": "Creating...",
+        "download": "Download"
+      },
+      "errors": {
+        "loadFailed": "Failed to load backups.",
+        "passwordLength": "The backup password must be at least 12 characters long.",
+        "createFailed": "Backup failed.",
+        "downloadFailed": "Failed to download backup."
+      }
+    },
+    "resetTab": {
+      "title": "Complete Application Reset",
+      "warning": "This action will permanently delete the entire database (identities, passwords, vaults). The application will return to its initial setup state.",
+      "buttons": {
+        "openReset": "Completely reset application"
+      },
+      "errors": {
+        "resetFailed": "Reset failed."
+      },
+      "modal": {
+        "title": "Reset Confirmation",
+        "description": "All your data will be permanently deleted.",
+        "prompt": "Please enter your current master password to confirm:",
+        "placeholder": "Current master password",
+        "buttons": {
+          "cancel": "Cancel",
+          "confirm": "Confirm Reset",
+          "resetting": "Resetting..."
+        }
+      }
+    }
+  },
+"dashboard": {
+    "alerts": {
+      "password_weak": "Weak password",
+      "password_reused": "Password reused across multiple accounts",
+      "password_old": "Password unchanged for over 12 months",
+      "2fa_disabled": "2FA disabled",
+      "sharedFields": "Shares {{fields}} with {{targetName}}"
+    },
+    "factors": {
+      "factor_weak_passwords": "{{count}} weak password(s)",
+      "factor_reused_passwords": "{{count}} reused password(s)",
+      "factor_old_passwords": "{{count}} old password(s) (>12 months)",
+      "factor_no_2fa": "{{count}} account(s) without 2FA",
+      "factor_correlations": "{{count}} correlation(s) with another identity"
+    }
+  }
+}

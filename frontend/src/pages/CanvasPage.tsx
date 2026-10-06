@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   Background,
   BackgroundVariant,
@@ -39,6 +40,7 @@ interface CanvasPageProps {
 type EntityNodeIndex = Record<string, string>;
 
 export function CanvasPage({ onLock, onOpenDashboard }: CanvasPageProps) {
+  const { t } = useTranslation();
   const [nodes, setNodes] = useState<Node[]>([]);
   const [edges, setEdges] = useState<Edge[]>([]);
   const [identitiesById, setIdentitiesById] = useState<Record<string, Identity>>({});
@@ -141,9 +143,9 @@ export function CanvasPage({ onLock, onOpenDashboard }: CanvasPageProps) {
         setNodes(flowNodes);
         setEdges([]);
       })
-      .catch(() => setError("Impossible de charger le canvas."))
+      .catch(() => setError(t("canvasPage.errors.loadCanvas")))
       .finally(() => setLoading(false));
-  }, []);
+  }, [t]);
 
   useEffect(() => {
     loadCanvasData();
@@ -165,10 +167,10 @@ export function CanvasPage({ onLock, onOpenDashboard }: CanvasPageProps) {
     if (saveTimers.current[node.id]) clearTimeout(saveTimers.current[node.id]);
     saveTimers.current[node.id] = setTimeout(() => {
       api.updateNodePosition(node.id, node.position.x, node.position.y).catch(() => {
-        setError("Échec de la sauvegarde de la position.");
+        setError(t("canvasPage.errors.savePosition"));
       });
     }, POSITION_SAVE_DEBOUNCE_MS);
-  }, []);
+  }, [t]);
 
   const onNodeClick = useCallback(
     (_event: React.MouseEvent, node: Node) => {
@@ -206,7 +208,7 @@ export function CanvasPage({ onLock, onOpenDashboard }: CanvasPageProps) {
       ]);
       setNewIdentityName("");
     } catch {
-      setError("Échec de la création de l'identité.");
+      setError(t("canvasPage.errors.createIdentity"));
     }
   }
 
@@ -374,11 +376,13 @@ export function CanvasPage({ onLock, onOpenDashboard }: CanvasPageProps) {
       <form className="canvas-page__toolbar" onSubmit={handleCreateIdentity}>
         <input
           className="canvas-page__toolbar-input"
-          placeholder="Nouvelle identité..."
+          placeholder={t("canvasPage.placeholders.newIdentity")}
           value={newIdentityName}
           onChange={(e) => setNewIdentityName(e.target.value)}
         />
-        <button type="submit" className="canvas-page__toolbar-btn">+ Identité</button>
+        <button type="submit" className="canvas-page__toolbar-btn">
+          {t("canvasPage.buttons.addIdentity")}
+        </button>
       </form>
 
       {/* Barre d'outils verticale / latérale (haut droite) */}
@@ -386,49 +390,49 @@ export function CanvasPage({ onLock, onOpenDashboard }: CanvasPageProps) {
         <button
           className="canvas-page__action-button"
           onClick={() => setShowSearch(true)}
-          title="Rechercher (Ctrl+K)"
+          title={t("canvasPage.titles.search")}
         >
-          🔍 <span className="action-label">Rechercher</span>
+          🔍 <span className="action-label">{t("canvasPage.actions.search")}</span>
         </button>
 
         <button
           className="canvas-page__action-button"
           onClick={() => setShowGlobalActivity(true)}
-          title="Consulter les notes et tâches"
+          title={t("canvasPage.titles.activity")}
         >
-          📋 <span className="action-label">Notes & Tâches</span>
+          📋 <span className="action-label">{t("canvasPage.actions.activity")}</span>
         </button>
 
         <button
           className="canvas-page__action-button"
           onClick={onOpenDashboard}
-          title="Dashboard sécurité"
+          title={t("canvasPage.titles.security")}
         >
-          🛡️ <span className="action-label">Sécurité</span>
+          🛡️ <span className="action-label">{t("canvasPage.actions.security")}</span>
         </button>
 
         <button
           className="canvas-page__action-button"
           onClick={() => setShowVaultData(true)}
-          title="Gestion des données et sauvegardes"
+          title={t("canvasPage.titles.vaultData")}
         >
-          💾 <span className="action-label">Données</span>
+          💾 <span className="action-label">{t("canvasPage.actions.vaultData")}</span>
         </button>
 
         <button
           className="canvas-page__action-button"
           onClick={() => setShowChangePassword(true)}
-          title="Changer le mot de passe maître"
+          title={t("canvasPage.titles.password")}
         >
-          🔑 <span className="action-label">Mot de passe</span>
+          🔑 <span className="action-label">{t("canvasPage.actions.password")}</span>
         </button>
 
         <button
           className="canvas-page__action-button canvas-page__action-button--danger"
           onClick={handleLock}
-          title="Verrouiller le coffre fort"
+          title={t("canvasPage.titles.lock")}
         >
-          🔒 <span className="action-label">Verrouiller</span>
+          🔒 <span className="action-label">{t("canvasPage.actions.lock")}</span>
         </button>
       </nav>
 

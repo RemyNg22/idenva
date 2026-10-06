@@ -145,25 +145,25 @@ def build_security_dashboard(db: Session, dek: bytes) -> SecurityDashboard:
             alerts.append(SecurityAlert(
                 severity="critical", identity_id=account.identity_id, identity_name=identity_name,
                 account_id=account.id, service_name=account.service_name,
-                message="Mot de passe faible",
+                message="password_weak",
             ))
         if account.id in reused_ids:
             alerts.append(SecurityAlert(
                 severity="critical", identity_id=account.identity_id, identity_name=identity_name,
                 account_id=account.id, service_name=account.service_name,
-                message="Mot de passe réutilisé sur plusieurs comptes",
+                message="password_reused",
             ))
         if account.id in old_ids:
             alerts.append(SecurityAlert(
                 severity="warning", identity_id=account.identity_id, identity_name=identity_name,
                 account_id=account.id, service_name=account.service_name,
-                message="Mot de passe non changé depuis plus de 12 mois",
+                message="password_old",
             ))
         if not account.has_2fa:
             alerts.append(SecurityAlert(
                 severity="warning", identity_id=account.identity_id, identity_name=identity_name,
                 account_id=account.id, service_name=account.service_name,
-                message="2FA désactivée",
+                message="2fa_disabled",
             ))
 
     fields_by_identity = _collect_identity_fields(db, dek)
@@ -173,7 +173,7 @@ def build_security_dashboard(db: Session, dek: bytes) -> SecurityDashboard:
         alerts.append(SecurityAlert(
             severity="warning", identity_id=corr.identity_a_id, identity_name=corr.identity_a_name,
             account_id=None, service_name=None,
-            message=f"Partage {fields_label} avec {corr.identity_b_name}",
+            message=f"shared_fields:{fields_label}:{corr.identity_b_name}",
         ))
 
     accounts_by_identity: dict[str, list[Account]] = {}
@@ -200,28 +200,25 @@ def build_security_dashboard(db: Session, dek: bytes) -> SecurityDashboard:
         if weak_count:
             pts = -15 * weak_count
             score += pts
-            factors.append(OpsecFactor(label=f"{weak_count} mot(s) de passe faible(s)", points=pts))
+            factors.append(OpsecFactor(label=f"factor_weak_passwords:{weak_count}", points=pts))
         if reused_count:
             pts = -15 * reused_count
             score += pts
-            factors.append(OpsecFactor(label=f"{reused_count} mot(s) de passe réutilisé(s)", points=pts))
+            factors.append(OpsecFactor(label=f"factor_reused_passwords:{reused_count}", points=pts))
         if old_count:
             pts = -10 * old_count
             score += pts
-            factors.append(OpsecFactor(label=f"{old_count} mot(s) de passe ancien(s) (>12 mois)", points=pts))
+            factors.append(OpsecFactor(label=f"factor_old_passwords:{old_count}", points=pts))
         if no_2fa_count:
             pts = -10 * no_2fa_count
             score += pts
-            factors.append(OpsecFactor(label=f"{no_2fa_count} compte(s) sans 2FA", points=pts))
+            factors.append(OpsecFactor(label=f"factor_no_2fa:{no_2fa_count}", points=pts))
         if corr_count:
             pts = -20 * corr_count
             score += pts
-            factors.append(OpsecFactor(label=f"{corr_count} corrélation(s) avec une autre identité", points=pts))
+            factors.append(OpsecFactor(label=f"factor_correlations:{corr_count}", points=pts))
 
         score = max(0, min(100, score))
         scores.append(IdentityOpsecScore(identity_id=identity.id, identity_name=identity.name, score=score, factors=factors))
 
     return SecurityDashboard(overview=overview, alerts=alerts, scores=scores, correlations=correlations)
-
-
-
