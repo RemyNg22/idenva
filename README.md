@@ -100,12 +100,10 @@ node --version
 git clone https://github.com/RemyNg22/idenva.git
 cd idenva
 
-cd backend
 python -m venv venv
 venv\Scripts\activate        # Windows
 source venv/bin/activate     # macOS/Linux
 pip install -r requirements.txt
-cd ..
 
 cd frontend
 npm install
@@ -241,12 +239,10 @@ node --version
 git clone https://github.com/RemyNg22/idenva.git
 cd idenva
 
-cd backend
 python -m venv venv
 venv\Scripts\activate        # Windows
 source venv/bin/activate     # macOS/Linux
 pip install -r requirements.txt
-cd ..
 
 cd frontend
 npm install
