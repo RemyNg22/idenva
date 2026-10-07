@@ -64,7 +64,7 @@ export function UnlockPage({ onUnlocked }: UnlockPageProps) {
 
       <div className="unlock-card">
         <div className="unlock-card__mark">
-          <img src="/favicon.svg" alt="Idenva Logo" width={32} height={32} />
+          <img src="/favicon.png" alt="Idenva Logo" width={32} height={32} />
         </div>
         <h1 className="unlock-card__title">Idenva</h1>
         <p className="unlock-card__subtitle">
