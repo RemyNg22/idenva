@@ -15,6 +15,11 @@
   backdrop-filter: saturate(180%) blur(12px);
   -webkit-backdrop-filter: saturate(180%) blur(12px);
   transition: background 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
+
+  /* Rendu typographique épuré */
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 .account-node:hover {
@@ -27,29 +32,38 @@
   box-shadow: 0 0 0 3px var(--accent-soft);
 }
 
+/* Style de l'icône SVG Lucide */
 .account-node__icon {
-  font-size: 14px;
+  color: var(--text-tertiary);
+  flex-shrink: 0;
+  stroke-width: 1.75;
 }
 
 .account-node__name {
   font-size: 13px;
-  font-weight: 500;
+  font-weight: 400;
   flex: 1;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  letter-spacing: -0.01em;
 }
 
 .account-node__badges {
   display: flex;
   gap: 4px;
+  align-items: center;
 }
 
 .account-node__badge {
   font-size: 10px;
-  font-weight: 600;
+  font-weight: 500;
   padding: 2px 6px;
-  border-radius: 4px;
+  border-radius: var(--radius-full, 10px);
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  letter-spacing: 0.01em;
 }
 
 .badge-2fa {

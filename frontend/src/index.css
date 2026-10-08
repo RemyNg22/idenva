@@ -13,8 +13,6 @@
   --bg: #f5f5f7;
   --surface: #ffffff;
   --glass: rgba(255, 255, 255, 0.72);
-  
-  /* Nuance subtile teintée bleu-ardoise pour les panneaux en mode clair */
   --glass-panel: rgba(238, 242, 248, 0.85);
 
   --field: rgba(120, 120, 128, 0.10);
@@ -26,8 +24,8 @@
 
   /* Texte */
   --text-primary: #1d1d1f;
-  --text-secondary: #6e6e73;
-  --text-tertiary: #8e8e93;
+  --text-secondary: #4d4d52;
+  --text-tertiary: #7d7d82;
 
   /* Accent */
   --accent: #3c7dff;
@@ -38,7 +36,7 @@
   --on-accent: #ffffff;
 
   /* Identité & Comptes */
-  --identity-bg: rgba(235, 243, 255, 0.7);
+  --identity-bg: rgba(203, 219, 244, 0.655);
   --identity-border: rgba(60, 125, 255, 0.25);
   --account-bg: rgba(255, 255, 255, 0.8);
   --account-border: rgba(0, 0, 0, 0.08);
@@ -52,7 +50,7 @@
   --success-soft: rgba(36, 138, 61, 0.12);
 
   /* Canvas */
-  --canvas-dot: rgba(0, 0, 0, 0.14);
+  --canvas-dot: rgba(0, 0, 0, 0.313);
   --edge: #b4b8c2;
   --minimap-mask: rgba(245, 245, 247, 0.65);
 
@@ -72,8 +70,6 @@
     --bg: #151517;
     --surface: #1f1f22;
     --glass: rgba(34, 34, 38, 0.72);
-    
-    /* Nuance subtile teintée ardoise/bleutée pour les panneaux en mode sombre */
     --glass-panel: rgba(24, 28, 38, 0.85);
 
     --field: rgba(118, 118, 128, 0.24);

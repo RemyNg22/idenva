@@ -1,6 +1,7 @@
 import { useTranslation } from "react-i18next";
 import { Handle, Position, type Node, type NodeProps } from "@xyflow/react";
 import "./IdentityNode.css";
+import { User } from "lucide-react";
 
 export type IdentityNodeData = {
   label: string;
@@ -15,7 +16,7 @@ export function IdentityNode({ data, selected }: NodeProps<IdentityFlowNode>) {
   return (
     <div className={`identity-node-group ${selected ? "identity-node-group--selected" : ""}`}>
       <div className="identity-node-group__header">
-        <span className="identity-node-group__icon">👤</span>
+        <User size={16} className="identity-node-group__icon" />
         <span className="identity-node-group__title">{data.label}</span>
         <span
           className="identity-node-group__badge"

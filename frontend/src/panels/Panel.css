@@ -9,7 +9,6 @@
   z-index: 20;
   box-sizing: border-box;
   color: var(--text-primary);
-  /* Teinte subtile en fond */
   background: var(--glass-panel);
   border-left: 1px solid var(--border);
   box-shadow: var(--shadow-panel);

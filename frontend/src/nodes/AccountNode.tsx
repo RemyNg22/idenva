@@ -1,6 +1,7 @@
 import { useTranslation } from "react-i18next";
 import { type Node, type NodeProps } from "@xyflow/react";
 import "./AccountNode.css";
+import { KeyRound } from "lucide-react";
 
 export type AccountNodeData = {
   label: string;
@@ -15,7 +16,7 @@ export function AccountNode({ data, selected }: NodeProps<AccountFlowNode>) {
 
   return (
     <div className={`account-node ${selected ? "account-node--selected" : ""}`}>
-      <span className="account-node__icon">🔑</span>
+      <KeyRound size={14} className="account-node__icon" />
       <span className="account-node__name">{data.label}</span>
       <div className="account-node__badges">
         {data.hasPassword && (

@@ -25,6 +25,7 @@ import { ChangePasswordModal } from "../components/ChangePasswordModal";
 import { SearchModal } from "../components/SearchModal";
 import { VaultDataModal } from "../components/VaultDataModal";
 import "./CanvasPage.css";
+import { Search, Activity, Shield, HardDrive, KeyRound, Lock } from "lucide-react";
 
 const POSITION_SAVE_DEBOUNCE_MS = 500;
 const ACCOUNT_HEIGHT = 55;
@@ -392,7 +393,8 @@ export function CanvasPage({ onLock, onOpenDashboard }: CanvasPageProps) {
           onClick={() => setShowSearch(true)}
           title={t("canvasPage.titles.search")}
         >
-          🔍 <span className="action-label">{t("canvasPage.actions.search")}</span>
+          <Search size={15} />
+          <span className="action-label">{t("canvasPage.actions.search")}</span>
         </button>
 
         <button
@@ -400,7 +402,8 @@ export function CanvasPage({ onLock, onOpenDashboard }: CanvasPageProps) {
           onClick={() => setShowGlobalActivity(true)}
           title={t("canvasPage.titles.activity")}
         >
-          📋 <span className="action-label">{t("canvasPage.actions.activity")}</span>
+          <Activity size={15} />
+          <span className="action-label">{t("canvasPage.actions.activity")}</span>
         </button>
 
         <button
@@ -408,7 +411,8 @@ export function CanvasPage({ onLock, onOpenDashboard }: CanvasPageProps) {
           onClick={onOpenDashboard}
           title={t("canvasPage.titles.security")}
         >
-          🛡️ <span className="action-label">{t("canvasPage.actions.security")}</span>
+          <Shield size={15} />
+          <span className="action-label">{t("canvasPage.actions.security")}</span>
         </button>
 
         <button
@@ -416,7 +420,8 @@ export function CanvasPage({ onLock, onOpenDashboard }: CanvasPageProps) {
           onClick={() => setShowVaultData(true)}
           title={t("canvasPage.titles.vaultData")}
         >
-          💾 <span className="action-label">{t("canvasPage.actions.vaultData")}</span>
+          <HardDrive size={15} />
+          <span className="action-label">{t("canvasPage.actions.vaultData")}</span>
         </button>
 
         <button
@@ -424,7 +429,8 @@ export function CanvasPage({ onLock, onOpenDashboard }: CanvasPageProps) {
           onClick={() => setShowChangePassword(true)}
           title={t("canvasPage.titles.password")}
         >
-          🔑 <span className="action-label">{t("canvasPage.actions.password")}</span>
+          <KeyRound size={15} />
+          <span className="action-label">{t("canvasPage.actions.password")}</span>
         </button>
 
         <button
@@ -432,7 +438,8 @@ export function CanvasPage({ onLock, onOpenDashboard }: CanvasPageProps) {
           onClick={handleLock}
           title={t("canvasPage.titles.lock")}
         >
-          🔒 <span className="action-label">{t("canvasPage.actions.lock")}</span>
+          <Lock size={15} />
+          <span className="action-label">{t("canvasPage.actions.lock")}</span>
         </button>
       </nav>
 
