@@ -1,47 +1,60 @@
 .unlock-page {
+  height: 100%;
   min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
-  background: #0c1222;
+  overflow: hidden;
+  background: var(--bg);
 }
 
+/* Halo lumineux discret à la place de la grille de points */
 .unlock-page__grid {
   position: absolute;
   inset: 0;
-  background-image: radial-gradient(#284394 1px, transparent 1px);
-  background-size: 28px 28px;
-  opacity: 0.6;
+  pointer-events: none;
+  background:
+    radial-gradient(900px 520px at 50% -8%, var(--accent-glow), transparent 70%),
+    radial-gradient(640px 420px at 100% 110%, var(--accent-glow), transparent 70%);
 }
 
 .unlock-card {
   position: relative;
-  width: 340px;
-  padding: 40px 32px;
-  background: #272c3a;
-  border: 1px solid #000000;
-  border-radius: 8px;
+  width: 380px;
+  padding: 44px 36px 34px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
   text-align: center;
 }
 
 .unlock-card__mark {
-  color: #5b8def;
-  font-size: 20px;
-  margin-bottom: 12px;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 18px;
+}
+
+.unlock-card__mark img {
+  width: 72px;
+  height: 72px;
+  border-radius: 18px;
+  box-shadow: var(--shadow-md);
 }
 
 .unlock-card__title {
-  font-size: 22px;
-  font-weight: 600;
-  color: #e8e9ed;
+  font-size: 26px;
+  font-weight: 650;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
   margin: 0 0 4px;
 }
 
 .unlock-card__subtitle {
-  font-size: 14px;
-  color: #8b8fa3;
-  margin: 0 0 28px;
+  font-size: 15px;
+  color: var(--text-secondary);
+  margin: 0 0 30px;
 }
 
 .unlock-form {
@@ -52,9 +65,10 @@
 }
 
 .unlock-form__label {
-  font-size: 12px;
-  color: #8b8fa3;
-  margin-top: 12px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  margin-top: 14px;
 }
 
 .unlock-form__label:first-of-type {
@@ -62,51 +76,60 @@
 }
 
 .unlock-form__input {
-  background: #14161c;
-  border: 1px solid #2a2e3a;
-  border-radius: 6px;
-  padding: 10px 12px;
-  color: #e8e9ed;
-  font-family: "SFMono-Regular", "Consolas", "Menlo", monospace;
-  font-size: 14px;
+  background: var(--field);
+  border: 1px solid transparent;
+  border-radius: 10px;
+  padding: 12px 14px;
+  color: var(--text-primary);
+  font-family: inherit;
+  font-size: 15px;
   outline: none;
+  transition: background 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
 .unlock-form__input:focus {
-  border-color: #5b8def;
+  background: var(--surface);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 4px var(--accent-soft);
 }
 
 .unlock-form__error {
-  color: #e5484d;
+  color: var(--danger);
   font-size: 13px;
   margin: 8px 0 0;
 }
 
 .unlock-form__submit {
-  margin-top: 20px;
-  padding: 10px;
+  margin-top: 24px;
+  padding: 12px;
   border: none;
-  border-radius: 6px;
-  background: #5b8def;
-  color: #14161c;
-  font-size: 14px;
+  border-radius: 10px;
+  background: var(--accent);
+  color: var(--on-accent);
+  font-size: 15px;
   font-weight: 600;
   cursor: pointer;
+  transition: background 0.15s ease, transform 0.1s ease;
 }
 
 .unlock-form__submit:disabled {
-  opacity: 0.6;
+  opacity: 0.5;
   cursor: default;
 }
 
 .unlock-form__submit:not(:disabled):hover {
-  filter: brightness(1.1);
+  background: var(--accent-hover);
+}
+
+.unlock-form__submit:not(:disabled):active {
+  transform: scale(0.99);
 }
 
 .unlock-card__footnote {
   font-size: 12px;
-  color: #8b8fa3;
-  margin: 20px 0 0;
+  line-height: 1.5;
+  color: var(--text-tertiary);
+  margin: 22px 0 0;
 }
 
 .unlock-page__lang-switcher {

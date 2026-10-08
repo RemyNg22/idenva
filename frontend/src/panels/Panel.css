@@ -4,70 +4,87 @@
   right: 0;
   width: 340px;
   height: 100%;
-  background: #1c1f28;
-  border-left: 1px solid #2a2e3a;
-  padding: 20px;
+  padding: 22px 20px;
   overflow-y: auto;
   z-index: 20;
-  color: #e8e9ed;
   box-sizing: border-box;
+  color: var(--text-primary);
+  /* Teinte subtile en fond */
+  background: var(--glass-panel);
+  border-left: 1px solid var(--border);
+  box-shadow: var(--shadow-panel);
+  backdrop-filter: saturate(180%) blur(28px);
+  -webkit-backdrop-filter: saturate(180%) blur(28px);
 }
 
 .panel__header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 16px;
+  margin-bottom: 18px;
 }
 
 .panel__type {
   font-size: 11px;
-  letter-spacing: 0.08em;
-  color: #5b8def;
   font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--text-secondary);
+  text-transform: uppercase;
 }
 
 .panel__close {
-  background: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  background: var(--field);
   border: none;
-  color: #8b8fa3;
-  font-size: 20px;
-  cursor: pointer;
+  border-radius: 50%;
+  color: var(--text-secondary);
+  font-size: 16px;
   line-height: 1;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
 }
 
 .panel__close:hover {
-  color: #e8e9ed;
+  background: var(--field-hover);
+  color: var(--text-primary);
 }
 
 .panel__label {
   display: block;
   font-size: 12px;
-  color: #8b8fa3;
-  margin: 12px 0 4px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  margin: 14px 0 5px;
 }
 
 .panel__label--spaced {
-  margin-top: 20px;
+  margin-top: 22px;
 }
 
 .panel__input,
 .panel__textarea {
   width: 100%;
-  background: #14161c;
-  border: 1px solid #2a2e3a;
-  border-radius: 6px;
-  padding: 8px 10px;
-  color: #e8e9ed;
-  font-size: 13px;
+  background: var(--field);
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  padding: 9px 11px;
+  color: var(--text-primary);
+  font-size: 13.5px;
   box-sizing: border-box;
   font-family: inherit;
+  transition: background 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
 .panel__input:focus,
 .panel__textarea:focus {
   outline: none;
-  border-color: #5b8def;
+  background: var(--surface);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
 }
 
 .panel__textarea {
@@ -75,11 +92,11 @@
 }
 
 .panel__section-title {
-  margin-top: 24px;
+  margin-top: 26px;
   font-size: 12px;
-  color: #8b8fa3;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
+  font-weight: 600;
+  color: var(--text-secondary);
+  letter-spacing: 0.02em;
 }
 
 .panel__account-list {
@@ -91,14 +108,16 @@
 .panel__account-item {
   display: flex;
   justify-content: space-between;
-  padding: 8px 10px;
-  border-radius: 6px;
+  align-items: center;
+  padding: 9px 10px;
+  border-radius: var(--radius-sm);
   cursor: pointer;
-  font-size: 13px;
+  font-size: 13.5px;
+  transition: background 0.15s ease;
 }
 
 .panel__account-item:hover {
-  background: #2a2e3a;
+  background: var(--field);
 }
 
 .panel__account-badge {
@@ -113,39 +132,41 @@
 }
 
 .panel__btn {
-  background: #2a2e3a;
-  border: 1px solid #3a3f4d;
-  border-radius: 6px;
-  padding: 8px 12px;
-  color: #e8e9ed;
+  background: var(--field);
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  padding: 9px 12px;
+  color: var(--text-primary);
   font-size: 13px;
+  font-weight: 500;
   cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
 }
 
 .panel__btn:hover {
-  border-color: #5b8def;
+  background: var(--field-hover);
 }
 
 .panel__btn--danger {
-  background: transparent;
-  border-color: #e5484d;
-  color: #e5484d;
+  background: var(--danger-soft);
+  color: var(--danger);
 }
 
 .panel__btn--danger:hover {
-  background: rgba(229, 72, 77, 0.1);
+  background: var(--danger-soft);
+  filter: brightness(0.95);
 }
 
 .panel__danger-zone {
   margin-top: 32px;
-  padding-top: 16px;
-  border-top: 1px solid #2a2e3a;
+  padding-top: 18px;
+  border-top: 1px solid var(--border);
 }
 
 .panel__confirm p {
   font-size: 13px;
-  color: #e5484d;
-  margin: 0 0 10px;
+  color: var(--danger);
+  margin: 0 0 12px;
   text-align: center;
 }
 
@@ -156,13 +177,13 @@
 }
 
 .panel__error {
-  color: #e5484d;
+  color: var(--danger);
   font-size: 12px;
   margin: 8px 0 0;
 }
 
 .panel__meta {
   font-size: 12px;
-  color: #8b8fa3;
+  color: var(--text-tertiary);
   margin-top: 12px;
 }

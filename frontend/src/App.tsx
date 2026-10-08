@@ -73,7 +73,7 @@ export default function App() {
       <div style={{
         position: "fixed",
         bottom: "16px",
-        right: "16px",
+        left: "70px",
         display: "flex",
         alignItems: "center",
         gap: "10px",

@@ -2,6 +2,119 @@
   box-sizing: border-box;
 }
 
+:root {
+  color-scheme: light dark;
+
+  --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display",
+    "Segoe UI Variable Text", "Segoe UI", system-ui, "Helvetica Neue", Roboto, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", "Cascadia Mono", Consolas, Menlo, monospace;
+
+  /* Surfaces */
+  --bg: #f5f5f7;
+  --surface: #ffffff;
+  --glass: rgba(255, 255, 255, 0.72);
+  
+  /* Nuance subtile teintée bleu-ardoise pour les panneaux en mode clair */
+  --glass-panel: rgba(238, 242, 248, 0.85);
+
+  --field: rgba(120, 120, 128, 0.10);
+  --field-hover: rgba(120, 120, 128, 0.16);
+
+  /* Traits */
+  --border: rgba(0, 0, 0, 0.08);
+  --border-strong: rgba(0, 0, 0, 0.16);
+
+  /* Texte */
+  --text-primary: #1d1d1f;
+  --text-secondary: #6e6e73;
+  --text-tertiary: #8e8e93;
+
+  /* Accent */
+  --accent: #3c7dff;
+  --accent-hover: #2f6bec;
+  --accent-deep: #2654c9;
+  --accent-soft: rgba(60, 125, 255, 0.14);
+  --accent-glow: rgba(60, 125, 255, 0.16);
+  --on-accent: #ffffff;
+
+  /* Identité & Comptes */
+  --identity-bg: rgba(235, 243, 255, 0.7);
+  --identity-border: rgba(60, 125, 255, 0.25);
+  --account-bg: rgba(255, 255, 255, 0.8);
+  --account-border: rgba(0, 0, 0, 0.08);
+
+  /* Statuts */
+  --danger: #d92d3a;
+  --danger-soft: rgba(217, 45, 58, 0.10);
+  --warning: #c77700;
+  --warning-soft: rgba(199, 119, 0, 0.12);
+  --success: #248a3d;
+  --success-soft: rgba(36, 138, 61, 0.12);
+
+  /* Canvas */
+  --canvas-dot: rgba(0, 0, 0, 0.14);
+  --edge: #b4b8c2;
+  --minimap-mask: rgba(245, 245, 247, 0.65);
+
+  /* Formes & ombres */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05), 0 0 0 0.5px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.14);
+  --shadow-panel: -12px 0 40px rgba(0, 0, 0, 0.08);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #151517;
+    --surface: #1f1f22;
+    --glass: rgba(34, 34, 38, 0.72);
+    
+    /* Nuance subtile teintée ardoise/bleutée pour les panneaux en mode sombre */
+    --glass-panel: rgba(24, 28, 38, 0.85);
+
+    --field: rgba(118, 118, 128, 0.24);
+    --field-hover: rgba(118, 118, 128, 0.34);
+
+    --border: rgba(255, 255, 255, 0.10);
+    --border-strong: rgba(255, 255, 255, 0.20);
+
+    --text-primary: #f5f5f7;
+    --text-secondary: #a1a1a6;
+    --text-tertiary: #7c7c82;
+
+    --accent: #5b93ff;
+    --accent-hover: #78a6ff;
+    --accent-deep: #3c7dff;
+    --accent-soft: rgba(91, 147, 255, 0.20);
+    --accent-glow: rgba(91, 147, 255, 0.18);
+
+    --identity-bg: rgba(30, 41, 59, 0.6);
+    --identity-border: rgba(91, 147, 255, 0.25);
+    --account-bg: rgba(34, 34, 38, 0.8);
+    --account-border: rgba(255, 255, 255, 0.1);
+
+    --danger: #ff5a52;
+    --danger-soft: rgba(255, 90, 82, 0.16);
+    --warning: #ffb340;
+    --warning-soft: rgba(255, 179, 64, 0.16);
+    --success: #32d74b;
+    --success-soft: rgba(50, 215, 75, 0.16);
+
+    --canvas-dot: rgba(255, 255, 255, 0.12);
+    --edge: #4a4d57;
+    --minimap-mask: rgba(21, 21, 23, 0.65);
+
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+    --shadow-md: 0 6px 24px rgba(0, 0, 0, 0.45);
+    --shadow-lg: 0 20px 56px rgba(0, 0, 0, 0.6);
+    --shadow-panel: -12px 0 40px rgba(0, 0, 0, 0.45);
+  }
+}
+
 html, body, #root {
   height: 100%;
   width: 100%;
@@ -16,6 +129,45 @@ html, body, #root {
 }
 
 body {
-  font-family: -apple-system, "Segoe UI", "Inter", sans-serif;
-  background: #14161c;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  line-height: 1.45;
+  background: var(--bg);
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+button, input, textarea, select {
+  font-family: inherit;
+}
+
+::selection {
+  background: var(--accent-soft);
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-strong) transparent;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-strong);
+  border-radius: 999px;
+  border: 3px solid transparent;
+  background-clip: content-box;
 }

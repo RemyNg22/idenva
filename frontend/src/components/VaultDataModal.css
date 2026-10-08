@@ -6,42 +6,55 @@
   display: flex;
   gap: 4px;
   margin-bottom: 18px;
-  border-bottom: 1px solid #2a2e3a;
+  border-bottom: 1px solid var(--border);
 }
 
 .vault-modal__tab {
   background: none;
   border: none;
-  color: #8b8fa3;
+  color: var(--text-tertiary);
   padding: 8px 14px;
   font-size: 13px;
+  font-weight: 500;
   cursor: pointer;
   border-bottom: 2px solid transparent;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.vault-modal__tab:hover {
+  color: var(--text-secondary);
 }
 
 .vault-modal__tab--active {
-  color: #e8e9ed;
-  border-bottom-color: #5b8def;
+  color: var(--text-primary);
+  border-bottom-color: var(--accent);
+  font-weight: 600;
 }
 
-/* Tab de Réinitialisation rouge */
+/* Tab de réinitialisation rouge */
 .vault-modal__tab--danger {
-  color: #f87171 !important;
+  color: var(--danger) !important;
+  opacity: 0.8;
+}
+
+.vault-modal__tab--danger:hover {
+  opacity: 1;
 }
 
 .vault-modal__tab--danger.vault-modal__tab--active {
-  border-bottom-color: #ef4444 !important;
+  border-bottom-color: var(--danger) !important;
+  opacity: 1;
 }
 
 .vault-modal__hint {
-  font-size: 12px;
-  color: #8b8fa3;
+  font-size: 13px;
+  color: var(--text-secondary);
   margin: 0 0 14px;
   line-height: 1.5;
 }
 
 .vault-modal__empty {
-  color: #8b8fa3;
+  color: var(--text-tertiary);
   font-size: 13px;
 }
 
@@ -72,21 +85,21 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: #14161c;
-  border: 1px solid #2a2e3a;
-  border-radius: 6px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
   padding: 10px 12px;
 }
 
 .vault-modal__backup-name {
   font-size: 13px;
-  color: #e8e9ed;
-  font-family: "SFMono-Regular", "Consolas", "Menlo", monospace;
+  color: var(--text-primary);
+  font-family: var(--font-mono);
 }
 
 .vault-modal__backup-meta {
   font-size: 11px;
-  color: #8b8fa3;
+  color: var(--text-tertiary);
   margin-top: 2px;
 }
 
@@ -96,43 +109,44 @@
 }
 
 .vault-modal__danger-box {
-  background: rgba(239, 68, 68, 0.08);
-  border: 1px solid rgba(239, 68, 68, 0.3);
-  border-radius: 8px;
+  background: var(--danger-soft);
+  border: 1px solid var(--danger);
+  border-radius: var(--radius-md);
   padding: 16px;
 }
 
 .vault-modal__danger-box h4 {
   margin: 0 0 8px;
-  color: #f87171;
+  color: var(--danger);
   font-size: 14px;
+  font-weight: 650;
 }
 
 .btn-danger-bold {
-  background: #dc2626;
+  background: var(--danger);
   color: #ffffff;
   border: none;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   padding: 10px 16px;
+  font-size: 13px;
   font-weight: 600;
   cursor: pointer;
   width: 100%;
-  margin-top: 10px;
-  transition: background 0.2s;
+  margin-top: 12px;
+  transition: opacity 0.15s ease;
 }
 
 .btn-danger-bold:hover {
-  background: #b91c1c;
+  opacity: 0.9;
 }
 
 /* Modal Popup de confirmation */
 .danger-modal-backdrop {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.75);
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -140,24 +154,26 @@
 }
 
 .danger-modal-card {
-  background: #12141a;
-  border: 2px solid #ef4444;
-  border-radius: 12px;
+  background: var(--surface);
+  border: 1px solid var(--danger);
+  border-radius: var(--radius-lg);
   padding: 24px;
   width: 380px;
-  box-shadow: 0 10px 25px rgba(239, 68, 68, 0.25);
+  box-shadow: var(--shadow-lg);
 }
 
 .danger-modal-card h3 {
-  color: #f87171;
+  color: var(--danger);
   margin-top: 0;
   font-size: 16px;
+  font-weight: 650;
 }
 
 .danger-modal-subtext {
-  font-size: 12px;
-  color: #9ca3af;
+  font-size: 13px;
+  color: var(--text-secondary);
   margin-bottom: 16px;
+  line-height: 1.4;
 }
 
 .danger-modal-actions {
@@ -168,15 +184,17 @@
 }
 
 .btn-danger-confirm {
-  background: #b91c1c;
-  color: #fff;
+  background: var(--danger);
+  color: #ffffff;
   border: none;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   padding: 8px 14px;
+  font-size: 13px;
   font-weight: 600;
   cursor: pointer;
+  transition: opacity 0.15s ease;
 }
 
 .btn-danger-confirm:hover {
-  background: #991b1b;
+  opacity: 0.9;
 }

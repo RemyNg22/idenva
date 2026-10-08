@@ -1,27 +1,30 @@
 .account-node {
-  width: 236px;
-  height: 45px;
-  background: #14161c;
-  border: 1.5px solid #3d7a55;
-  border-left: 4px solid #4fb877;
-  border-radius: 6px;
-  padding: 8px 10px;
+  width: 230px;
+  height: 44px;
+  background: var(--account-bg);
+  border: 1px solid var(--account-border);
+  border-radius: var(--radius-sm);
+  padding: 8px 12px;
   display: flex;
   align-items: center;
   gap: 8px;
   box-sizing: border-box;
-  color: #e8e9ed;
+  color: var(--text-primary);
   cursor: pointer;
-  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  box-shadow: var(--shadow-sm);
+  backdrop-filter: saturate(180%) blur(12px);
+  -webkit-backdrop-filter: saturate(180%) blur(12px);
+  transition: background 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
 }
 
 .account-node:hover {
-  border-color: #4fb877;
+  background: var(--surface);
+  border-color: var(--border-strong);
 }
 
 .account-node--selected {
-  border-color: #4fb877;
-  box-shadow: 0 0 0 2px rgba(79, 184, 119, 0.25);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
 }
 
 .account-node__icon {
@@ -30,7 +33,7 @@
 
 .account-node__name {
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 500;
   flex: 1;
   white-space: nowrap;
   overflow: hidden;
@@ -43,20 +46,18 @@
 }
 
 .account-node__badge {
-  font-size: 9px;
-  font-weight: 700;
-  padding: 2px 5px;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 6px;
   border-radius: 4px;
 }
 
 .badge-2fa {
-  background: rgba(91, 141, 239, 0.2);
-  color: #5b8def;
-  border: 1px solid #5b8def;
+  background: var(--accent-soft);
+  color: var(--accent);
 }
 
 .badge-pwd {
-  background: rgba(79, 184, 119, 0.2);
-  color: #4fb877;
-  border: 1px solid #4fb877;
+  background: var(--success-soft);
+  color: var(--success);
 }

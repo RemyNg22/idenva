@@ -1,7 +1,7 @@
 .canvas-page {
-  width: 100vw;
-  height: 100vh;
-  background: #14161c;
+  width: 100%;
+  height: 100%;
+  background: var(--bg);
   position: relative;
   overflow: hidden;
 }
@@ -14,93 +14,104 @@
   z-index: 10;
   display: flex;
   gap: 8px;
-  background: rgba(20, 22, 28, 0.85);
   padding: 6px;
-  border-radius: 8px;
-  border: 1px solid #2a2e3a;
-  backdrop-filter: blur(8px);
+  background: var(--glass);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
 }
 
 .canvas-page__toolbar-input {
-  background: #1c1f28;
-  border: 1px solid #2a2e3a;
-  border-radius: 6px;
+  width: 190px;
+  background: var(--field);
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
   padding: 8px 12px;
-  color: #e8e9ed;
+  color: var(--text-primary);
   font-size: 13px;
-  width: 180px;
+  transition: background 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.canvas-page__toolbar-input::placeholder {
+  color: var(--text-tertiary);
 }
 
 .canvas-page__toolbar-input:focus {
   outline: none;
-  border-color: #5b8def;
+  background: var(--surface);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
 }
 
 .canvas-page__toolbar-btn {
-  background: #5b8def;
+  background: var(--accent);
   border: none;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   padding: 8px 14px;
-  color: #14161c;
+  color: var(--on-accent);
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
   white-space: nowrap;
-  transition: background 0.2s;
+  transition: background 0.15s ease;
 }
 
 .canvas-page__toolbar-btn:hover {
-  filter: brightness(1.1);
+  background: var(--accent-hover);
 }
 
-/* Menu d'actions latéral en colonne (haut droite) */
+/* Menu d'actions en colonne (haut droite) */
 .canvas-page__top-actions {
   position: absolute;
   top: 16px;
   right: 16px;
   z-index: 10;
   display: flex;
-  flex-direction: column; /* Disposition verticale */
-  gap: 6px;
-  background: rgba(20, 22, 28, 0.85);
-  padding: 8px;
-  border-radius: 10px;
-  border: 1px solid #2a2e3a;
-  backdrop-filter: blur(8px);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+  flex-direction: column;
+  gap: 2px;
+  padding: 6px;
+  background: var(--glass);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  box-shadow: var(--shadow-md);
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
 }
 
 .canvas-page__action-button {
   display: flex;
   align-items: center;
+  justify-content: flex-start;
   gap: 10px;
+  width: 100%;
   padding: 8px 12px;
-  background: #1c1f28;
-  border: 1px solid #2a2e3a;
-  border-radius: 6px;
-  color: #e8e9ed;
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
   font-size: 13px;
   cursor: pointer;
   white-space: nowrap;
-  transition: all 0.2s ease;
-  width: 100%;
-  justify-content: flex-start;
+  transition: background 0.15s ease, color 0.15s ease;
 }
 
 .canvas-page__action-button:hover {
-  border-color: #5b8def;
-  background: #252a36;
-  color: #ffffff;
+  background: var(--field-hover);
+}
+
+.canvas-page__action-button--danger {
+  color: var(--danger);
 }
 
 .canvas-page__action-button--danger:hover {
-  border-color: #ef4444;
-  background: rgba(239, 68, 68, 0.15);
-  color: #f87171;
+  background: var(--danger-soft);
+  color: var(--danger);
 }
 
 .action-label {
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 500;
 }
 
@@ -111,35 +122,87 @@
   left: 50%;
   transform: translateX(-50%);
   z-index: 20;
-  padding: 8px 16px;
-  background: #2a1618;
-  border: 1px solid #e5484d;
-  border-radius: 6px;
-  color: #e5484d;
+  padding: 10px 16px;
+  background: var(--surface);
+  border: 1px solid var(--danger);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  color: var(--danger);
   font-size: 13px;
 }
 
-/* Personnalisation des contrôles ReactFlow */
+/* ---------- ReactFlow ---------- */
+
+.canvas-page .react-flow {
+  background: var(--bg);
+}
+
+/* Points de la grille (surcharge la prop `color` de <Background>) */
+.canvas-page .react-flow__background-pattern {
+  fill: var(--canvas-dot) !important;
+}
+
+.canvas-page .react-flow__edge-path {
+  stroke: var(--edge);
+  stroke-width: 1.5;
+}
+
+.canvas-page .react-flow__edge.selected .react-flow__edge-path,
+.canvas-page .react-flow__edge:hover .react-flow__edge-path {
+  stroke: var(--accent);
+}
+
+.canvas-page .react-flow__edge-text {
+  fill: var(--text-secondary);
+  font-size: 11px;
+}
+
+.canvas-page .react-flow__edge-textbg {
+  fill: var(--bg);
+}
+
+.canvas-page .react-flow__handle {
+  width: 8px;
+  height: 8px;
+  background: var(--border-strong);
+  border: 2px solid var(--surface);
+}
+
 .canvas-page .react-flow__controls {
-  background: #1c1f28;
-  border: 1px solid #2a2e3a;
-  border-radius: 6px;
+  background: var(--glass);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
   overflow: hidden;
-  box-shadow: none;
+  box-shadow: var(--shadow-md);
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
 }
 
 .canvas-page .react-flow__controls-button {
-  background: #1c1f28;
-  border-bottom: 1px solid #2a2e3a;
-  color: #e8e9ed;
+  background: transparent;
+  border-bottom: 1px solid var(--border);
+  color: var(--text-secondary);
 }
 
 .canvas-page .react-flow__controls-button:hover {
-  background: #2a2e3a;
+  background: var(--field-hover);
 }
 
 .canvas-page .react-flow__controls-button svg {
-  fill: #e8e9ed;
+  fill: currentColor;
+}
+
+.canvas-page .react-flow__minimap {
+  background: var(--glass);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+}
+
+/* Surcharge la prop `maskColor` de <MiniMap> */
+.canvas-page .react-flow__minimap-mask {
+  fill: var(--minimap-mask) !important;
 }
 
 .canvas-page .react-flow__attribution {

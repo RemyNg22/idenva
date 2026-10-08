@@ -1,10 +1,9 @@
 .onboarding-backdrop {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.75);
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -12,24 +11,26 @@
 }
 
 .onboarding-card {
-  background: #14161c;
-  border: 1px solid #2a2e3a;
-  border-radius: 12px;
-  padding: 24px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 28px;
   width: 400px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
-  color: #e8e9ed;
+  box-shadow: var(--shadow-lg);
+  color: var(--text-primary);
 }
 
 .onboarding-card h3 {
   margin-top: 0;
   font-size: 18px;
-  color: #5b8def;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+  color: var(--accent);
 }
 
 .onboarding-card p {
   font-size: 14px;
-  color: #8b8fa3;
+  color: var(--text-secondary);
   line-height: 1.5;
   min-height: 60px;
 }
@@ -38,41 +39,45 @@
   display: flex;
   justify-content: center;
   gap: 8px;
-  margin: 16px 0;
+  margin: 20px 0 16px;
 }
 
 .dot {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: #2a2e3a;
+  background: var(--field-hover);
   cursor: pointer;
+  transition: background 0.15s ease, transform 0.15s ease;
 }
 
 .dot.active {
-  background: #5b8def;
+  background: var(--accent);
+  transform: scale(1.2);
 }
 
 .onboarding-actions {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 20px;
-  border-top: 1px solid #2a2e3a;
-  padding-top: 16px;
+  margin-top: 24px;
+  border-top: 1px solid var(--border);
+  padding-top: 18px;
 }
 
 .btn-skip {
-  background: none;
+  background: transparent;
   border: none;
-  color: #6b7280;
-  font-size: 12px;
+  color: var(--text-tertiary);
+  font-size: 13px;
+  font-weight: 500;
   cursor: pointer;
   padding: 0;
+  transition: color 0.15s ease;
 }
 
 .btn-skip:hover {
-  color: #9ca3af;
+  color: var(--text-secondary);
   text-decoration: underline;
 }
 

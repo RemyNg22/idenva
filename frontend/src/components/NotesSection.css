@@ -2,16 +2,17 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
-  margin-top: 16px;
-  border-top: 1px solid #2a2e3a;
-  padding-top: 16px;
+  margin-top: 20px;
+  border-top: 1px solid var(--border);
+  padding-top: 18px;
 }
 
 .notes-section__title {
   margin: 0;
-  font-size: 14px;
-  color: #e8e9ed;
+  font-size: 12px;
   font-weight: 600;
+  color: var(--text-secondary);
+  letter-spacing: 0.02em;
 }
 
 .notes-section__form,
@@ -25,36 +26,52 @@
 .notes-section__input {
   flex: 1;
   min-width: 140px;
-  background: #14161c;
-  border: 1px solid #2a2e3a;
-  border-radius: 6px;
-  padding: 8px 10px;
-  color: #e8e9ed;
-  font-size: 13px;
+  background: var(--field);
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  padding: 9px 11px;
+  color: var(--text-primary);
+  font-size: 13.5px;
+  font-family: inherit;
+  transition: background 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.notes-section__input:focus {
+  outline: none;
+  background: var(--surface);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
 }
 
 .notes-section__btn {
-  background: #2a2e3a;
-  border: 1px solid #3a3f4d;
-  border-radius: 6px;
-  padding: 8px 12px;
-  color: #e8e9ed;
-  font-size: 12px;
+  background: var(--field);
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  padding: 9px 12px;
+  color: var(--text-primary);
+  font-size: 13px;
+  font-weight: 500;
   cursor: pointer;
   white-space: nowrap;
+  transition: background 0.15s ease, color 0.15s ease;
 }
 
-.notes-section__btn:hover {
-  border-color: #5b8def;
+.notes-section__btn:hover:not(:disabled) {
+  background: var(--field-hover);
 }
 
-.notes-section__btn--danger:hover {
-  border-color: #e5484d;
-  color: #e5484d;
+.notes-section__btn--danger {
+  background: var(--danger-soft);
+  color: var(--danger);
+}
+
+.notes-section__btn--danger:hover:not(:disabled) {
+  background: var(--danger-soft);
+  filter: brightness(0.95);
 }
 
 .notes-section__btn:disabled {
-  opacity: 0.6;
+  opacity: 0.5;
   cursor: default;
 }
 
@@ -72,14 +89,15 @@
   justify-content: space-between;
   align-items: center;
   gap: 12px;
-  background: #14161c;
-  border: 1px solid #2a2e3a;
-  border-radius: 6px;
-  padding: 8px 10px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 9px 11px;
+  box-shadow: var(--shadow-sm);
 }
 
 .notes-section__content {
-  color: #e8e9ed;
+  color: var(--text-primary);
   font-size: 13px;
   word-break: break-word;
 }
@@ -90,13 +108,13 @@
 }
 
 .notes-section__error {
-  color: #e5484d;
+  color: var(--danger);
   font-size: 12px;
   margin: 0;
 }
 
 .notes-section__empty {
-  color: #8b8fa3;
+  color: var(--text-tertiary);
   font-size: 13px;
   margin: 0;
 }
