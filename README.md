@@ -133,7 +133,7 @@ Terminal 1 — backend:
 venv\Scripts\activate        # Windows
 source venv/bin/activate     # macOS/Linux
 cd backend
-python -m uvicorn app.main:app --reload
+python -m uvicorn app.main:app --reload --port 18492
 ```
 
 Terminal 2 — frontend :
@@ -288,7 +288,7 @@ Terminal 1 — backend :
 venv\Scripts\activate        # Windows
 source venv/bin/activate     # macOS/Linux
 cd backend
-python -m uvicorn app.main:app --reload
+python -m uvicorn app.main:app --reload --port 18492
 ```
 
 Terminal 2 — frontend :

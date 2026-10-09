@@ -36,6 +36,8 @@ app.add_middleware(
     allow_origins=["http://localhost:5173", 
                    "http://localhost:8000", 
                    "http://127.0.0.1:8000", 
+                   "http://127.0.0.1:18492",
+                   "http://localhost:18492",
                    "tauri://localhost",
                    "https://tauri.localhost"],
     allow_origin_regex=r"https?://.*\.localhost(:\d+)?|tauri://.*",

@@ -17,7 +17,7 @@ class Settings(BaseSettings):
 
     app_name: str = "Idenva API"
     host: str = "127.0.0.1"
-    port: int = 8000
+    port: int = 18492
 
     if IS_FROZEN:
         data_dir: Path = get_platform_data_dir()

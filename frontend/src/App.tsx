@@ -17,29 +17,40 @@ export default function App() {
 
   useEffect(() => {
     let timer: ReturnType<typeof setTimeout>;
+    let isSubscribed = true;
     let retries = 0;
-    const maxRetries = 30;
+    const maxRetries = 60;
 
     const checkHealth = async () => {
       try {
-        const res = await fetch("/health", { cache: "no-store" });
-        if (res.ok) {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 1000);
+
+        const res = await fetch("http://127.0.0.1:18492/health", {
+          cache: "no-store",
+          signal: controller.signal,
+        });
+        clearTimeout(timeoutId);
+
+        if (res.ok && isSubscribed) {
           setIsBackendReady(true);
           return;
         }
       } catch {
-        // En attente du démarrage de FastAPI
       }
 
-      if (retries < maxRetries) {
+      if (retries < maxRetries && isSubscribed) {
         retries++;
-        timer = setTimeout(checkHealth, 500);
+        timer = setTimeout(checkHealth, 300);
       }
     };
 
-    checkHealth();
+    timer = setTimeout(checkHealth, 150);
 
-    return () => clearTimeout(timer);
+    return () => {
+      isSubscribed = false;
+      clearTimeout(timer);
+    };
   }, []);
 
   if (!isBackendReady) {

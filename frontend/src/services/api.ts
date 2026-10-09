@@ -1,6 +1,4 @@
-// En dev, Vite proxy /api vers le backend (vite.config.ts)
-// En prod empaquetée, le backend sert lui-même le frontend sur 127.0.0.1:8000
-const API_BASE = "";
+const API_BASE = "http://localhost:18492";
 
 export class ApiError extends Error {
   status: number;
