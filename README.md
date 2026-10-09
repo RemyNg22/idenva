@@ -4,18 +4,32 @@
 
 ## English
 
-Local application for visually managing digital identities and accounts, through an interactive canvas. All data stays on your machine — no Internet connection required to use it.
+> **[Download Latest Release](https://github.com/RemyNg22/idenva/releases/latest)**
 
-### Features
+**Idenva** is a local application for **visual digital identity management**. It allows you to organize and map your entire digital footprint (identities, accounts, passwords, phone numbers, API keys, etc.) within an interactive and secure canvas.
 
-- Interactive canvas: identities, accounts, emails, phones, domains, notes, tasks represented as connected nodes
-- Encrypted vault: passwords and generic credentials (API keys, etc.) are never stored in plaintext
-- Phone numbers are always encrypted; emails and domains are stored as plain metadata
-- Security / OPSEC dashboard: detects weak or reused passwords, disabled 2FA, correlation between identities
-- Change your master password at any time — nothing needs to be re-encrypted
-- Encrypted export / import of your whole vault, protected by a password of your choice
-- Encrypted backups, created and managed from the app
-- 100% local: backend and database run on `localhost`, nothing is sent over the Internet
+All data remains strictly on your local machine — no internet connection is required.
+
+
+### Key Features
+
+- **Visual & Interactive Canvas**:
+  - **Identity Panels**: Each identity forms a dedicated block on the canvas, grouping all attached accounts and services.
+  - **Linked Data**: Direct association of emails, phone numbers, domains, notes, and tasks with each account.
+- **Encrypted Vault**:
+  - Passwords, secrets, and generic credentials (API keys, SSH keys, tokens) are **never stored in plaintext**.
+  - Phone numbers are also **encrypted**.
+  - Emails and domains are kept as plaintext metadata for easy internal search.
+- **Security / OPSEC Dashboard**:
+  - Real-time analysis: Detection of weak or reused passwords, alerts for disabled 2FA.
+  - Exposure analysis: Detection of correlations and data overlaps between your different identities.
+- **Master Password Management**:
+  - Update your master password at any time without re-encrypting the entire vault.
+- **Import / Export & Backups**:
+  - Encrypted export/import of the vault protected by a dedicated password.
+  - Creation and restoration of local encrypted backups directly from the interface.
+- **100% Local & Private**:
+  - The application server and database run exclusively on `localhost`. No telemetry or data is sent externally.
 
 ### Project structure
 
@@ -44,6 +58,7 @@ idenva/
 │   │   ├── nodes/             # Canvas node components (Person, Identity, Account...)
 │   │   ├── panels/            # Side panels (AccountPanel, IdentityPanel...)
 │   │   ├── pages/             # Main screens (unlock screen, dashboard...)
+│   │   ├── utils/             # CSS color palette, particularly for light mode
 │   │   └── services/          # API client and network calls (api.ts)
 │   │
 │   ├── src-tauri/             # Tauri configuration and native wrapper code
@@ -144,18 +159,32 @@ See `docs/security.md` for exactly what is encrypted, what is not, and the limit
 
 ## Français
 
-Application locale de gestion visuelle d'identités numériques et de comptes, sous forme de canvas interactif. Toutes les données restent sur votre machine — aucune connexion Internet requise pour l'utiliser.
+> **[Télécharger la dernière version (Release)](https://github.com/RemyNg22/idenva/releases/latest)**
 
-### Fonctionnalités
+**Idenva** est une application locale de **gestion visuelle d'identités numériques**. Elle vous permet d'organiser et de cartographier l'ensemble de votre empreinte numérique (identités, comptes, mots de passe, numéros de téléphone, clés API, etc.) au sein d'un canvas interactif et sécurisé.
 
-- Canvas interactif : identités, comptes, emails, téléphones, domaines, notes, tâches représentés en nœuds reliés entre eux
-- Coffre chiffré : mots de passe et credentials génériques (clés API, etc.) jamais stockés en clair
-- Les numéros de téléphone sont toujours chiffrés ; emails et domaines sont stockés comme métadonnées en clair
-- Dashboard sécurité / OPSEC : détection de mots de passe faibles, réutilisés, 2FA désactivée, corrélation entre identités
-- Changement du mot de passe maître à tout moment — rien n'a besoin d'être re-chiffré
-- Export / Import chiffré de tout ton coffre, protégé par un mot de passe que vous choisissez
-- Sauvegardes chiffrées, créées et gérées depuis l'appli
-- 100% local : backend et base de données tournent sur `localhost`, rien n'est envoyé sur Internet
+Toutes les données restent strictement sur votre machine — aucune connexion Internet n'est requise.
+
+
+### Fonctionnalités clés
+
+- **Canvas visuel & interactif** :
+  - **Panneaux d'identité** : chaque identité forme un bloc dédié sur le canvas, regroupant l'ensemble des comptes et services qui lui sont rattachés.
+  - **Données liées** : association directe des emails, numéros de téléphone, domaines, notes et tâches à chaque compte.
+- **Coffre fort chiffré** :
+  - Mots de passe, secrets et identifiants génériques (clés API, clés SSH, jetons) ne sont **jamais stockés en clair**.
+  - Les numéros de téléphone sont également **chiffrés**.
+  - Les emails et domaines sont conservés comme métadonnées en clair pour faciliter les recherches internes.
+- **Dashboard Sécurité / OPSEC** :
+  - Analyse en temps réel : détection des mots de passe faibles ou réutilisés, alerte sur la 2FA non activée.
+  - Analyse d'exposition : détection des corrélations et croisements d'informations entre vos différentes identités.
+- **Gestion du mot de passe maître** :
+  - Modification possible du mot de passe maître à tout moment sans ré-encodage complet de la base.
+- **Import / Export & Sauvegardes** :
+  - Export/Import chiffré du coffre-fort avec un mot de passe dédié.
+  - Création et restauration de sauvegardes locales chiffrées directement depuis l'interface.
+- **100 % Local & Confidentialité** :
+  - Le serveur d'application et la base de données s'exécutent exclusivement en local (`localhost`). Aucune télémétrie ni donnée n'est envoyée vers l'extérieur.
 
 ### Arborescence du projet
 
@@ -184,6 +213,7 @@ idenva/
 │   │   ├── nodes/             # Nœuds du canvas (Person, Identity, Account...)
 │   │   ├── panels/            # Panneaux d'édition (AccountPanel, IdentityPanel...)
 │   │   ├── pages/             # Écrans (déverrouillage, page principale)
+│   │   ├── utils/             # Palette de couleur css notamment pour le mode clair
 │   │   └── services/          # Appels API (api.ts)
 │   │
 │   ├── src-tauri/             # Configuration et fichiers natifs Tauri

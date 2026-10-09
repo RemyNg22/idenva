@@ -1,14 +1,14 @@
 export const IDENTITY_PALETTE = [
-  { bg: "rgba(224, 242, 254, 0.75)", border: "rgba(56, 189, 248, 0.4)", text: "#0369a1" },
-  { bg: "rgba(220, 252, 231, 0.75)", border: "rgba(74, 222, 128, 0.4)", text: "#15803d" },
-  { bg: "rgba(254, 249, 195, 0.75)", border: "rgba(250, 204, 21, 0.4)", text: "#a16207" },
-  { bg: "rgba(253, 204, 207, 0.75)", border: "rgba(251, 113, 133, 0.4)", text: "#be123c" },
-  { bg: "rgba(243, 232, 255, 0.75)", border: "rgba(192, 132, 252, 0.4)", text: "#6b21a8" },
-  { bg: "rgba(255, 237, 213, 0.75)", border: "rgba(251, 146, 60, 0.4)", text: "#c2410c" },
-  { bg: "rgba(224, 231, 255, 0.75)", border: "rgba(129, 140, 248, 0.4)", text: "#4338ca" },
-  { bg: "rgba(204, 238, 251, 0.81)", border: "rgba(45, 212, 191, 0.4)", text: "#0f766e" },
-  { bg: "rgba(250, 232, 255, 0.75)", border: "rgba(232, 121, 249, 0.4)", text: "#a21caf" },
-  { bg: "rgba(241, 245, 249, 0.75)", border: "rgba(148, 163, 184, 0.4)", text: "#334155" },
+  { bg: "rgba(186, 230, 253, 0.85)", border: "rgba(14, 165, 233, 0.55)", text: "#0369a1" },
+  { bg: "rgba(187, 247, 208, 0.85)", border: "rgba(34, 197, 94, 0.55)",  text: "#15803d" },
+  { bg: "rgba(254, 240, 138, 0.85)", border: "rgba(234, 179, 8, 0.55)",   text: "#854d0e" },
+  { bg: "rgba(254, 205, 211, 0.85)", border: "rgba(244, 63, 94, 0.55)",   text: "#be123c" },
+  { bg: "rgba(233, 213, 255, 0.85)", border: "rgba(168, 85, 247, 0.55)",  text: "#6b21a8" },
+  { bg: "rgba(254, 215, 170, 0.85)", border: "rgba(249, 115, 22, 0.55)",  text: "#c2410c" },
+  { bg: "rgba(199, 210, 254, 0.85)", border: "rgba(99, 102, 241, 0.55)",  text: "#3730a3" },
+  { bg: "rgba(153, 246, 228, 0.85)", border: "rgba(20, 184, 166, 0.55)",  text: "#0f766e" },
+  { bg: "rgba(245, 208, 254, 0.85)", border: "rgba(217, 70, 239, 0.55)",  text: "#86198f" },
+  { bg: "rgba(226, 232, 240, 0.90)", border: "rgba(100, 116, 139, 0.55)", text: "#1e293b" },
 ];
 
 export function getIdentityTheme(entityId: string) {

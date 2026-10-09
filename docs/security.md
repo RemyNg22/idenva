@@ -17,7 +17,7 @@ Idenva applies selective field-level encryption. The master key only decrypts da
 |  - Services (names, URLs)             - Note content                  |
 |  - Usernames                          - Phone numbers                 |
 |  - Domain names, tags                 - Generic credentials           |
-|  - Task titles                          (API keys, etc.)              |
+|  - Tasks                                (API keys, etc.)              |
 |  - Emails                                                              |
 +-----------------------------------------------------------------------+
 ```
@@ -136,7 +136,7 @@ Idenva applique un chiffrement sélectif au niveau des champs (*Field-Level Encr
 |  - Services (Noms, URLs)              - Contenu des notes             |
 |  - Identifiants (Usernames)           - Numéros de téléphone          |
 |  - Noms de domaine, tags              - Credentials génériques        |
-|  - Titres des tâches                    (clés API, etc.)              |
+|  - Tâches                               (clés API, etc.)              |
 |  - E-mails                                                            |
 +-----------------------------------------------------------------------+
 ```
