@@ -25,7 +25,7 @@ import { ChangePasswordModal } from "../components/ChangePasswordModal";
 import { SearchModal } from "../components/SearchModal";
 import { VaultDataModal } from "../components/VaultDataModal";
 import "./CanvasPage.css";
-import { Search, Activity, Shield, HardDrive, KeyRound, Lock } from "lucide-react";
+import { Search, SquareCheck, Shield, HardDrive, KeyRound, Lock } from "lucide-react";
 
 const POSITION_SAVE_DEBOUNCE_MS = 500;
 const ACCOUNT_HEIGHT = 55;
@@ -402,7 +402,7 @@ export function CanvasPage({ onLock, onOpenDashboard }: CanvasPageProps) {
           onClick={() => setShowGlobalActivity(true)}
           title={t("canvasPage.titles.activity")}
         >
-          <Activity size={15} />
+          <SquareCheck size={15} />
           <span className="action-label">{t("canvasPage.actions.activity")}</span>
         </button>
 

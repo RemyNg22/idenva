@@ -1,5 +1,14 @@
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
+import {
+  Search,
+  User,
+  KeyRound,
+  ShieldAlert,
+  Lock,
+  X,
+  AlertCircle,
+} from "lucide-react";
 import type { Identity, Account } from "../services/api";
 import "./SearchModal.css";
 
@@ -63,7 +72,8 @@ export function SearchModal({
         onClick={(e) => e.stopPropagation()}
         onKeyDown={(e) => e.stopPropagation()}
       >
-        <div className="modal-field">
+        <div className="search-input-wrapper">
+          <Search size={16} className="search-input-icon" />
           <input
             type="text"
             className="search-input"
@@ -73,6 +83,15 @@ export function SearchModal({
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={(e) => e.stopPropagation()}
           />
+          {query && (
+            <button
+              type="button"
+              className="search-input-clear"
+              onClick={() => setQuery("")}
+            >
+              <X size={14} />
+            </button>
+          )}
         </div>
 
         <div className="search-filters">
@@ -88,28 +107,32 @@ export function SearchModal({
             className={`search-filter-btn ${filter === "identity" ? "active" : ""}`}
             onClick={() => setFilter("identity")}
           >
-            👤 {t("searchModal.filters.identities")}
+            <User size={13} />
+            {t("searchModal.filters.identities")}
           </button>
           <button
             type="button"
             className={`search-filter-btn ${filter === "account" ? "active" : ""}`}
             onClick={() => setFilter("account")}
           >
-            🔑 {t("searchModal.filters.accounts")}
+            <KeyRound size={13} />
+            {t("searchModal.filters.accounts")}
           </button>
           <button
             type="button"
             className={`search-filter-btn ${filter === "no-2fa" ? "active" : ""}`}
             onClick={() => setFilter("no-2fa")}
           >
-            ⚠️ {t("searchModal.filters.no2fa")}
+            <ShieldAlert size={13} />
+            {t("searchModal.filters.no2fa")}
           </button>
           <button
             type="button"
             className={`search-filter-btn ${filter === "no-password" ? "active" : ""}`}
             onClick={() => setFilter("no-password")}
           >
-            🚫 {t("searchModal.filters.noPassword")}
+            <Lock size={13} />
+            {t("searchModal.filters.noPassword")}
           </button>
         </div>
 
@@ -130,7 +153,7 @@ export function SearchModal({
                     onClose();
                   }}
                 >
-                  <span className="search-item-icon">👤</span>
+                  <User size={15} className="search-item-icon" />
                   <span className="search-item-label">{identity.name}</span>
                 </div>
               ))}
@@ -151,16 +174,18 @@ export function SearchModal({
                     onClose();
                   }}
                 >
-                  <span className="search-item-icon">🔑</span>
+                  <KeyRound size={15} className="search-item-icon" />
                   <span className="search-item-label">{account.service_name}</span>
                   <div className="search-item-badges">
                     {!account.has_password && (
                       <span className="search-badge badge-error">
+                        <AlertCircle size={10} />
                         {t("searchModal.badges.noPassword")}
                       </span>
                     )}
                     {!account.has_2fa && (
                       <span className="search-badge badge-warning">
+                        <ShieldAlert size={10} />
                         {t("searchModal.badges.no2fa")}
                       </span>
                     )}
