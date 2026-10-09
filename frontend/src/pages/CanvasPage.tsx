@@ -107,6 +107,7 @@ export function CanvasPage({ onLock, onOpenDashboard }: CanvasPageProps) {
               data: {
                 label: identity?.name ?? "?",
                 accountCount: childCount,
+                entityId: n.entity_id,
               } as IdentityNodeData,
             });
           }
@@ -204,7 +205,7 @@ export function CanvasPage({ onLock, onOpenDashboard }: CanvasPageProps) {
           type: "identity",
           position: { x: posX, y: posY },
           style: { width: 260, height: 80 },
-          data: { label: identity.name, accountCount: 0 } as IdentityNodeData,
+          data: { label: identity.name, accountCount: 0, entityId: identity.id } as IdentityNodeData,
         },
       ]);
       setNewIdentityName("");
