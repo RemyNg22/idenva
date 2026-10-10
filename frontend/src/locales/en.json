@@ -237,28 +237,28 @@
     },
     "steps": [
       {
-        "title": "Welcome to Idenva! 👋",
+        "title": "Welcome to Idenva!",
         "content": "Your secure digital vault to organize and visualize all your confidential data, accounts, and identities."
       },
       {
-        "title": "1. Create your identities 👤",
+        "title": "1. Create your identities",
         "content": "Start by clicking the '+ Identity' button at the top left and give it a name. From each identity, you can directly attach accounts, notes, and tasks."
       },
       {
-        "title": "2. Add your accounts 🔑",
+        "title": "2. Add your accounts",
         "content": "For each account, add a username, manage and generate strong passwords, enter API keys, emails, phone numbers, domains, as well as dedicated notes and tasks."
       },
       {
-        "title": "3. Tools & Navigation 🛠️",
-        "content": "Use 🔍 Search to quickly find an account, 🔑 Password to change your master password, and 🛡️ Security to inspect your access strength."
+        "title": "3. Tools & Navigation",
+        "content": "Use 'Search' to quickly find an account, 'Password' to change your master password, and 'Security' to inspect your access strength."
       },
       {
-        "title": "4. Notes & Tasks 📋",
-        "content": "A dedicated Notes & Tasks button opens a summary panel allowing you to view and manage all notes and tasks associated with each identity or account in one place."
+        "title": "4. Notes & Tasks",
+        "content": "A dedicated 'Notes & Tasks' button opens a summary panel allowing you to view and manage all notes and tasks associated with each identity or account in one place."
       },
       {
-        "title": "5. Data & Security 💾",
-        "content": "The '💾 Data' button gives you centralized access to create backups, import exports, and perform an application reset."
+        "title": "5. Data & Security",
+        "content": "The 'Data' button gives you centralized access to create backups, import exports, and perform an application reset."
       }
     ]
   },

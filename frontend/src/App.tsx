@@ -26,7 +26,7 @@ export default function App() {
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 1000);
 
-        const res = await fetch("http://127.0.0.1:18492/health", {
+        const res = await fetch("/health", {
           cache: "no-store",
           signal: controller.signal,
         });

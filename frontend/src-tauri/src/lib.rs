@@ -1,62 +1,88 @@
-use tauri::{Manager, RunEvent};
-use std::process::{Command, Child};
+use std::net::{SocketAddr, TcpStream};
+use std::process::{Child, Command};
 use std::sync::{Arc, Mutex};
+use std::time::{Duration, Instant};
+use tauri::{RunEvent, WebviewUrl, WebviewWindowBuilder};
 
-#[cfg(target_os = "windows")]
-use std::os::windows::process::CommandExt;
+const PORT: u16 = 18492;
+
+fn wait_for_port(timeout: Duration) -> bool {
+    let addr: SocketAddr = ([127, 0, 0, 1], PORT).into();
+    let start = Instant::now();
+    while start.elapsed() < timeout {
+        if TcpStream::connect_timeout(&addr, Duration::from_millis(200)).is_ok() {
+            return true;
+        }
+        std::thread::sleep(Duration::from_millis(150));
+    }
+    false
+}
+
+fn spawn_backend() -> Option<Child> {
+    let exe = std::env::current_exe().ok()?;
+    let name = if cfg!(windows) { "idenva-backend.exe" } else { "idenva-backend" };
+    let path = exe.parent()?.join(name);
+    if !path.exists() {
+        eprintln!("backend introuvable: {:?}", path);
+        return None;
+    }
+    let mut cmd = Command::new(path);
+    cmd.env("IDENVA_PARENT_PID", std::process::id().to_string());
+    #[cfg(windows)]
+    {
+        use std::os::windows::process::CommandExt;
+        cmd.creation_flags(0x08000000); // CREATE_NO_WINDOW
+    }
+    cmd.spawn().ok()
+}
+
+fn kill_child(child: &mut Child) {
+    #[cfg(windows)]
+    {
+        use std::os::windows::process::CommandExt;
+        let _ = Command::new("taskkill")
+            .args(["/F", "/T", "/PID", &child.id().to_string()])
+            .creation_flags(0x08000000)
+            .status();
+    }
+    #[cfg(not(windows))]
+    {
+        let _ = child.kill();
+    }
+    let _ = child.wait();
+}
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
-    let backend_process: Arc<Mutex<Option<Child>>> = Arc::new(Mutex::new(None));
-    let backend_process_clone = Arc::clone(&backend_process);
+    let backend: Arc<Mutex<Option<Child>>> = Arc::new(Mutex::new(None));
+    let backend_setup = backend.clone();
 
-    tauri::Builder::default()
+    let app = tauri::Builder::default()
         .setup(move |app| {
-            #[cfg(not(debug_assertions))]
-            {
-                if let Ok(resource_dir) = app.path().resource_dir() {
-                    let mut binary_path = resource_dir.join("idenva-backend");
-                    
-                    if cfg!(target_os = "windows") {
-                        binary_path.set_extension("exe");
-                    }
-                    
-                    if binary_path.exists() {
-                        let mut cmd = Command::new(binary_path);
-                        #[cfg(target_os = "windows")]
-                        cmd.creation_flags(0x08000000); // Pas de fenêtre console
-                        
-                        if let Ok(child) = cmd.spawn() {
-                            let mut process_guard = backend_process_clone.lock().unwrap();
-                            *process_guard = Some(child);
-                        }
-                    }
+            let url = if cfg!(debug_assertions) {
+                "http://localhost:5173".to_string()
+            } else {
+                *backend_setup.lock().unwrap() = spawn_backend();
+                if !wait_for_port(Duration::from_secs(30)) {
+                    eprintln!("le backend n'a pas démarré à temps");
                 }
-            }
+                format!("http://127.0.0.1:{}", PORT)
+            };
+            WebviewWindowBuilder::new(app, "main", WebviewUrl::External(url.parse().unwrap()))
+                .title("Idenva - Digital Identity Manager")
+                .inner_size(1280.0, 800.0)
+                .resizable(true)
+                .build()?;
             Ok(())
         })
         .build(tauri::generate_context!())
-        .expect("Erreur lors de la construction de l'application Tauri")
-        .run(move |_app_handle, event| {
-            if let RunEvent::Exit = event {
-                let mut process_guard = backend_process.lock().unwrap();
-                if let Some(mut child) = process_guard.take() {
-                    #[cfg(target_os = "windows")]
-                    {
-                        let pid = child.id();
-                        let _ = Command::new("taskkill")
-                            .args(["/F", "/T", "/PID", &pid.to_string()])
-                            .creation_flags(0x08000000)
-                            .status();
-                    }
-                    
-                    #[cfg(not(target_os = "windows"))]
-                    {
-                        let _ = child.kill();
-                    }
-                    
-                    let _ = child.wait();
-                }
+        .expect("erreur au build de l'app");
+
+    app.run(move |_h, event| {
+        if let RunEvent::Exit = event {
+            if let Some(mut c) = backend.lock().unwrap().take() {
+                kill_child(&mut c);
             }
-        });
+        }
+    });
 }

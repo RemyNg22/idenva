@@ -1,8 +1,10 @@
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
+import { Search, SquareCheck, Shield, HardDrive, KeyRound, Lock } from "lucide-react";
 import "./OnboardingModal.css";
 
 const STORAGE_KEY = "idenva_onboarding_completed";
+const stepIcons = [Lock, Search, KeyRound, Shield, SquareCheck, HardDrive];
 
 export function OnboardingModal() {
   const { t } = useTranslation();
@@ -55,9 +57,16 @@ export function OnboardingModal() {
 
   if (!isOpen) return null;
 
+
+  const CurrentIcon = stepIcons[currentStep] || Shield;
+
   return (
     <div className="onboarding-backdrop">
       <div className="onboarding-card">
+        <div className="onboarding-icon-container">
+          <CurrentIcon className="onboarding-step-icon" size={28} />
+        </div>
+
         <h3>{steps[currentStep].title}</h3>
         <p>{steps[currentStep].content}</p>
 

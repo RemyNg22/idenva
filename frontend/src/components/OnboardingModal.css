@@ -85,3 +85,21 @@
   display: flex;
   gap: 8px;
 }
+
+.onboarding-icon-container {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-md, 10px);
+  background: var(--field-hover, rgba(255, 255, 255, 0.05));
+  border: 1px solid var(--border);
+  margin-bottom: 16px;
+  color: var(--accent);
+}
+
+.onboarding-step-icon {
+  width: 24px;
+  height: 24px;
+}

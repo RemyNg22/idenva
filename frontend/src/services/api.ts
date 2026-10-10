@@ -1,4 +1,4 @@
-const API_BASE = "http://localhost:18492";
+const API_BASE = "";
 
 export class ApiError extends Error {
   status: number;

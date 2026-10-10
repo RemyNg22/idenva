@@ -4,22 +4,13 @@
   "version": "0.1.0",
   "identifier": "com.idenva.desktop",
   "build": {
-    "frontendDist": "../dist",
+    "frontendDist": "http://127.0.0.1:18492",
     "devUrl": "http://localhost:5173",
     "beforeDevCommand": "npm run dev",
     "beforeBuildCommand": "npm run build"
   },
   "app": {
-    "windows": [
-      {
-        "title": "Idenva - Digital Identity Manager",
-        "width": 1280,
-        "height": 800,
-        "resizable": true,
-        "fullscreen": false,
-        "visible": true
-      }
-    ],
+    "windows": [],
     "security": {
       "csp": null
     }
@@ -39,10 +30,16 @@
     ],
     "windows": {
       "wix": {
-        "language": ["fr-FR"]
+        "language": [
+          "fr-FR",
+          "en-US"
+        ]
       },
       "nsis": {
-        "languages": ["French"]
+        "languages": [
+          "French",
+          "English"
+        ]
       }
     }
   }
