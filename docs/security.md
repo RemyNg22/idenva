@@ -67,6 +67,19 @@ Master Password + Salt
 
 When changing the master password, only the **Data Key** is re-encrypted with the new Vault Key. All secrets in the database do not need to be re-encrypted, making this an instant, atomic operation.
 
+### Reset and Lost Master Password
+
+There is no recovery mechanism. Two reset paths exist, and both wipe the vault completely (identities, accounts, notes, tasks, tags, the encrypted Data Key) and return the app to its first-launch state:
+
+- **Vault unlocked:** the reset requires the master password to be typed again and to correctly decrypt the Data Key. An open session alone is not enough.
+- **Password forgotten ("Forgot password?" on the unlock screen):** only available while the vault is locked, and only from the local machine (`127.0.0.1`). It requires typing a confirmation word. No password is asked, because there is none to give. It deletes data; it never reveals any.
+
+Consequences to be aware of:
+
+- Anyone with access to your session can wipe the vault without the password. This is a loss-of-availability risk, not a confidentiality risk, and it is not new: the same person could already delete the data folder.
+- Backup files in the `backups/` folder are **not** deleted by a reset. They are encrypted with their own export password, which is independent of the master password, so they remain usable if you remember that export password.
+- Deleting rows does not securely erase the SQLite file: freed pages may still contain old data until they are overwritten. Encrypted secrets stay unreadable without the key, but plaintext metadata (names, usernames, emails, domains, tags, tasks) may remain recoverable from the file with forensic tools.
+
 ## 3. Key Lifecycle in RAM
 
 For as long as the vault is unlocked, the Data Key (DEK) lives exclusively in RAM.
@@ -99,15 +112,15 @@ For as long as the vault is unlocked, the Data Key (DEK) lives exclusively in RA
 On every lock (manual or on inactivity timeout):
 
 1. The Data Key is removed from active memory.
-2. A binary overwrite procedure (replacement with `0x00` zeros) is run on the targeted memory region.
+2. A binary overwrite procedure (replacement with `0x00` zeros) is run on the targeted memory region. This is best effort: Python does not guarantee that every copy of the key is erased from memory (immutable `bytes` objects, copies made by the runtime or the OS, swap files).
 
 ## 4. Threat Model & Security Limits
 
 Idenva is designed to resist theft or offline analysis of the database file. However, some hardware and software limits apply:
 
 - **Host machine infection (Malware / Keylogger):** if malicious software is active on the OS during a session, it can intercept keystrokes or analyze RAM to extract the key.
-- **Lost master password:** with no backdoor or recovery mechanism, losing the master password makes decrypting the secrets permanently impossible.
-- **Backup protection:** copies of the `idenva.db` file inherit exactly the same level of protection, and the same plaintext metadata, as the original file.
+- **Lost master password:** with no backdoor or recovery mechanism, losing the master password makes decrypting the secrets permanently impossible. The only way forward is a full reset (see section 2), which erases the vault.
+- **Backup protection:** copies of the `idenva.db` file inherit exactly the same level of protection, and the same plaintext metadata, as the original file. Backups created by the app are different: they are exports encrypted with a separate export password.
 - **Unencrypted emails:** if you use an alias or address you consider sensitive, keep in mind it remains readable in plaintext in the database file.
 
 ## 5. Cryptographic Specifications
@@ -186,6 +199,19 @@ Mot de Passe Maître + Sel (Salt)
 
 Lors du changement du mot de passe maître, seule la **Clé des Données** est rechiffrée avec la nouvelle Clé du Coffre. L'ensemble des secrets de la base de données n'a pas besoin d'être réencrypté, garantissant une opération instantanée et atomique.
 
+### Réinitialisation et Mot de Passe Maître Perdu
+
+Il n'existe aucun mécanisme de récupération. Deux chemins de réinitialisation existent, et les deux effacent entièrement le coffre (identités, comptes, notes, tâches, tags, Clé des Données chiffrée) pour revenir à l'état du premier lancement :
+
+- **Coffre déverrouillé :** la réinitialisation exige de retaper le mot de passe maître, qui doit déchiffrer correctement la Clé des Données. Une session ouverte ne suffit pas.
+- **Mot de passe oublié (« Mot de passe oublié ? » sur l'écran de déverrouillage) :** disponible uniquement quand le coffre est verrouillé, et uniquement depuis la machine locale (`127.0.0.1`). Elle exige de taper un mot de confirmation. Aucun mot de passe n'est demandé, puisqu'il n'est plus connu. Elle supprime des données, elle n'en révèle aucune.
+
+Conséquences à connaître :
+
+- Toute personne qui a accès à votre session peut effacer le coffre sans le mot de passe. C'est un risque de perte de disponibilité, pas de confidentialité, et il n'est pas nouveau : cette personne pouvait déjà supprimer le dossier de données.
+- Les fichiers du dossier `backups/` ne sont **pas** supprimés par une réinitialisation. Ils sont chiffrés avec leur propre mot de passe d'export, indépendant du mot de passe maître : ils restent utilisables si vous vous souvenez de ce mot de passe d'export.
+- Supprimer des lignes n'efface pas le fichier SQLite de façon sécurisée : des pages libérées peuvent contenir d'anciennes données tant qu'elles ne sont pas écrasées. Les secrets chiffrés restent illisibles sans la clé, mais les métadonnées en clair (noms, usernames, emails, domaines, tags, tâches) peuvent rester récupérables dans le fichier avec des outils d'analyse forensique.
+
 ## 3. Cycle de Vie de la Clé en Mémoire Vive (RAM)
 
 Pendant toute la durée où le coffre est déverrouillé, la Clé des Données (*DEK*) réside exclusivement en mémoire vive (RAM).
@@ -218,15 +244,15 @@ Pendant toute la durée où le coffre est déverrouillé, la Clé des Données (
 Lors d'un verrouillage (manuel ou sur expiration du délai d'inactivité) :
 
 1. La Clé des Données est supprimée de la mémoire active.
-2. Une procédure d'écrasement binaire (remplacement par des zéros `0x00`) est exécutée sur la zone mémoire ciblée.
+2. Une procédure d'écrasement binaire (remplacement par des zéros `0x00`) est exécutée sur la zone mémoire ciblée. Il s'agit d'un effort au mieux : Python ne garantit pas que toutes les copies de la clé soient effacées de la mémoire (objets `bytes` immuables, copies faites par le runtime ou l'OS, fichiers d'échange).
 
 ## 4. Modèle de Menace & Limites de Sécurité
 
 Idenva est conçu pour contrer le vol ou l'analyse à froid (*offline attack*) du fichier de base de données. Cependant, certaines limites matérielles et logicielles s'imposent :
 
 - **Infection de la machine hôte (*Malware / Keylogger*) :** Si un logiciel malveillant est actif sur le système d'exploitation pendant la session d'utilisation, il peut intercepter les frappes clavier ou analyser la mémoire RAM pour extraire la clé.
-- **Perte du Mot de Passe Maître :** En l'absence de porte dérobée (*backdoor*) ou de mécanisme de récupération, la perte du mot de passe maître entraîne l'impossibilité définitive de déchiffrer les secrets.
-- **Protection des Sauvegardes :** Les copies de sauvegarde du fichier `idenva.db` héritent exactement du même niveau de protection et des mêmes métadonnées en clair que le fichier original.
+- **Perte du Mot de Passe Maître :** En l'absence de porte dérobée (*backdoor*) ou de mécanisme de récupération, la perte du mot de passe maître entraîne l'impossibilité définitive de déchiffrer les secrets. La seule issue est une réinitialisation complète (voir section 2), qui efface le coffre.
+- **Protection des Sauvegardes :** Les copies de sauvegarde du fichier `idenva.db` héritent exactement du même niveau de protection et des mêmes métadonnées en clair que le fichier original. Les sauvegardes créées par l'application sont différentes : ce sont des exports chiffrés avec un mot de passe d'export distinct.
 - **Emails non chiffrés :** Si vous utilisez un alias ou une adresse que vous considèrez sensible, gardez en tête qu'elle reste lisible en clair dans le fichier de base de données.
 
 ## 5. Spécifications Cryptographiques

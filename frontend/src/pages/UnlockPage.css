@@ -1,33 +1,42 @@
 .unlock-page {
-  height: 100%;
-  min-height: 100vh;
+  width: 100%;
+  height: 100vh;
+  max-height: 100vh;
+  overflow-y: auto !important;
+  overflow-x: hidden;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  position: relative;
-  overflow: hidden;
+  justify-content: flex-start;
+  padding: 40px 20px;
   background: var(--bg);
+  box-sizing: border-box;
+  position: relative;
 }
 
-/* Halo lumineux discret à la place de la grille de points */
 .unlock-page__grid {
-  position: absolute;
+  position: fixed;
   inset: 0;
   pointer-events: none;
   background:
     radial-gradient(900px 520px at 50% -8%, var(--accent-glow), transparent 70%),
     radial-gradient(640px 420px at 100% 110%, var(--accent-glow), transparent 70%);
+  z-index: 0;
 }
 
 .unlock-card {
   position: relative;
+  z-index: 1;
   width: 380px;
+  max-width: 100%;
+  margin: auto;
   padding: 44px 36px 34px;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-lg);
   text-align: center;
+  flex-shrink: 0;
 }
 
 .unlock-card__mark {

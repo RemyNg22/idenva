@@ -2,6 +2,7 @@ import { useEffect, useState, type FormEvent } from "react";
 import { useTranslation } from "react-i18next";
 import { api, ApiError, type VaultStatus } from "../services/api";
 import { LanguageSwitcher } from "../components/LanguageSwitcher";
+import { ForgotPasswordReset } from "../components/ForgotPasswordReset";
 import "./UnlockPage.css";
 
 interface UnlockPageProps {
@@ -108,6 +109,17 @@ export function UnlockPage({ onUnlocked }: UnlockPageProps) {
             {loading ? "..." : isFirstRun ? t("unlockPage.buttons.createVault") : t("unlockPage.buttons.unlock")}
           </button>
         </form>
+
+        {!isFirstRun && (
+          <ForgotPasswordReset
+            onDone={() => {
+              setPassword("");
+              setConfirmPassword("");
+              setError(null);
+              api.getStatus().then(setStatus);
+            }}
+          />
+        )}
 
         {isFirstRun && (
           <p className="unlock-card__footnote">

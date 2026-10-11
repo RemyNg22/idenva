@@ -157,6 +157,14 @@
       "connectionError": "Server connection error."
     }
   },
+  "forgotReset": {
+    "link": "Forgot password?",
+    "warning": "There is no way to recover your password. All vault content (identities, accounts, notes, tasks) will be permanently deleted and you will start from scratch.",
+    "typePrompt": "Type {{word}} to confirm",
+    "confirmWord": "DELETE",
+    "cancel": "Cancel",
+    "confirm": "Delete everything"
+  },
   "nodes": {
     "account": {
       "pwdBadge": "PWD",
@@ -406,7 +414,7 @@
       }
     }
   },
-"dashboard": {
+  "dashboard": {
     "alerts": {
       "password_weak": "Weak password",
       "password_reused": "Password reused across multiple accounts",

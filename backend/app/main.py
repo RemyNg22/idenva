@@ -21,7 +21,7 @@ from app.api.phones import router as phones_router
 from app.api.emails import router as emails_router
 from app.api.domains import router as domains_router
 from app.api.credentials import router as credentials_router
-
+from app.api.vault_forgot import router as vault_forgot_router
 
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
@@ -58,6 +58,7 @@ app.include_router(phones_router)
 app.include_router(emails_router)
 app.include_router(domains_router)
 app.include_router(credentials_router)
+app.include_router(vault_forgot_router)
 
 @app.get("/health")
 def health():

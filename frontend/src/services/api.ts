@@ -468,6 +468,12 @@ export const api = {
 
   downloadBackup: (filename: string) => request<ExportFile>(`/api/vault/backups/${filename}`),
 
+  forgotReset: (confirmation: string) =>
+    request<{ status: string }>("/api/vault/forgot-reset", {
+      method: "POST",
+      body: JSON.stringify({ confirmation }),
+    }),
+
   resetVault: (masterPassword: string) =>
     request<{ status: string }>("/api/vault/reset", {
       method: "POST",
