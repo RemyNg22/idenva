@@ -49,8 +49,10 @@ idenva/
 │   │   ├── api/               # HTTP API routes (identities, accounts, credentials...)
 │   │   ├── services/          # Business logic
 │   │   └── security/          # Encryption, key derivation, vault session management
-│   ├── requirements.txt       # Python dependencies
-│   └── tests/
+│   ├── tests/                 # Backend test suite (pytest)
+│   ├── pytest.ini             # Pytest configuration
+│   ├── run_server.py          # Backend development server startup script
+│   └── requirements.txt       # Python dependencies (backend root)
 │
 ├── frontend/
 │   ├── src/
@@ -58,20 +60,25 @@ idenva/
 │   │   ├── nodes/             # Canvas node components (Person, Identity, Account...)
 │   │   ├── panels/            # Side panels (AccountPanel, IdentityPanel...)
 │   │   ├── pages/             # Main screens (unlock screen, dashboard...)
-│   │   ├── utils/             # CSS color palette, particularly for light mode
-│   │   └── services/          # API client and network calls (api.ts)
+│   │   ├── utils/             # CSS color palette, utilities
+│   │   ├── services/          # API client and network calls (api.ts)
+│   │   ├── locales/           # i18n translation files (fr.json, en.json)
+│   │   ├── App.tsx            # React root component
+│   │   └── main.tsx           # React entry point
 │   │
 │   ├── src-tauri/             # Tauri configuration and native wrapper code
-│   │   ├── binaries/          # OS-specific compiled backend sidecar executables
-│   │   │   ├── idenva-backend-x86_64-pc-windows-msvc.exe
-│   │   │   ├── idenva-backend-aarch64-apple-darwin
-│   │   │   └── idenva-backend-x86_64-unknown-linux-gnu
-│   │   ├── icons/             # Application icons (.ico, .icns, .png)
+│   │   ├── binaries/          # OS-specific compiled backend sidecar executables (git-ignored)
+│   │   ├── icons/             # Application icons (.ico, .icns, PNGs)
+│   │   ├── capabilities/      # Tauri permissions and capabilities (default.json)
 │   │   ├── src/               # Rust source code (main.rs, lib.rs)
-│   │   ├── tauri.conf.json    # Tauri config (externalBin declaration, window settings, bundler)
-│   │   └── Cargo.toml         # Rust dependencies
+│   │   ├── tauri.conf.json    # Tauri config (externalBin, window settings, bundler)
+│   │   ├── Cargo.toml         # Rust dependencies
+│   │   └── build.rs           # Tauri build script
 │   │
+│   ├── public/                # Static assets (favicon, SVG icons)
 │   ├── package.json           # Node.js / React dependencies
+│   ├── package-lock.json      # npm dependency lock file
+│   ├── .oxlintrc.json         # Oxlint linter configuration
 │   └── vite.config.ts         # Vite bundler configuration
 │
 ├── data/                      # Local database folder (idenva.db) — git-ignored
@@ -79,8 +86,8 @@ idenva/
 │   └── security.md            # Security documentation (threat model, encryption details)
 │
 ├── README.md
-├── requirements.txt
-└── .gitignore
+├── requirements.txt           # Global project requirements
+└── .gitignore                 # Git exclusion rules
 ```
 
 ### Running Idenva
@@ -204,8 +211,10 @@ idenva/
 │   │   ├── api/               # Routes HTTP (identities, accounts, credentials...)
 │   │   ├── services/          # Logique métier
 │   │   └── security/          # Chiffrement, dérivation de clé, session du coffre
-│   ├── requirements.txt       # Dépendances Python
-│   └── tests/
+│   ├── tests/                 # Suite de tests backend (pytest)
+│   ├── pytest.ini             # Configuration Pytest
+│   ├── run_server.py          # Script de lancement du serveur de développement backend
+│   └── requirements.txt       # Dépendances Python
 │
 ├── frontend/
 │   ├── src/
@@ -214,7 +223,10 @@ idenva/
 │   │   ├── panels/            # Panneaux d'édition (AccountPanel, IdentityPanel...)
 │   │   ├── pages/             # Écrans (déverrouillage, page principale)
 │   │   ├── utils/             # Palette de couleur css notamment pour le mode clair
-│   │   └── services/          # Appels API (api.ts)
+│   │   ├── services/          # Appels API (api.ts)
+│   │   ├── locales/           # Fichiers de traduction i18n (fr.json, en.json)
+│   │   ├── App.tsx            # Composant racine React
+│   │   └── main.tsx           # Point d'entrée React
 │   │
 │   ├── src-tauri/             # Configuration et fichiers natifs Tauri
 │   │   ├── binaries/          # Executables backend générés pour chaque OS
@@ -222,11 +234,16 @@ idenva/
 │   │   │   ├── idenva-backend-aarch64-apple-darwin
 │   │   │   └── idenva-backend-x86_64-unknown-linux-gnu
 │   │   ├── icons/             # Icônes de l'application (.ico, .icns, .png)
+│   │   ├── capabilities/      # Permissions et capacités Tauri (default.json)
 │   │   ├── src/               # Code Rust principal (main.rs, lib.rs)
 │   │   ├── tauri.conf.json    # Configuration Tauri (déclaration d'externalBin, fenêtres, bundle)
+│   │   ├── build.rs           # Script de build Tauri
 │   │   └── Cargo.toml         # Dépendances Rust
 │   │
+│   ├── public/                # Ressources statiques (favicon, icônes SVG)
 │   ├── package.json           # Dépendances Node.js / React
+│   ├── package-lock.json      # Verrouillage des dépendances npm
+│   ├── .oxlintrc.json         # Configuration du linter Oxlint
 │   └── vite.config.ts         # Configuration du bundler Vite
 │
 ├── data/                      # Base de données locale (idenva.db) — jamais versionnée
@@ -234,8 +251,8 @@ idenva/
 │   └── security.md            # Ce qui est protégé / ce qui ne l'est pas
 │
 ├── README.md
-├── requirements.txt
-└── .gitignore
+├── requirements.txt           # Dépendances globales du projet
+└── .gitignore                 # Règles d'exclusion Git
 ```
 
 ### Lancer Idenva

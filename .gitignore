@@ -22,9 +22,12 @@ backend/build/
 backend/dist/
 *.spec
 
-# Tauri (Rust)
+# Tauri & Rust (Cibles, builds et binaires compilés)
 src-tauri/target/
 frontend/src-tauri/target/
+frontend/src-tauri/binaries/*.exe
+frontend/src-tauri/binaries/*.app
+frontend/src-tauri/binaries/*.dmg
 
 # IDE / OS
 .vscode/
