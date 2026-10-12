@@ -14,11 +14,12 @@
   <Identity
     Name="54995RNGLabs.Idenva"
     Publisher="CN=02D0D701-F01C-4C06-A645-877211B316DF"
-    Version="1.0.0.0" />
+    Version="1.0.0.0"
+    ProcessorArchitecture="x64" />
 
   <Properties>
     <DisplayName>Idenva</DisplayName>
-    <PublisherDisplayName>RNG Labs</PublisherDisplayName>
+    <PublisherDisplayName>RNG_Labs</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
     <uap10:PackageIntegrity>
       <uap10:Content Enforcement="on"/>
