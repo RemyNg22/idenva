@@ -39,3 +39,9 @@ Thumbs.db
 README_beta.md
 
 .pytest_cache
+
+# Certificat de test MSIX local
+*.pfx
+devcert.pfx
+msix-dist/
+*.msix
