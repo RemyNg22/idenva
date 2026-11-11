@@ -24,7 +24,7 @@ All data remains strictly on your local machine — no internet connection is re
   - Exposure analysis: Detection of correlations and data overlaps between your different identities.
 - **Master Password Management**:
   - Update your master password at any time without re-encrypting the entire vault.
-- **Search & organization**: global search (Ctrl+K), tags, a global Notes & Tasks panel, light/dark theme (follows the system), English and French.
+- **Search & organization**: global search, a global Notes & Tasks panel, light/dark theme (follows the system), English and French.
 - **Import / Export & Backups**:
   - Encrypted export/import of the vault protected by a dedicated password.
   - Creation and restoration of local encrypted backups directly from the interface.
@@ -170,7 +170,7 @@ No vault exists yet -> the "Create Master Password" screen appears. Choose a str
 | Linux | `~/.local/share/Idenva` |
 | Dev mode | `data/` at the project root |
 
-It contains the database (`idenva.db`) and the `backups/` folder. Exports are not stored there (they are downloaded, see above). If you ever install the Microsoft Store version, Windows keeps its data in a private folder of the package and **deletes it on uninstall, backups included**: export first. The GitHub and Store versions do not share data.
+It contains the database (`idenva.db`) and the `backups/` folder. Exports are not stored there (they are downloaded, see above). If you use the Microsoft Store version, its data is stored in a package-specific folder. Uninstalling does not automatically delete your data or backups, but performing an export is still strongly recommended as a precaution. Note that the GitHub and Store versions operate independently and do not share their data.
 
 ### Security — read this
 
@@ -201,7 +201,7 @@ Toutes les données restent strictement sur votre machine — aucune connexion I
   - Analyse d'exposition : détection des corrélations et croisements d'informations entre vos différentes identités.
 - **Gestion du mot de passe maître** :
   - Modification possible du mot de passe maître à tout moment sans ré-encodage complet de la base.
-- **Recherche & organisation** : recherche globale (Ctrl+K), tags, panneau global Notes & Tâches, thème clair/sombre (suit le système), français et anglais.
+- **Recherche & organisation** : recherche globale, panneau global Notes & Tâches, thème clair/sombre (suit le système), français et anglais.
 - **Import / Export & Sauvegardes** :
   - Export/Import chiffré du coffre-fort avec un mot de passe dédié.
   - Création et restauration de sauvegardes locales chiffrées directement depuis l'interface.
@@ -350,7 +350,7 @@ Aucun coffre n'existe encore -> l'écran "Create Master Password" s'affiche. Cho
 | Linux | `~/.local/share/Idenva` |
 | Mode développement | `data/` à la racine du projet |
 
-Il contient la base de données (`idenva.db`) et le dossier `backups/`. Les exports n'y sont pas stockés (ils sont téléchargés, voir plus haut). Si vous installez un jour la version Microsoft Store, Windows garde ses données dans un dossier privé du paquet et **les supprime à la désinstallation, sauvegardes comprises** : exportez avant. Les versions GitHub et Store ne partagent pas leurs données.
+Il contient la base de données (`idenva.db`) et le dossier `backups/`. Les exports n'y sont pas stockés (ils sont téléchargés, voir plus haut). Si vous utilisez la version Microsoft Store, ses données sont stockées dans un dossier propre au paquet. La désinstallation n'efface pas automatiquement vos données ni vos sauvegardes, mais il reste fortement recommandé d'effectuer un export par précaution. Notez également que les versions GitHub et Store fonctionnent de manière indépendante et ne partagent pas leurs données.
 
 ### Sécurité — à lire
 

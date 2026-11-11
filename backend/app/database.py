@@ -2,6 +2,7 @@ from collections.abc import Generator
 from sqlalchemy import create_engine
 from sqlalchemy.orm import DeclarativeBase, Session, sessionmaker
 from app.config import settings
+from app.migrations import add_account_scope
 
 DATABASE_PATH = settings.data_dir / "idenva.db"
 DATABASE_URL = f"sqlite:///{DATABASE_PATH}"
@@ -22,6 +23,7 @@ def init_db():
     Ne touche pas aux tables déjà existantes
     """
     Base.metadata.create_all(bind=engine)
+    add_account_scope(engine)
 
 
 def get_db() -> Generator[Session, None, None]:

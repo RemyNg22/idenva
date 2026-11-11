@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
+from app.api.account_scope import get_account_or_404
 from app.api.auth import get_current_dek
 from app.database import get_db
 from app.models import Email
@@ -15,7 +16,7 @@ def _to_out(email: Email, dek: bytes) -> EmailOut:
         address = decrypt(email.address_nonce, email.address_ciphertext, dek).decode("utf-8")
     else:
         address = email.address or ""
-    return EmailOut(id=email.id, identity_id=email.identity_id, address=address, is_sensitive=email.is_sensitive, created_at=email.created_at)
+    return EmailOut(id=email.id, identity_id=email.identity_id, account_id=email.account_id, address=address, is_sensitive=email.is_sensitive, created_at=email.created_at)
 
 
 def _apply_address(email: Email, address: str, is_sensitive: bool, dek: bytes) -> None:
@@ -32,8 +33,10 @@ def _apply_address(email: Email, address: str, is_sensitive: bool, dek: bytes) -
 
 
 @router.get("", response_model=list[EmailOut])
-def list_emails(identity_id: str | None = None, dek: bytes = Depends(get_current_dek), db: Session = Depends(get_db)):
+def list_emails(identity_id: str | None = None, account_id: str | None = None, dek: bytes = Depends(get_current_dek), db: Session = Depends(get_db)):
     query = db.query(Email)
+    if account_id:
+        query = query.filter_by(account_id=account_id)
     if identity_id:
         query = query.filter_by(identity_id=identity_id)
     return [_to_out(e, dek) for e in query.all()]
@@ -41,7 +44,8 @@ def list_emails(identity_id: str | None = None, dek: bytes = Depends(get_current
 
 @router.post("", response_model=EmailOut, status_code=201)
 def create_email(payload: EmailCreate, dek: bytes = Depends(get_current_dek), db: Session = Depends(get_db)):
-    email = Email(identity_id=payload.identity_id)
+    account = get_account_or_404(db, payload.account_id)
+    email = Email(identity_id=account.identity_id, account_id=account.id)
     _apply_address(email, payload.address, payload.is_sensitive, dek)
     db.add(email)
     db.commit()

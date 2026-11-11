@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
+from app.api.account_scope import get_account_or_404
 from app.api.auth import get_current_dek
 from app.database import get_db
 from app.models import Phone
@@ -12,12 +13,14 @@ router = APIRouter(prefix="/api/phones", tags=["phones"], dependencies=[Depends(
 
 def _to_out(phone: Phone, dek: bytes) -> PhoneOut:
     plaintext = decrypt(phone.number_nonce, phone.number_ciphertext, dek)
-    return PhoneOut(id=phone.id, identity_id=phone.identity_id, number=plaintext.decode("utf-8"), created_at=phone.created_at)
+    return PhoneOut(id=phone.id, identity_id=phone.identity_id, account_id=phone.account_id, number=plaintext.decode("utf-8"), created_at=phone.created_at)
 
 
 @router.get("", response_model=list[PhoneOut])
-def list_phones(identity_id: str | None = None, dek: bytes = Depends(get_current_dek), db: Session = Depends(get_db)):
+def list_phones(identity_id: str | None = None, account_id: str | None = None, dek: bytes = Depends(get_current_dek), db: Session = Depends(get_db)):
     query = db.query(Phone)
+    if account_id:
+        query = query.filter_by(account_id=account_id)
     if identity_id:
         query = query.filter_by(identity_id=identity_id)
     return [_to_out(p, dek) for p in query.all()]
@@ -25,8 +28,9 @@ def list_phones(identity_id: str | None = None, dek: bytes = Depends(get_current
 
 @router.post("", response_model=PhoneOut, status_code=201)
 def create_phone(payload: PhoneCreate, dek: bytes = Depends(get_current_dek), db: Session = Depends(get_db)):
+    account = get_account_or_404(db, payload.account_id)
     nonce, ciphertext = encrypt(payload.number.encode("utf-8"), dek)
-    phone = Phone(identity_id=payload.identity_id, number_nonce=nonce, number_ciphertext=ciphertext)
+    phone = Phone(identity_id=account.identity_id, account_id=account.id, number_nonce=nonce, number_ciphertext=ciphertext)
     db.add(phone)
     db.commit()
     db.refresh(phone)

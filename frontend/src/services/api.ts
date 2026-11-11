@@ -170,6 +170,9 @@ export interface ExportFile {
 
 export interface ImportSummary {
   identities_imported: number;
+  emails_imported?: number;
+  phones_imported?: number;
+  domains_imported?: number;
   accounts_imported: number;
   notes_imported: number;
   tasks_imported: number;
@@ -195,6 +198,7 @@ export interface Credential {
 export interface EmailEntity {
   id: string;
   identity_id: string;
+  account_id: string | null;
   address: string;
   is_sensitive: boolean;
   created_at: string;
@@ -203,6 +207,7 @@ export interface EmailEntity {
 export interface Phone {
   id: string;
   identity_id: string;
+  account_id: string | null;
   number: string;
   created_at: string;
 }
@@ -210,6 +215,7 @@ export interface Phone {
 export interface Domain {
   id: string;
   identity_id: string;
+  account_id: string | null;
   domain_name: string;
   registrar?: string;
   expiry_date?: string;
@@ -353,10 +359,12 @@ export const api = {
   listEmails: (identityId?: string) =>
     request<EmailEntity[]>(`/api/emails${identityId ? `?identity_id=${identityId}` : ""}`),
 
-  createEmail: (identityId: string, address: string, isSensitive = false) =>
+  listAccountEmails: (accountId: string) => request<EmailEntity[]>(`/api/emails?account_id=${accountId}`),
+
+  createAccountEmail: (accountId: string, address: string, isSensitive = false) =>
     request<EmailEntity>("/api/emails", {
       method: "POST",
-      body: JSON.stringify({ identity_id: identityId, address, is_sensitive: isSensitive }),
+      body: JSON.stringify({ account_id: accountId, address, is_sensitive: isSensitive }),
     }),
 
   deleteEmail: (emailId: string) => request<void>(`/api/emails/${emailId}`, { method: "DELETE" }),
@@ -365,10 +373,12 @@ export const api = {
   listPhones: (identityId?: string) =>
     request<Phone[]>(`/api/phones${identityId ? `?identity_id=${identityId}` : ""}`),
 
-  createPhone: (identityId: string, number: string) =>
+  listAccountPhones: (accountId: string) => request<Phone[]>(`/api/phones?account_id=${accountId}`),
+
+  createAccountPhone: (accountId: string, number: string) =>
     request<Phone>("/api/phones", {
       method: "POST",
-      body: JSON.stringify({ identity_id: identityId, number }),
+      body: JSON.stringify({ account_id: accountId, number }),
     }),
 
   deletePhone: (phoneId: string) => request<void>(`/api/phones/${phoneId}`, { method: "DELETE" }),
@@ -377,11 +387,13 @@ export const api = {
   listDomains: (identityId?: string) =>
     request<Domain[]>(`/api/domains${identityId ? `?identity_id=${identityId}` : ""}`),
 
-  createDomain: (identityId: string, domainName: string, registrar?: string, expiryDate?: string) =>
+  listAccountDomains: (accountId: string) => request<Domain[]>(`/api/domains?account_id=${accountId}`),
+
+  createAccountDomain: (accountId: string, domainName: string, registrar?: string, expiryDate?: string) =>
     request<Domain>("/api/domains", {
       method: "POST",
       body: JSON.stringify({
-        identity_id: identityId,
+        account_id: accountId,
         domain_name: domainName,
         registrar,
         expiry_date: expiryDate,

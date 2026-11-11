@@ -16,6 +16,7 @@ class Domain(Base):
 
     id: Mapped[str] = mapped_column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
     identity_id: Mapped[str] = mapped_column(ForeignKey("identities.id"), nullable=False)
+    account_id: Mapped[str | None] = mapped_column(ForeignKey("accounts.id"), nullable=True, index=True)
 
     domain_name: Mapped[str] = mapped_column(String, nullable=False)
     registrar: Mapped[str | None] = mapped_column(String, nullable=True)

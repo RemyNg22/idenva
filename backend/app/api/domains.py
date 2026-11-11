@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
+from app.api.account_scope import get_account_or_404
 from app.api.auth import get_current_dek
 from app.database import get_db
 from app.models import Domain
@@ -10,8 +11,10 @@ router = APIRouter(prefix="/api/domains", tags=["domains"], dependencies=[Depend
 
 
 @router.get("", response_model=list[DomainOut])
-def list_domains(identity_id: str | None = None, db: Session = Depends(get_db)):
+def list_domains(identity_id: str | None = None, account_id: str | None = None, db: Session = Depends(get_db)):
     query = db.query(Domain)
+    if account_id:
+        query = query.filter_by(account_id=account_id)
     if identity_id:
         query = query.filter_by(identity_id=identity_id)
     return query.all()
@@ -19,7 +22,9 @@ def list_domains(identity_id: str | None = None, db: Session = Depends(get_db)):
 
 @router.post("", response_model=DomainOut, status_code=201)
 def create_domain(payload: DomainCreate, db: Session = Depends(get_db)):
-    domain = Domain(**payload.model_dump())
+    account = get_account_or_404(db, payload.account_id)
+    data = payload.model_dump(exclude={"account_id"})
+    domain = Domain(**data, identity_id=account.identity_id, account_id=account.id)
     db.add(domain)
     db.commit()
     db.refresh(domain)

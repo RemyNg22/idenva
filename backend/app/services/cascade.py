@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 
-from app.models import Account, Credential, Edge, Node, Note, Task
+from app.models import Account, Credential, Domain, Edge, Email, Node, Note, Phone, Task
 
 
 def delete_node_and_edges(db: Session, entity_type: str, entity_id: str) -> None:
@@ -20,5 +20,8 @@ def delete_account_cascade(db: Session, account: Account) -> None:
     db.query(Note).filter_by(owner_type="account", owner_id=account.id).delete(synchronize_session=False)
     db.query(Credential).filter_by(owner_type="account", owner_id=account.id).delete(synchronize_session=False)
     db.query(Task).filter_by(related_type="account", related_id=account.id).delete(synchronize_session=False)
+    db.query(Email).filter_by(account_id=account.id).delete(synchronize_session=False)
+    db.query(Phone).filter_by(account_id=account.id).delete(synchronize_session=False)
+    db.query(Domain).filter_by(account_id=account.id).delete(synchronize_session=False)
     delete_node_and_edges(db, "account", account.id)
     db.delete(account)

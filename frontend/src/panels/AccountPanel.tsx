@@ -47,23 +47,21 @@ export function AccountPanel({ account, onClose, onAccountUpdated, onAccountDele
 
   useEffect(() => {
     loadAllRelatedData();
-  }, [account.id, account.identity_id]);
+  }, [account.id]);
 
   async function loadAllRelatedData() {
     try {
       const credsData = await api.listCredentials("account", account.id);
       setCredentials(credsData);
 
-      if (account.identity_id) {
-        const [emailsData, phonesData, domainsData] = await Promise.all([
-          api.listEmails(account.identity_id),
-          api.listPhones(account.identity_id),
-          api.listDomains(account.identity_id),
-        ]);
-        setEmails(emailsData);
-        setPhones(phonesData);
-        setDomains(domainsData);
-      }
+      const [emailsData, phonesData, domainsData] = await Promise.all([
+        api.listAccountEmails(account.id),
+        api.listAccountPhones(account.id),
+        api.listAccountDomains(account.id),
+      ]);
+      setEmails(emailsData);
+      setPhones(phonesData);
+      setDomains(domainsData);
     } catch (err) {
       console.error("Erreur chargement données rattachées:", err);
     }
@@ -111,9 +109,9 @@ export function AccountPanel({ account, onClose, onAccountUpdated, onAccountDele
 
   // --- Handlers Emails, Phones, Domains ---
   async function handleAddEmail() {
-    if (!newEmail || !account.identity_id) return;
+    if (!newEmail) return;
     try {
-      await api.createEmail(account.identity_id, newEmail);
+      await api.createAccountEmail(account.id, newEmail);
       setNewEmail("");
       loadAllRelatedData();
     } catch (err) {
@@ -131,9 +129,9 @@ export function AccountPanel({ account, onClose, onAccountUpdated, onAccountDele
   }
 
   async function handleAddPhone() {
-    if (!newPhone || !account.identity_id) return;
+    if (!newPhone) return;
     try {
-      await api.createPhone(account.identity_id, newPhone);
+      await api.createAccountPhone(account.id, newPhone);
       setNewPhone("");
       loadAllRelatedData();
     } catch (err) {
@@ -151,9 +149,9 @@ export function AccountPanel({ account, onClose, onAccountUpdated, onAccountDele
   }
 
   async function handleAddDomain() {
-    if (!newDomain || !account.identity_id) return;
+    if (!newDomain) return;
     try {
-      await api.createDomain(account.identity_id, newDomain);
+      await api.createAccountDomain(account.id, newDomain);
       setNewDomain("");
       loadAllRelatedData();
     } catch (err) {

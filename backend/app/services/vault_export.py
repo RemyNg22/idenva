@@ -3,14 +3,14 @@ import json
 import uuid
 from datetime import datetime, timezone
 from sqlalchemy.orm import Session
-from app.models import Account, Edge, Identity, Node, Note, Task
+from app.models import Account, Domain, Edge, Email, Identity, Node, Note, Phone, Task
 from app.security.crypto import DecryptionError, decrypt, encrypt
 from app.security.kdf import derive_key, generate_salt
 
 EXPORT_FORMAT_VERSION = 1
 
-"""Tables volontairement exclues de l'export : Email, Phone, Domain, Credential, Tag. 
-Ces modèles existent en base mais n'ont jamais eu de routes API ni d'interface construites"""
+"""Exclus de l'export : Credential, Tag (pas encore pris en charge).
+Email, Phone et Domain sont exportés, rattachés à un compte (account_id)."""
 
 
 def _decrypt_or_none(nonce: bytes | None, ciphertext: bytes | None, dek: bytes) -> str | None:
@@ -28,6 +28,9 @@ def build_export_payload(db: Session, dek: bytes) -> dict:
     tasks = db.query(Task).all()
     nodes = db.query(Node).all()
     edges = db.query(Edge).all()
+    emails = db.query(Email).all()
+    phones = db.query(Phone).all()
+    domains = db.query(Domain).all()
 
     return {
         "identities": [
@@ -47,6 +50,29 @@ def build_export_payload(db: Session, dek: bytes) -> dict:
                 "last_password_change": a.last_password_change.isoformat() if a.last_password_change else None,
             }
             for a in accounts
+        ],
+        "emails": [
+            {
+                "id": e.id, "account_id": e.account_id, "is_sensitive": e.is_sensitive,
+                "address": (_decrypt_or_none(e.address_nonce, e.address_ciphertext, dek)
+                            if e.is_sensitive else e.address),
+            }
+            for e in emails if e.account_id
+        ],
+        "phones": [
+            {
+                "id": p.id, "account_id": p.account_id,
+                "number": _decrypt_or_none(p.number_nonce, p.number_ciphertext, dek),
+            }
+            for p in phones if p.account_id
+        ],
+        "domains": [
+            {
+                "id": d.id, "account_id": d.account_id, "domain_name": d.domain_name,
+                "registrar": d.registrar,
+                "expiry_date": d.expiry_date.isoformat() if d.expiry_date else None,
+            }
+            for d in domains if d.account_id
         ],
         "notes": [
             {
@@ -150,6 +176,44 @@ def import_payload(db: Session, dek: bytes, payload: dict) -> dict:
         db.add(account)
     db.flush()
 
+    emails_imported = 0
+    for item in payload.get("emails", []):
+        acc_id = account_map.get(item.get("account_id"))
+        if acc_id is None or item.get("address") is None:
+            continue
+        email = Email(id=str(uuid.uuid4()), identity_id=db.get(Account, acc_id).identity_id, account_id=acc_id)
+        if item.get("is_sensitive"):
+            email.address = None
+            email.address_nonce, email.address_ciphertext = encrypt(item["address"].encode("utf-8"), dek)
+            email.is_sensitive = True
+        else:
+            email.address = item["address"]
+            email.is_sensitive = False
+        db.add(email)
+        emails_imported += 1
+
+    phones_imported = 0
+    for item in payload.get("phones", []):
+        acc_id = account_map.get(item.get("account_id"))
+        if acc_id is None or item.get("number") is None:
+            continue
+        nonce, ciphertext = encrypt(item["number"].encode("utf-8"), dek)
+        db.add(Phone(id=str(uuid.uuid4()), identity_id=db.get(Account, acc_id).identity_id, account_id=acc_id,
+                     number_nonce=nonce, number_ciphertext=ciphertext))
+        phones_imported += 1
+
+    domains_imported = 0
+    for item in payload.get("domains", []):
+        acc_id = account_map.get(item.get("account_id"))
+        if acc_id is None:
+            continue
+        db.add(Domain(
+            id=str(uuid.uuid4()), identity_id=db.get(Account, acc_id).identity_id, account_id=acc_id,
+            domain_name=item["domain_name"], registrar=item.get("registrar"),
+            expiry_date=datetime.fromisoformat(item["expiry_date"]) if item.get("expiry_date") else None,
+        ))
+        domains_imported += 1
+
     def _remap_owner(owner_type: str | None, owner_id: str | None) -> str | None:
         if owner_id is None:
             return None
@@ -208,6 +272,9 @@ def import_payload(db: Session, dek: bytes, payload: dict) -> dict:
     return {
         "identities_imported": len(identity_map),
         "accounts_imported": len(account_map),
+        "emails_imported": emails_imported,
+        "phones_imported": phones_imported,
+        "domains_imported": domains_imported,
         "notes_imported": notes_imported,
         "tasks_imported": tasks_imported,
         "nodes_imported": len(node_map),
